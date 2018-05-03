@@ -13,5 +13,5 @@ if __name__ == '__main__':
     ls.start()
     ns.start()
     fs.start()
-    # min.start()
+    min.start()
     # ls.join()

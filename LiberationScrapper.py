@@ -1,4 +1,4 @@
-from Scrapper import Scrapper, PageReader
+from Scrapper import Scrapper
 from bs4 import BeautifulSoup
 
 class LiberationScrapper(Scrapper):
@@ -15,7 +15,7 @@ class LiberationScrapper(Scrapper):
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href') #TODO si url trouvee complete, ne pas ajouter www.liberation.fr
             lnktxt = i.get_text()
-            sc = PageReader("http://www.liberation.fr"+lnk, self.parse_page)
+            sc = Scrapper("http://www.liberation.fr"+lnk,'', self.parse_page)
             sc.start()
 
     def parse_page(self, url, page_content):

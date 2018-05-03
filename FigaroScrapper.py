@@ -1,4 +1,4 @@
-from Scrapper import Scrapper, PageReader
+from Scrapper import Scrapper
 from bs4 import BeautifulSoup
 from urllib import quote
 
@@ -17,7 +17,7 @@ class FigaroScrapper(Scrapper):
         print("found {} results on figaro".format(len(resdivs)))
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href')
-            sc = PageReader(lnk, self.parse_page)
+            sc = Scrapper(lnk, '',self.parse_page)
             sc.start()
 
     def parse_page(self,url, page_content):
@@ -46,7 +46,7 @@ class FigaroScrapper(Scrapper):
             # pages l'etudiant
             content_p = soup.find_all('div', {'class': 'article__content'})
 
-        # print("parsing page {}".format(url))
+
         for maincnt in content_p:
             for parag in maincnt.find_all('p'):
                 # print(parag.get_text())

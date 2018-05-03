@@ -1,4 +1,4 @@
-from Scrapper import Scrapper, PageReader
+from Scrapper import Scrapper
 from bs4 import BeautifulSoup
 
 class NouvelobsScrapper(Scrapper):
@@ -14,7 +14,7 @@ class NouvelobsScrapper(Scrapper):
         print("found {} results on nobs".format(len(resdivs)))
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href')
-            sc = PageReader(lnk, self.parse_page)
+            sc = Scrapper(lnk, '', self.parse_page)
             sc.start()
 
     def parse_page(self,url, page_content):

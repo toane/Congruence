@@ -1,4 +1,4 @@
-from Scrapper import Scrapper, PageReader
+from Scrapper import Scrapper
 from bs4 import BeautifulSoup
 
 class VingtMinutesScrapper(Scrapper):

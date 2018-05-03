@@ -24,21 +24,28 @@ class Scrapper(Thread):
             request_url = self.url
             pass
         # request_url = self.url + encoded_args
-        print('requesting {}'.format(request_url))
-        r = requests.get(request_url)
-        if self.callback is not None:
-            self.callback( r.text)
-        return r.text
+        print('requesting {} with callback {}'.format(request_url, self.callback))
+        try:
+            r = requests.get(request_url)
+            if self.callback is not None:
+                # print("calling {}".format(self.callback))
+                if self.callback.func_code.co_argcount == 2:
+                    self.callback(r.text)
+                elif self.callback.func_code.co_argcount == 3:
+                    self.callback(self.url, r.text)
+            return r.text
+        except requests.exceptions.ConnectionError as ce:
+            print(ce.message)
 
-
+"""
 class PageReader(Thread):
     def __init__(self, url, callback=None):
-        """
+        
         :param url: url qui recevra la recherche
         :param url_params: url qui recevra la recherche
         :param keywords:
         :param callback:
-        """
+        
         Thread.__init__(self)
         assert callable(callback) is True or callback is None
         self.url = url
@@ -53,3 +60,4 @@ class PageReader(Thread):
             return r.text
         except requests.exceptions.ConnectionError as ce:
             pass
+"""
