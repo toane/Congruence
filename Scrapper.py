@@ -1,9 +1,11 @@
 from socket import gaierror
 from threading import Thread
-from urllib.parse import urlencode,quote
+try:
+    from urllib import urlencode #package urllib3
+except ImportError as ie:
+    from urllib.parse import urlencode
 from urllib3 import HTTPSConnectionPool, make_headers, exceptions
 import requests
-
 
 class Scrapper(Thread):
     def __init__(self, url, url_args, callback=None):
@@ -23,12 +25,14 @@ class Scrapper(Thread):
         try:
             encoded_args = urlencode(self.url_args)
             request_url = self.url + encoded_args
-            print('requesting {}'.format(request_url))
-            r = requests.get(request_url)
-            self.callback(r.text)
-            return r.text
-        except Exception as e:
+        except TypeError as te:
+            request_url = self.url
             pass
+        # request_url = self.url + encoded_args
+        print('requesting {}'.format(request_url))
+        r = requests.get(request_url)
+        self.callback(r.text)
+        return r.text
 
 
 class PageReader(Thread):
@@ -45,8 +49,11 @@ class PageReader(Thread):
         self.callback = callback
 
     def run(self):
-        request_url = self.url
-        print('requesting {}'.format(request_url))
-        r = requests.get(request_url)
-        self.callback(self.url, r.text)
-        return r.text
+        try:
+            request_url = self.url
+            print('requesting {}'.format(request_url))
+            r = requests.get(request_url)
+            self.callback(self.url, r.text)
+            return r.text
+        except requests.exceptions.ConnectionError as ce:
+            pass
