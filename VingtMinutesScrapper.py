@@ -1,17 +1,17 @@
 from Scrapper import Scrapper, PageReader
 from bs4 import BeautifulSoup
 
-class NouvelobsScrapper(Scrapper):
+class VingtMinutesScrapper(Scrapper):
     def __init__(self, url, keywords):
-        url_args = {'referer': 'nouvelobs', 'q': keywords}
-        super(NouvelobsScrapper,self).__init__(url, url_args, self.parse)
+        url_args = {'q': keywords}
+        super(VingtMinutesScrapper,self).__init__(url, url_args, self.parse)
 
     def parse(self, e):
-        print("nobs received {}".format(len(e)))
+        print("20min received {}".format(len(e)))
         soup = BeautifulSoup(e, "lxml")
         # look for result links
-        resdivs = soup.find_all('article', {'class': 'obs-resultat-article'})
-        print("found {} results on nobs".format(len(resdivs)))
+        resdivs = soup.find_all('div', {'class': ['gs-webResult','gsc-result']}) #TODO NO GOOD
+        print("found {} results on 20min".format(len(resdivs)))
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href')
             sc = PageReader(lnk, self.parse_page)
