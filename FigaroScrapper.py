@@ -1,15 +1,18 @@
 from Scrapper import Scrapper
 from bs4 import BeautifulSoup
-from urllib import quote
+try:
+    from urllib import quote
+except ImportError as ie:
+    from urllib.parse import urlencode, quote
 
 class FigaroScrapper(Scrapper):
     def __init__(self, url, keywords):
         url = url+quote(keywords)
-        super(FigaroScrapper,self).__init__(url, keywords, self.parse)
+        super(FigaroScrapper,self).__init__(url, keywords, self.parse_search_result)
 
-    def parse(self, e):
-        print("figaro received {}".format(len(e)))
-        soup = BeautifulSoup(e, "lxml")
+    def parse_search_result(self, url, page_content):
+        print("figaro received {}".format(len(page_content)))
+        soup = BeautifulSoup(page_content, "lxml")
         resdivs = soup.find_all('section', {'class': ['fig-profil',\
                                                       'fig-profil-mtpd',\
                                                       'fig-profil-std',\
@@ -17,10 +20,10 @@ class FigaroScrapper(Scrapper):
         print("found {} results on figaro".format(len(resdivs)))
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href')
-            sc = Scrapper(lnk, '',self.parse_page)
+            sc = Scrapper(lnk, '',self.parse_page_content)
             sc.start()
 
-    def parse_page(self,url, page_content):
+    def parse_page_content(self,url, page_content):
         out_text = []
         soup = BeautifulSoup(page_content, "lxml")
         content_p = soup.find_all('div', {'class': 'fig-content__body'})

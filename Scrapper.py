@@ -28,11 +28,7 @@ class Scrapper(Thread):
         try:
             r = requests.get(request_url)
             if self.callback is not None:
-                # print("calling {}".format(self.callback))
-                if self.callback.func_code.co_argcount == 2:
-                    self.callback(r.text)
-                elif self.callback.func_code.co_argcount == 3:
-                    self.callback(self.url, r.text)
+                self.callback(self.url, r.text)
             return r.text
         except requests.exceptions.ConnectionError as ce:
             print(ce.message)
