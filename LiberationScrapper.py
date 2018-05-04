@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 class LiberationScrapper(Scrapper):
     def __init__(self, url, keywords):
         url_args = {'q': keywords}
-        super(LiberationScrapper, self).__init__(url, url_args, self.parse_search_result)
+        super().__init__(url, url_args, self.parse_search_result)
 
     def parse_search_result(self, url, page_content):
         print("libe received {}".format(len(page_content)))
@@ -34,4 +34,4 @@ class LiberationScrapper(Scrapper):
                 pt = parag.get_text()
                 out_text.append(pt)
         print("read {} chars on {}".format(len(''.join(out_text)),url))
-        super(LiberationScrapper, self).add_record(url, ''.join(out_text))
+        super().add_record(url, ''.join(out_text))

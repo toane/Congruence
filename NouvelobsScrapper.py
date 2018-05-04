@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 class NouvelobsScrapper(Scrapper):
     def __init__(self, url, keywords):
         url_args = {'referer': 'nouvelobs', 'q': keywords}
-        super(NouvelobsScrapper,self).__init__(url, url_args, self.parse_search_result)
+        super().__init__(url, url_args, self.parse_search_result)
 
     def parse_search_result(self, url, page_content):
         print("nobs received {}".format(len(page_content)))
@@ -27,7 +27,7 @@ class NouvelobsScrapper(Scrapper):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        super(NouvelobsScrapper, self).add_record(url, ''.join(out_text))
+        super().add_record(url, ''.join(out_text))
 
 
 

@@ -8,7 +8,7 @@ except ImportError as ie:
 class FigaroScrapper(Scrapper):
     def __init__(self, url, keywords):
         url = url+quote(keywords)
-        super(FigaroScrapper,self).__init__(url, keywords, self.parse_search_result)
+        super().__init__(url, keywords, self.parse_search_result)
 
     def parse_search_result(self, url, page_content):
         print("figaro received {}".format(len(page_content)))
@@ -54,4 +54,4 @@ class FigaroScrapper(Scrapper):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        super(FigaroScrapper, self).add_record(url, ''.join(out_text))
+        super().add_record(url, ''.join(out_text))
