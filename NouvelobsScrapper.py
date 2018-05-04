@@ -27,6 +27,7 @@ class NouvelobsScrapper(Scrapper):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
+        super(NouvelobsScrapper, self).write_file(url, ''.join(out_text))
 
 
 
