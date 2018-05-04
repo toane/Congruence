@@ -1,0 +1,14 @@
+{
+  "nodes": [
+    {"id": "Le.Pen", "group": 1},
+    {"id": "Napoleon", "group": 1},
+    {"id": "Mme.Hucheloup", "group": 2},
+	{"id": "Joel", "group": 2}
+  ],
+  "links": [
+    {"source": "Le.Pen", "target": "Napoleon", "value": 1},
+    {"source": "Napoleon", "target": "Mme.Hucheloup", "value": 8},   
+	{"source": "Mme.Hucheloup", "target": "Le.Pen", "value": 8},
+	{"source": "Mme.Hucheloup", "target": "Joel", "value": 8}
+  ]
+}

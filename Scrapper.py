@@ -49,10 +49,11 @@ class Scrapper(Thread):
                 f.write(content)
 
     def add_record(self, url, content):
-        newRecord = StorageModel(self.url_args, url, content)
+        new_record = StorageModel(self.keywords, url, content)
+        print(new_record.mongo_value)
         client = MongoClient('localhost', 27017)
         db = client.mdb
         coll = db.articol
-        coll.insert_one(newRecord.mongo_value)
+        coll.insert_one(new_record.mongo_value)
 
 

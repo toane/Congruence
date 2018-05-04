@@ -17,11 +17,12 @@ class StorageModel:
 
     @property
     def mongo_value(self):
-        return {"search_term": self.search_term, \
-                "article_url": self.article_url,\
-                "article_content":self.article_content,\
-                "timestamp":self.timestamp,\
-                "weight":self.weight,\
-                "blob":self.blob
-                }
+        return vars(self)
+        # return {"search_term": self.search_term, \
+        #         "article_url": self.article_url,\
+        #         "article_content":self.article_content,\
+        #         "timestamp":self.timestamp,\
+        #         "weight":self.weight,\
+        #         "blob":self.blob
+        #         }
 
