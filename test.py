@@ -2,9 +2,10 @@ from LiberationScrapper import LiberationScrapper
 from NouvelobsScrapper import NouvelobsScrapper
 from FigaroScrapper import FigaroScrapper
 from VingtMinutesScrapper import VingtMinutesScrapper
-
+import sys
 if __name__ == '__main__':
-    keywords = "tolbiac"
+    print("Python version {}".format(sys.version))
+    keywords = "cavernicole"
     # https://recherche.nouvelobs.com/?referer=nouvelobs&q=khadafi
     ns = NouvelobsScrapper("https://recherche.nouvelobs.com/?", keywords)
     ls = LiberationScrapper("http://www.liberation.fr/recherche/?", keywords)
