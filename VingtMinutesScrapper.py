@@ -27,7 +27,7 @@ class VingtMinutesScrapper(Scrapper):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        super(VingtMinutesScrapper, self).write_file(url, ''.join(out_text))
+        super(VingtMinutesScrapper, self).add_record(url, ''.join(out_text))
 
 
 

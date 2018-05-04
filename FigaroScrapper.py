@@ -49,10 +49,9 @@ class FigaroScrapper(Scrapper):
             # pages l'etudiant
             content_p = soup.find_all('div', {'class': 'article__content'})
 
-
         for maincnt in content_p:
             for parag in maincnt.find_all('p'):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        super(FigaroScrapper, self).write_file(url, ''.join(out_text))
+        super(FigaroScrapper, self).add_record(url, ''.join(out_text))

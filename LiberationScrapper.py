@@ -34,4 +34,4 @@ class LiberationScrapper(Scrapper):
                 pt = parag.get_text()
                 out_text.append(pt)
         print("read {} chars on {}".format(len(''.join(out_text)),url))
-        super(LiberationScrapper, self).write_file(url, ''.join(out_text))
+        super(LiberationScrapper, self).add_record(url, ''.join(out_text))
