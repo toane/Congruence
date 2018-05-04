@@ -1,6 +1,7 @@
 from socket import gaierror
 from threading import Thread
 from pymongo import MongoClient
+from StorageModel import StorageModel
 try:
     from urllib import urlencode
 except ImportError as ie:
@@ -13,24 +14,26 @@ import os
 
 
 class Scrapper(Thread):
-    def __init__(self, url, url_args, callback=None):
+    def __init__(self, url, keywords=None, url_args=None, callback=None):
         Thread.__init__(self)
         # assert callable(callback) is True or callback is None
         self.url = url
+        self.request_url = ''
         self.callback = callback
         self.url_args = url_args
+        self.keywords = keywords
 
     def run(self):
         try:
             encoded_args = urlencode(self.url_args)
-            request_url = self.url + encoded_args
+            self.request_url = self.url + encoded_args
         except TypeError as te:
-            request_url = self.url
+            self.request_url = self.url
             pass
-        print('requesting {} with callback {}'.format(request_url, self.callback))
+        print('requesting {} with callback {}'.format(self.request_url, self.callback))
         # print('url hash: {}'.format(self.get_hash(request_url)))
         try:
-            r = requests.get(request_url)
+            r = requests.get(self.request_url)
             if self.callback is not None:
                 self.callback(self.url, r.text)
             return r.text
@@ -46,10 +49,10 @@ class Scrapper(Thread):
                 f.write(content)
 
     def add_record(self, url, content):
-        pass
-        # client = MongoClient('localhost', 27017)
-        # db = client.mdb
-        # coll = db.articol
-        # coll.insert_one({self.get_hash(url): content})
+        newRecord = StorageModel(self.url_args, url, content)
+        client = MongoClient('localhost', 27017)
+        db = client.mdb
+        coll = db.articol
+        coll.insert_one(newRecord.mongo_value)
 
 
