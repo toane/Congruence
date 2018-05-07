@@ -1,5 +1,5 @@
 class StorageModel:
-    def __init__(self, search_term, article_url, article_content, timestamp=0, weight=0, blob=None):
+    def __init__(self, search_term, article_url, article_content, timestamp=0, weight=0, blob=None, url_hash=''):
         """
         Describes a record
         :param search_term: the search term
@@ -14,15 +14,17 @@ class StorageModel:
         self.timestamp = timestamp
         self.weight = weight
         self.blob = blob
+        self.url_hash = url_hash
 
     @property
     def mongo_value(self):
-        return vars(self)
-        # return {"search_term": self.search_term, \
-        #         "article_url": self.article_url,\
-        #         "article_content":self.article_content,\
-        #         "timestamp":self.timestamp,\
-        #         "weight":self.weight,\
-        #         "blob":self.blob
-        #         }
+        # return vars(self)
+        return {"search_term": self.search_term, \
+                "article_url": self.article_url,\
+                "article_content":self.article_content,\
+                "timestamp":self.timestamp, \
+                "url_hash": self.url_hash,\
+                "weight":self.weight,\
+                "blob":self.blob
+                }
 

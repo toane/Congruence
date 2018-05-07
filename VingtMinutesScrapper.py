@@ -1,33 +1,50 @@
-from Scrapper import Scrapper
+from JSScrapper import JSScrapper
+from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
-class VingtMinutesScrapper(Scrapper):
+from utils import add_record
+
+try:
+    from selenium import webdriver
+except ImportError as ie:
+    print("python: selenium module unavailable, CNN scraping disabled")
+
+try:
+    from selenium.common.exceptions import WebDriverException
+except ImportError:
+    pass
+
+
+class VingtMinutesScrapper(JSScrapper):
+
     def __init__(self, url, keywords):
         url_args = {'q': keywords}
-        super().__init__(url, url_args, self.parse_search_result)
+        super().__init__(url, keywords, url_args, callback=self.parse_search_result)
 
-    def parse_search_result(self, url, page_content):
-        print("20min received {}".format(len(page_content)))
-        soup = BeautifulSoup(page_content, "lxml")
-        # look for result links
-        resdivs = soup.find_all('div', {'class': ['gs-webResult','gsc-result']}) #TODO NO GOOD
-        print("found {} results on 20min".format(len(resdivs)))
-        for i in resdivs:
-            lnk = i.find_all('a')[0].get('href')
-            sc = Scrapper(lnk, self.parse_page_content)
-            sc.start()
+    def parse_search_result(self, full_url_query, keywords):
+        try:
+            driver = webdriver.Chrome("/usr/lib/chromium-browser/chromedriver")
+            driver.get(full_url_query)            # look for search results
 
-    def parse_page_content(self,url, page_content):
+            result_cells = driver.find_elements_by_css_selector('td.gsc-table-cell-snippet-close')
+            print("found {} results on 20min".format(len(result_cells)))
+            # pull url from each WebDriver element
+            for c in result_cells:
+                url = c.find_element_by_tag_name('a').get_attribute('href')
+                # download static html page content
+                jss = StaticScrapper(url, keywords=keywords, callback=self.parse_page_content)
+                jss.start()
+        except WebDriverException as wde:
+            print(wde)
+
+    def parse_page_content(self,url, page_content, keywords):
         out_text = []
         soup = BeautifulSoup(page_content, "lxml")
-        content_p = soup.find_all('div', {'class': ['ObsArticle-body','flex-item-fluid']})
-        # print("parsing page {}".format(url))
+        # content_p = soup.find_all('div', {'class': ['lt-endor-body' 'content']})
+        content_p = soup.find_all('div', {'class': ['lt-endor-body content']})
+        print("20min {} content div found".format(len(content_p)))
         for maincnt in content_p:
             for parag in maincnt.find_all('p'):
-                # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        super().add_record(url, ''.join(out_text))
-
-
-
+        add_record(keywords, url, ''.join(out_text))

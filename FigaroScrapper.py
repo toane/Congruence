@@ -1,16 +1,19 @@
-from Scrapper import Scrapper
+from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
+
+from utils import add_record
+
 try:
     from urllib import quote
 except ImportError as ie:
     from urllib.parse import urlencode, quote
 
-class FigaroScrapper(Scrapper):
+class FigaroStaticScrapper(StaticScrapper):
     def __init__(self, url, keywords):
         url = url+quote(keywords)
         super().__init__(url, keywords,'', callback=self.parse_search_result)
 
-    def parse_search_result(self, url, page_content):
+    def parse_search_result(self, url, page_content, keywords):
         print("figaro received {}".format(len(page_content)))
         soup = BeautifulSoup(page_content, "lxml")
         resdivs = soup.find_all('section', {'class': ['fig-profil',\
@@ -20,10 +23,10 @@ class FigaroScrapper(Scrapper):
         print("found {} results on figaro".format(len(resdivs)))
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href')
-            sc = Scrapper(lnk,callback=self.parse_page_content)
+            sc = StaticScrapper(lnk, keywords=keywords, callback=self.parse_page_content)
             sc.start()
 
-    def parse_page_content(self,url, page_content):
+    def parse_page_content(self,url, page_content, keywords):
         out_text = []
         soup = BeautifulSoup(page_content, "lxml")
         content_p = soup.find_all('div', {'class': 'fig-content__body'})
@@ -54,4 +57,4 @@ class FigaroScrapper(Scrapper):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        super().add_record(url, ''.join(out_text))
+        add_record(keywords, url, ''.join(out_text))

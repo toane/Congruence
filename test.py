@@ -4,6 +4,9 @@ from NouvelobsScrapper import NouvelobsStaticScrapper
 from FigaroScrapper import FigaroStaticScrapper
 from CNNScrapper import CNNScrapper
 import sys
+
+from VingtMinutesScrapper import VingtMinutesScrapper
+
 if __name__ == '__main__':
     print("running on Python version {}".format(sys.version))
     keywords = "antisemite"
@@ -12,8 +15,10 @@ if __name__ == '__main__':
     ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords)
     fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords)
     cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords)
-    # ls.start()
-    # ns.start()
+    twentymin = VingtMinutesScrapper("https://www.20minutes.fr/search?", keywords)
+
+    ls.start()
+    ns.start()
     fs.start()
-    cnn.start()
-    # ls.join()
+    cnn.start()  # TODO shouldn't succesively call run() in JSScrapper and StaticScrapper
+    twentymin.start()

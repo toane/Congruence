@@ -1,12 +1,15 @@
-from Scrapper import Scrapper
+from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
-class NouvelobsScrapper(Scrapper):
+from utils import add_record
+
+
+class NouvelobsStaticScrapper(StaticScrapper):
     def __init__(self, url, keywords):
         url_args = {'referer': 'nouvelobs', 'q': keywords}
         super().__init__(url, keywords, url_args, callback=self.parse_search_result)
 
-    def parse_search_result(self, url, page_content):
+    def parse_search_result(self, url, page_content, keywords):
         print("nobs received {}".format(len(page_content)))
         soup = BeautifulSoup(page_content, "lxml")
         # look for result links
@@ -14,10 +17,10 @@ class NouvelobsScrapper(Scrapper):
         print("found {} results on nobs".format(len(resdivs)))
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href')
-            sc = Scrapper(lnk, callback=self.parse_page_content)
+            sc = StaticScrapper(lnk, keywords=keywords,callback=self.parse_page_content)
             sc.start()
 
-    def parse_page_content(self,url, page_content):
+    def parse_page_content(self,url, page_content,keywords):
         out_text = []
         soup = BeautifulSoup(page_content, "lxml")
         content_p = soup.find_all('div', {'class': ['ObsArticle-body','flex-item-fluid']})
@@ -27,7 +30,7 @@ class NouvelobsScrapper(Scrapper):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        super().add_record(url, ''.join(out_text))
+        add_record(keywords,url, ''.join(out_text))
 
 
 

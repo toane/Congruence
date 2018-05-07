@@ -16,19 +16,11 @@ digraph G {
  label = "{Thread|run}"
 ]
 
-"NouvelobsScrapper"[
-    label="{NouvelobsScrapper| parse_search_result \l parse_page_content}"
+"StaticScrapper"[
+    label="{StaticScrapper| parse_search_result \l parse_page_content}"
 ]
 
-"CNNScrapper"[
-    label="{CNNScrapper| parse_search_result \l parse_page_content}"
-]
-
-"LiberationScrapper"[
-    label="{LiberationScrapper| parse_search_result \l parse_page_content}"
-]
-
-"JSScrapper" -> "StaticScrapper"
+"JSScrapper" -> "Thread"
 "StaticScrapper" -> "Thread"
 "CNNScrapper" -> "JSScrapper"
 "NouvelobsScrapper" -> "StaticScrapper"
