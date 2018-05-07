@@ -1,18 +1,19 @@
-from LiberationScrapper import LiberationScrapper
-from NouvelobsScrapper import NouvelobsScrapper
-from FigaroScrapper import FigaroScrapper
-from VingtMinutesScrapper import VingtMinutesScrapper
+#!/usr/bin/python3
+from LiberationScrapper import LiberationStaticScrapper
+from NouvelobsScrapper import NouvelobsStaticScrapper
+from FigaroScrapper import FigaroStaticScrapper
+from CNNScrapper import CNNScrapper
 import sys
 if __name__ == '__main__':
-    print("Python version {}".format(sys.version))
-    keywords = "cavernicole"
+    print("running on Python version {}".format(sys.version))
+    keywords = "antisemite"
     # https://recherche.nouvelobs.com/?referer=nouvelobs&q=khadafi
-    ns = NouvelobsScrapper("https://recherche.nouvelobs.com/?", keywords)
-    ls = LiberationScrapper("http://www.liberation.fr/recherche/?", keywords)
-    fs = FigaroScrapper("http://recherche.lefigaro.fr/recherche/", keywords)
-    min = VingtMinutesScrapper("https://www.20minutes.fr/search?", keywords)
-    ls.start()
-    ns.start()
+    ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords)
+    ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords)
+    fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords)
+    cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords)
+    # ls.start()
+    # ns.start()
     fs.start()
-    min.start()
+    cnn.start()
     # ls.join()

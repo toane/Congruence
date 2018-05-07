@@ -1,0 +1,44 @@
+digraph G {
+        fontsize = 8
+        rankdir = "BT"
+        dpi=200
+
+        node [
+                fontsize = 8
+                shape = "record"
+            ]
+
+  edge [
+                arrowhead = "empty"
+        ]
+
+"Thread" [
+ label = "{Thread|run}"
+]
+
+"NouvelobsScrapper"[
+    label="{NouvelobsScrapper| parse_search_result \l parse_page_content}"
+]
+
+"CNNScrapper"[
+    label="{CNNScrapper| parse_search_result \l parse_page_content}"
+]
+
+"LiberationScrapper"[
+    label="{LiberationScrapper| parse_search_result \l parse_page_content}"
+]
+
+"JSScrapper" -> "StaticScrapper"
+"StaticScrapper" -> "Thread"
+"CNNScrapper" -> "JSScrapper"
+"NouvelobsScrapper" -> "StaticScrapper"
+"LiberationScrapper" -> "StaticScrapper"
+
+  edge [
+                arrowhead = "normal"
+        ]
+
+"StaticScrapper" -> "StorageModel"
+"JSScrapper" -> "StorageModel"
+
+}
