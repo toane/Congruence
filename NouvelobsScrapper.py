@@ -1,8 +1,6 @@
 from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
-from utils import add_record
-
 
 class NouvelobsStaticScrapper(StaticScrapper):
     def __init__(self, url, keywords):
@@ -10,7 +8,7 @@ class NouvelobsStaticScrapper(StaticScrapper):
         super().__init__(url, keywords, url_args, callback=self.parse_search_result)
 
     def parse_search_result(self, url, page_content, keywords):
-        print("nobs received {}".format(len(page_content)))
+        # print("nobs received {}".format(len(page_content)))
         soup = BeautifulSoup(page_content, "lxml")
         # look for result links
         resdivs = soup.find_all('article', {'class': 'obs-resultat-article'})
@@ -26,11 +24,12 @@ class NouvelobsStaticScrapper(StaticScrapper):
         content_p = soup.find_all('div', {'class': ['ObsArticle-body','flex-item-fluid']})
         # print("parsing page {}".format(url))
         for maincnt in content_p:
+            out_text.append(maincnt.get_text())
             for parag in maincnt.find_all('p'):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        add_record(keywords,url, ''.join(out_text))
+        self.dbf.add_record(keywords, url, ''.join(out_text))
 
 
 

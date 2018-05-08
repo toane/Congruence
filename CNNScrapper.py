@@ -2,17 +2,17 @@ from JSScrapper import JSScrapper
 from bs4 import BeautifulSoup
 
 from StaticScrapper import StaticScrapper
-from utils import add_record
 
 try:
     from selenium import webdriver
 except ImportError as ie:
-    print("python: selenium module unavailable, CNN scraping disabled")
+    print("python: selenium module unavailable, CNN dynamic content scraping disabled")
 
 try:
     from selenium.common.exceptions import WebDriverException
 except ImportError:
     pass
+
 
 class CNNScrapper(JSScrapper):
     def __init__(self, url, keywords):
@@ -42,7 +42,7 @@ class CNNScrapper(JSScrapper):
         for maincnt in content_p:
             out_text.append(maincnt.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        add_record(keywords,url, ''.join(out_text))
+        self.dbf.add_record(keywords, url, ''.join(out_text))
 
 
 

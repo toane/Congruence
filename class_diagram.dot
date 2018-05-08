@@ -13,24 +13,28 @@ digraph G {
         ]
 
 "Thread" [
- label = "{Thread|run}"
+ label = "{Thread|+ run}"
 ]
 
-"StaticScrapper"[
-    label="{StaticScrapper| parse_search_result \l parse_page_content}"
+"DBFace" [
+    label = "{DBFace|+ find_with_content (str) \l+ find_with_search_term (str)}"
 ]
+
 
 "JSScrapper" -> "Thread"
 "StaticScrapper" -> "Thread"
 "CNNScrapper" -> "JSScrapper"
 "NouvelobsScrapper" -> "StaticScrapper"
 "LiberationScrapper" -> "StaticScrapper"
+"FigaroScrapper" -> "StaticScrapper"
 
   edge [
                 arrowhead = "normal"
         ]
-
-"StaticScrapper" -> "StorageModel"
-"JSScrapper" -> "StorageModel"
+"LiberationScrapper" -> "DBFace"
+"NouvelobsScrapper" -> "DBFace"
+"FigaroScrapper" -> "DBFace"
+"CNNScrapper" -> "DBFace"
+"DBFace" -> "Document"
 
 }

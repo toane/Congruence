@@ -1,8 +1,6 @@
 from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
-from utils import add_record
-
 
 class LiberationStaticScrapper(StaticScrapper):
     def __init__(self, url, keywords):
@@ -10,7 +8,7 @@ class LiberationStaticScrapper(StaticScrapper):
         super().__init__(url, keywords, url_args, callback=self.parse_search_result)
 
     def parse_search_result(self, url, page_content, keywords):
-        print("libe received {}".format(len(page_content)))
+        # print("libe received {}".format(len(page_content)))
         soup = BeautifulSoup(page_content, "lxml")
         # look for result links
         resdivs = soup.find_all('div', {'class': 'live-content-right'})
@@ -36,4 +34,4 @@ class LiberationStaticScrapper(StaticScrapper):
                 pt = parag.get_text()
                 out_text.append(pt)
         # print("read {} chars on {}".format(len(''.join(out_text)),url))
-        add_record(keywords, url, ''.join(out_text))
+        self.dbf.add_record(keywords, url, ''.join(out_text))

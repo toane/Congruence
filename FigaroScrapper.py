@@ -1,7 +1,7 @@
 from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
-from utils import add_record
+from DBFace import DBFace
 
 try:
     from urllib import quote
@@ -12,9 +12,10 @@ class FigaroStaticScrapper(StaticScrapper):
     def __init__(self, url, keywords):
         url = url+quote(keywords)
         super().__init__(url, keywords,'', callback=self.parse_search_result)
+        self.dbf = DBFace()
 
     def parse_search_result(self, url, page_content, keywords):
-        print("figaro received {}".format(len(page_content)))
+        # print("figaro received {}".format(len(page_content)))
         soup = BeautifulSoup(page_content, "lxml")
         resdivs = soup.find_all('section', {'class': ['fig-profil',\
                                                       'fig-profil-mtpd',\
@@ -57,4 +58,4 @@ class FigaroStaticScrapper(StaticScrapper):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        add_record(keywords, url, ''.join(out_text))
+        self.dbf.add_record(keywords, url, ''.join(out_text))

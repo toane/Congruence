@@ -1,4 +1,4 @@
-class StorageModel:
+class Document:
     def __init__(self, search_term, article_url, article_content, timestamp=0, weight=0, blob=None, url_hash=''):
         """
         Describes a record
@@ -12,12 +12,13 @@ class StorageModel:
         self.article_url = article_url
         self.article_content = article_content
         self.timestamp = timestamp
+        self.url_hash = url_hash
         self.weight = weight
         self.blob = blob
-        self.url_hash = url_hash
+
 
     @property
-    def mongo_value(self):
+    def json_value(self):
         # return vars(self)
         return {"search_term": self.search_term, \
                 "article_url": self.article_url,\

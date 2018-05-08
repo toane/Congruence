@@ -1,6 +1,6 @@
 from socket import gaierror
 from threading import Thread
-
+from DBFace import DBFace
 try:
     from urllib import urlencode
 except ImportError as ie:
@@ -18,6 +18,7 @@ class StaticScrapper(Thread):
         self.callback = callback
         self.url_args = url_args
         self.keywords = keywords
+        self.dbf = DBFace()
 
     def run(self):
         try:
