@@ -14,6 +14,7 @@ class LiberationStaticScrapper(StaticScrapper):
         resdivs = soup.find_all('div', {'class': 'live-content-right'})
         print("found {} results on libe".format(len(resdivs)))
         for i in resdivs:
+            # TODO detecter les url style http: // www.liberation.frhttp: // next.liberation.fr / arts / 2018 / 05 / 0
             lnk = i.find_all('a')[0].get('href') #TODO si url trouvee complete, ne pas ajouter www.liberation.fr
             lnktxt = i.get_text()
             sc = StaticScrapper("http://www.liberation.fr" + lnk, keywords=keywords, callback=self.parse_page_content)

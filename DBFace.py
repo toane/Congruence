@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, TEXT
 from Document import Document
 import hashlib
 import codecs
@@ -13,13 +13,16 @@ class DBFace:
         client = MongoClient('localhost', 27018)
         db = client.mdb
         self.coll = db.articol
-        #TODO verifier si text index, en creer un si besoin
-        # db.articol.createIndex({article_content:"text"})
+        content_col="article_content"
+        mongo_idx_name = '_'.join([content_col,"text"])
+        if mongo_idx_name not in db.articol.index_information().keys():
+            print("db: creating text index on article_content")
+            db.articol.create_index([("article_content", TEXT)])
 
-    def get_hash(self, url):
+    def get_hash(self, url: str):
         return hashlib.md5(url.encode('utf-8')).hexdigest()
 
-    def write_file(self, url, content):
+    def write_file(self, url:str, content:str):
         if len(content) > 0:  # dont write empty strings
             with codecs.open(os.path.join("scrapped_data", self.get_hash(url) + '.txt').encode('utf-8'), 'w',
                              encoding='utf-8') as f:
@@ -44,7 +47,7 @@ class DBFace:
         for doc in self.coll.find({"$text": {"$search": search_term}}):
             d = self.build_doc(doc)
             present.append(d)
-        print("found {} document{} containing text {}".format(len(present),'' if len(present) == 1 else 's',search_term))
+        print("found {} document{} containing text {}".format(len(present),'' if len(present) <= 1 else 's',search_term))
         return present
 
     def find_with_search_term(self, search_term: str) -> List[Document]:
@@ -57,7 +60,7 @@ class DBFace:
         for doc in self.coll.find({"search_term": search_term}):
             d = self.build_doc(doc)
             present.append(d)
-        print("found {} document{} originating from keyword {}".format(len(present), '' if len(present) == 1 else 's', search_term))
+        print("found {} document{} originating from keyword {}".format(len(present), '' if len(present) <= 1 else 's', search_term))
         return present
 
     def add_record(self, search_terms: str, url: str, content: str) -> List[Document]:

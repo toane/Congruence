@@ -2,12 +2,11 @@ from JSScrapper import JSScrapper
 from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
-from utils import add_record
 
 try:
     from selenium import webdriver
 except ImportError as ie:
-    print("python: selenium module unavailable, CNN scraping disabled")
+    print("python: selenium module unavailable, 20min dynamic content scraping disabled")
 
 try:
     from selenium.common.exceptions import WebDriverException
@@ -47,4 +46,4 @@ class VingtMinutesScrapper(JSScrapper):
             for parag in maincnt.find_all('p'):
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        add_record(keywords, url, ''.join(out_text))
+        self.dbf.add_record(keywords, url, ''.join(out_text))
