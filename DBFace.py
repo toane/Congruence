@@ -10,19 +10,22 @@ from typing import List
 class DBFace:
 
     def __init__(self):
-        client = MongoClient('localhost', 27018)
-        db = client.mdb
-        self.coll = db.articol
-        content_col="article_content"
-        mongo_idx_name = '_'.join([content_col,"text"])
-        if mongo_idx_name not in db.articol.index_information().keys():
-            print("db: creating text index on article_content")
-            db.articol.create_index([("article_content", TEXT)])
+        try:
+            client = MongoClient("mongodb://localhost", 27017, serverSelectionTimeoutMS=5000)
+            db = client.mdb
+            self.coll = db.articol
+            content_col = "article_content"
+            mongo_idx_name = '_'.join([content_col,"text"])
+            if mongo_idx_name not in db.articol.index_information().keys():
+                print("db: creating text index on article_content")
+                db.articol.create_index([("article_content", TEXT)])
+        except ServerSelectionTimeoutError as sste:
+            print("pymongo couldn't connect to mongodb server")
 
     def get_hash(self, url: str):
         return hashlib.md5(url.encode('utf-8')).hexdigest()
 
-    def write_file(self, url:str, content:str):
+    def write_file(self, url: str, content: str):
         if len(content) > 0:  # dont write empty strings
             with codecs.open(os.path.join("scrapped_data", self.get_hash(url) + '.txt').encode('utf-8'), 'w',
                              encoding='utf-8') as f:
@@ -63,23 +66,25 @@ class DBFace:
         print("found {} document{} originating from keyword {}".format(len(present), '' if len(present) <= 1 else 's', search_term))
         return present
 
-    def add_record(self, search_terms: str, url: str, content: str) -> List[Document]:
+    def add_record(self, search_terms: str, url: str, content: str, lang: str='') -> List[Document]:
         """
         Adds a Document to the db
+        :param lang:
         :param search_terms:
         :param url:
         :param content:
         :return:
         """
+
         url_hash = self.get_hash(url)
 
         # check if article is already archived
         if self.coll.find({"url_hash": url_hash}).count() > 0:
             print("article {} already present in db, skipping".format(url))
         elif len(content) == 0:
-            print("article length = 0 chars (failed scrapping ?), skipping".format(url))
+            print("scraped text length = 0 for {}, skipping".format(url))
         else:
-            new_record = Document(search_terms, url, content, url_hash=url_hash)
+            new_record = Document(search_terms, url, content, url_hash=url_hash, lang=lang)
             print('adding article {}, length {}'.format(url, len(content)))
             try:
                 self.coll.insert_one(new_record.json_value)

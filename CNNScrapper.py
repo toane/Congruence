@@ -17,6 +17,7 @@ except ImportError:
 class CNNScrapper(JSScrapper):
     def __init__(self, url, keywords):
         self.url_args = {'size': '10', 'q': keywords}
+        self.lang = "en"
         super().__init__(url, keywords, self.url_args, callback=self.parse_search_result, js=True)
 
     def parse_search_result(self, full_url_query, keywords):
@@ -32,8 +33,8 @@ class CNNScrapper(JSScrapper):
                 # download static html page content
                 jss = StaticScrapper(url, keywords=keywords,callback=self.parse_page_content)
                 jss.start()
-        except WebDriverException as wde:
-            print(wde)
+        except NameError as ne:
+            print("python: no webdriver available")
 
     def parse_page_content(self,url, page_content,keywords):
         out_text = []
@@ -42,7 +43,7 @@ class CNNScrapper(JSScrapper):
         for maincnt in content_p:
             out_text.append(maincnt.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        self.dbf.add_record(keywords, url, ''.join(out_text))
+        self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)
 
 
 

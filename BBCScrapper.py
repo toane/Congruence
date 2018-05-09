@@ -7,10 +7,12 @@ try:
 except ImportError as ie:
     from urllib.parse import urlencode, quote
 
+
 class BBCScrapper(StaticScrapper):
     def __init__(self, url, keywords, debug=False):
         url_args = {'q': keywords}
         self.debug = debug
+        self.lang = "en"
         super().__init__(url, keywords, url_args, callback=self.parse_search_result)
 
     def parse_search_result(self, url, page_content, keywords):
@@ -36,5 +38,5 @@ class BBCScrapper(StaticScrapper):
                 pt = parag.get_text()
                 out_text.append(pt)
 
-        print("read {} chars on {}".format(len(''.join(out_text)), url))
-        self.dbf.add_record(keywords, url, ''.join(out_text))
+        # print("read {} chars on {}".format(len(''.join(out_text)), url))
+        self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)

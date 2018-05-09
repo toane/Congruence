@@ -18,7 +18,7 @@ digraph G {
 
 "DBFace" [
     label = "{DBFace|+ find_with_content (str) \l+ find_with_search_term (str)}"
-]
+    ]
 
 
 "JSScrapper" -> "Thread"

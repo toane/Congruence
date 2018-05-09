@@ -26,8 +26,13 @@ class NouvelobsStaticScrapper(StaticScrapper):
         for maincnt in content_p:
             out_text.append(maincnt.get_text())
             for parag in maincnt.find_all('p'):
-                # print(parag.get_text())
                 out_text.append(parag.get_text())
+
+        content_p = soup.find_all('article', {'class': 'infos'})
+        for maincnt in content_p:
+            for parag in maincnt.find_all('p'):
+                out_text.append(parag.get_text())
+
         print("read {} chars on {}".format(len(''.join(out_text)), url))
         self.dbf.add_record(keywords, url, ''.join(out_text))
 

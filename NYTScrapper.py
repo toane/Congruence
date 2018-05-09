@@ -11,6 +11,7 @@ class NYTScrapper(StaticScrapper):
     def __init__(self, url, keywords, debug=True):
         url = url+quote(keywords)
         self.debug = debug
+        self.lang = "en"
         super().__init__(url, keywords, callback=self.parse_search_result)
 
     def parse_search_result(self, url, page_content, keywords):
@@ -41,5 +42,5 @@ class NYTScrapper(StaticScrapper):
         for maincnt in content_p:
             pt = maincnt.get_text()
             out_text.append(pt)
-        print("read {} chars on {}".format(len(''.join(out_text)), url))
-        self.dbf.add_record(keywords, url, ''.join(out_text))
+        # print("read {} chars on {}".format(len(''.join(out_text)), url))
+        self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)
