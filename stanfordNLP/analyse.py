@@ -2,7 +2,7 @@ from stanfordcorenlp import StanfordCoreNLP
 import json
 class Analyser:
     
-    def __init__(self, host = None, port = 9000):
+    def __init__(self, host = None : str, port = 9000):
         if adress == None :
             self.nlp = StanfordCoreNLP(r'bin/')
         else:
@@ -20,7 +20,7 @@ class Analyser:
     def find_common_names(self):
         pass
 
-    def proper_nouns_extractor(self, sentence, types= ["PERSON", "ORGANISATION"]):
+    def proper_nouns_extractor(self, sentence : str, types = ["PERSON", "ORGANISATION"]) -> List[(str, str)] :
         props={'annotators': 'ner', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
@@ -60,7 +60,7 @@ class Analyser:
         self.nlp.close()
 
 a = Analyser()
-r = a.proper_names_extractor("The deal was agreed betw Michel Fourniret een Iran and the five permanent members of the UN Security Council - the US, UK, France, China and Russia - plus Germany. It was struck under Mr Trump's predecessor, Barack Obama. and Jose")
+r = a.proper_nouns_extractor("The deal was agreed betw Michel Fourniret een Iran and the five permanent members of the UN Security Council - the US, UK, France, China and Russia - plus Germany. It was struck under Mr Trump's predecessor, Barack Obama. and Jose")
 
 print(r)
 
