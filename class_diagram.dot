@@ -27,6 +27,8 @@ digraph G {
 "NouvelobsScrapper" -> "StaticScrapper"
 "LiberationScrapper" -> "StaticScrapper"
 "FigaroScrapper" -> "StaticScrapper"
+"NYTScrapper" -> "StaticScrapper"
+"BBCScrapper" -> "StaticScrapper"
 
   edge [
                 arrowhead = "normal"
