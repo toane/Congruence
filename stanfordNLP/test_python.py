@@ -8,11 +8,11 @@ nlp = StanfordCoreNLP(r'/home/mathias/bigdata/projet/Congruence/stanfordNLP/bin'
 
 # ou
 # avec coreNLP en fr
-# nlp = StanfordCoreNLP(r'/home/mathias/bigdata/projet/Congruence/stanfordNLP/bin', lang="fr")
+# nlp_fr = StanfordCoreNLP(r'/home/mathias/bigdata/projet/Congruence/stanfordNLP/bin', lang="fr")
 
 # ou 
 # accès à un serveur
-# nlp = StanfordCoreNLP('http://localhost', port=9000)
+# nlp_srv = StanfordCoreNLP('http://localhost', port=9000)
 
 
 
@@ -26,3 +26,11 @@ nlp.ner(sentence)
 nlp.pos_tag(sentence)
 # [('Hello', 'UH'), ('Mrs.', 'NNP'), ('Michu', 'NNP'), (',', ','), ('are', 'VBP'), ('you', 'PRP'), ('going', 'VBG'), ('to', 'TO'), ('go', 'VB'), ('to', 'TO'), ('the', 'DT'), ('wonderfull', 'JJ'), ('city', 'NN'), ('of', 'IN'), ('Vladivostok', 'NNP'), ('today', 'NN'), ('?', '.')]
 
+
+
+import timeit
+
+start = timeit.timeit()
+print "hello"
+end = timeit.timeit()
+print end - start
