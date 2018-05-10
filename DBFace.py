@@ -1,15 +1,19 @@
-from pymongo import MongoClient, TEXT
-from Document import Document
+from random import randrange
+
+from pymongo import MongoClient, TEXT, ReturnDocument
+
+from Singleton import Singleton
+from Article import Article
 import hashlib
 import codecs
 import os
 from pymongo.errors import ServerSelectionTimeoutError
-from typing import List
+from typing import List, Dict
 
-
-class DBFace:
+class DBFace(metaclass=Singleton):
 
     def __init__(self):
+        print("new DBFace instance {}".format(id(self)))
         try:
             client = MongoClient("mongodb://localhost", 27017, serverSelectionTimeoutMS=5000)
             db = client.mdb
@@ -25,48 +29,90 @@ class DBFace:
     def get_hash(self, url: str):
         return hashlib.md5(url.encode('utf-8')).hexdigest()
 
+    def do_nothing(self, func):
+        pass
+
     def write_file(self, url: str, content: str):
+        """
+        writes content to a file with the url's hash as filename
+        :param url:
+        :param content:
+        :return:
+        """
         if len(content) > 0:  # dont write empty strings
             with codecs.open(os.path.join("scrapped_data", self.get_hash(url) + '.txt').encode('utf-8'), 'w',
                              encoding='utf-8') as f:
                 f.write(content)
 
     def build_doc(self, data):
-        return Document(data['search_term'],
-                        data['article_url'],
-                        data['article_content'],
-                        data['timestamp'],
-                        data['weight'],
-                        data['blob'],
-                        data['url_hash'])
+        return Article(data['search_term'],
+                       data['article_url'],
+                       data['article_content'],
+                       data['timestamp'],
+                       data['weight'],
+                       data['blob'],
+                       data['url_hash'])
 
-    def find_with_content(self, search_term: str) -> List[Document]:
+    def find_with_content(self, search_term: str) -> List[Article]:
         """
         returns Document containing search_term
         :param search_term:
         :return: list[Document]
         """
-        present = []
-        for doc in self.coll.find({"$text": {"$search": search_term}}):
-            d = self.build_doc(doc)
-            present.append(d)
-        print("found {} document{} containing text {}".format(len(present),'' if len(present) <= 1 else 's',search_term))
-        return present
+        # search_term: TODO doubles quote autour ou pas ? Pour recherche exacte
+        return [self.build_doc(d) for d in self.coll.find({"$text": {"$search": search_term}})]
 
-    def find_with_search_term(self, search_term: str) -> List[Document]:
+    def find_with_search_term(self, search_term: str) -> List[Article]:
         """
         returns a list of Document where article_content contains search_term
         :param search_term:
         :return: list[Document]
         """
-        present = []
-        for doc in self.coll.find({"search_term": search_term}):
-            d = self.build_doc(doc)
-            present.append(d)
-        print("found {} document{} originating from keyword {}".format(len(present), '' if len(present) <= 1 else 's', search_term))
-        return present
+        return [self.build_doc(d) for d in self.coll.find({"search_term": search_term})]
 
-    def add_record(self, search_terms: str, url: str, content: str, lang: str='') -> List[Document]:
+    def find_tokenifiable(self) -> List[Dict]:
+        """
+        returns a list of records with an empty tokenified field
+        :return:
+        """
+        return self.coll.find({"tokenified": None})
+
+    def batch_tokenify(self, records):
+        """
+        runs content tokenization for all records
+        :param records:
+        :return:
+        """
+        n = records.count()
+        print("computing tokenization for {} document{}".format(n, '' if n <=1 else 's'))
+        for r in records:
+            cnt = r['article_content']
+            id = r['_id']
+            l = randrange(len(cnt))
+            u = randrange(len(cnt))
+            if l > u:
+                l, u = u, l
+            nv = cnt[l:u]
+            # TODO tokenizer pour de vrai
+            print('update tokenified field for {} (text length {}) with\n{}'.format(id, len(cnt),nv))
+            self.update_field(id,nv,'tokenified')
+
+    def update_field(self,_id, value: '', field: str='tokenified'):
+        """
+        updates field with value on record matching _id
+        :param _id:
+        :param field:
+        :param value:
+        :return:updated record
+        """
+        d = self.coll.find_one_and_update(
+            {'_id': _id},
+            {'$set': {field: value}},
+            return_document=ReturnDocument.AFTER
+        )
+        return d
+
+    def add_record(self, search_terms: str, url: str, content: str, lang: str='') -> List[Article]:
         """
         Adds a Document to the db
         :param lang:
@@ -84,7 +130,7 @@ class DBFace:
         elif len(content) == 0:
             print("scraped text length = 0 for {}, skipping".format(url))
         else:
-            new_record = Document(search_terms, url, content, url_hash=url_hash, lang=lang)
+            new_record = Article(search_terms, url, content, url_hash=url_hash, lang=lang)
             print('adding article {}, length {}'.format(url, len(content)))
             try:
                 self.coll.insert_one(new_record.json_value)

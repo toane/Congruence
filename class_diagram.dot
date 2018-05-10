@@ -29,6 +29,8 @@ digraph G {
 "FigaroScrapper" -> "StaticScrapper"
 "NYTScrapper" -> "StaticScrapper"
 "BBCScrapper" -> "StaticScrapper"
+"DBFace" -> "Singleton"
+"Analyser" -> "Singleton"
 
   edge [
                 arrowhead = "normal"
@@ -38,5 +40,6 @@ digraph G {
 "FigaroScrapper" -> "DBFace"
 "CNNScrapper" -> "DBFace"
 "DBFace" -> "Document"
+
 
 }

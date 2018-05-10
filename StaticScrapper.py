@@ -8,7 +8,6 @@ except ImportError as ie:
 from urllib3 import HTTPSConnectionPool, make_headers, exceptions
 import requests
 
-
 class StaticScrapper(Thread):
     def __init__(self, url, keywords=None, url_args=None, callback=None):
         Thread.__init__(self)
@@ -19,6 +18,9 @@ class StaticScrapper(Thread):
         self.url_args = url_args
         self.keywords = keywords
         self.dbf = DBFace()
+
+    def parse_search_result(self, url, page_content, keywords):
+        raise NotImplementedError
 
     def run(self):
         try:

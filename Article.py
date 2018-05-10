@@ -1,6 +1,6 @@
-class Document:
+class Article:
     def __init__(self, search_term, article_url, article_content, lang='', current_search_term='',
-                 wordcount=None,tokenified=None,timestamp=0, weight=0, blob=None, url_hash=''):
+                 wordcount=None,tokenified=None,timestamp=0, weight=0, blob=None, url_hash='', mongo_id=None):
         """
         Describes a record
         :param search_term: the search term
@@ -20,6 +20,7 @@ class Document:
         self.weight = weight
         self.blob = blob
         self.lang = lang
+        self.mongo_id = mongo_id
 
 
     @property
