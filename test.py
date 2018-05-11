@@ -8,7 +8,10 @@ from NYTScrapper import NYTScrapper
 from BBCScrapper import BBCScrapper
 from DBFace import DBFace
 import sys
-from stanfordNLP.analyse import Analyser
+from analyse import Analyser
+
+import pymongo
+
 
 """
 1) lancer les scrappers sur un mot cle
