@@ -15,7 +15,7 @@ class Analyser(metaclass=Singleton):
       
     # renvoie une liste de tuples, contenant les noms propres et les noms
     # communs, annotés 
-    def get_tokens(self, sentence: str) -> List[Tuple]:
+    def get_tokens(self, sentence: str) -> List[(str, str)]:
         """ renvoie une liste de tuples, contenant les noms propres et les noms communs, annotés
         de leur type : PERSON, COUNTRY, ... pour les noms propres, et TOPIC pour les noms communs """
         
