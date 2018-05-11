@@ -37,7 +37,7 @@ class BBCScrapper(StaticScrapper):
         for maincnt in content_p:
             for parag in maincnt.find_all('p'):
                 pt = parag.get_text()
-                out_text.append(pt)
+                out_text.append(" " + pt)
 
         # print("read {} chars on {}".format(len(''.join(out_text)), url))
         self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)

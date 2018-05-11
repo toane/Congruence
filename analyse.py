@@ -36,7 +36,7 @@ class Analyser(metaclass=Singleton):
         contenant les noms propres et les noms communs, annotés de leur type : PERSON, COUNTRY, ... 
         pour les noms propres, et TOPIC pour les noms communs (avec répétition) 
         """
-        sentences = text.split(".")
+        sentences = self.advanced_sentences_split(text)
         
         pns = map(lambda s : self.get_proper_names(s), sentences)
         nns = map(lambda s : (map(lambda n : (n, 'TOPIC'), self.get_names(s))), sentences)

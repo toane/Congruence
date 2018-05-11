@@ -24,20 +24,29 @@ def thread_accumulator(thread):
     print("started thread {}".format(thread))
     threads.append(thread)
 
-def run_scrappers(keywords):
-    ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, thread_accumulator)
-    nys = NYTScrapper("https://www.nytimes.com/search/", keywords, thread_accumulator)
-    bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, thread_accumulator)
-    ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, thread_accumulator)
-    fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, thread_accumulator)
-    cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords)
+def run_scrappers(keywords, langs=['en']):
+
+    if 'fr' in langs:
+        ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, thread_accumulator)
+        ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, thread_accumulator)
+        fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, thread_accumulator)
+        
+        ls.start()
+        ns.start()
+        fs.start()
+        
+
+    if 'en' in langs:
+        nys = NYTScrapper("https://www.nytimes.com/search/", keywords, thread_accumulator)
+        bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, thread_accumulator)
+        cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords)
+        
+        nys.start()
+        bbs.start()
+        cnn.start()
+        
     # # twentymin = VingtMinutesScrapper("https://www.20minutes.fr/search?", keywords)
     #
-    bbs.start()
-    nys.start()
-    ls.start()
-    ns.start()
-    fs.start()
     # cnn.start()
     for t in threads:
         t.join()
@@ -50,6 +59,8 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
 
+
+    print("running search for keywords {}".format(keywords))
     run_scrappers(keywords)
 
     dbf = DBFace()

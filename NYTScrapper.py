@@ -45,7 +45,7 @@ class NYTScrapper(StaticScrapper):
         for maincnt in content_p:
             for parag in maincnt.find_all('p'):
                 pt = parag.get_text()
-                out_text.append(pt)
+                out_text.append(" " + pt)
 
         tagtype = "p"
         tag_attr = "class"
