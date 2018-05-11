@@ -18,4 +18,4 @@ class Search:
                 "current_search_term": self.current_search_term, \
                 "articles_ids" : self.articles_ids, \
                 "global_wordcount" : self.global_wordcount
-                }
+        }
