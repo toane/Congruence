@@ -1,5 +1,6 @@
 from stanfordcorenlp import StanfordCoreNLP
 import json
+from itertools import chain
 from typing import List, Tuple
 
 from Singleton import Singleton
@@ -12,51 +13,70 @@ class Analyser(metaclass=Singleton):
             self.nlp = StanfordCoreNLP(r'stanfordNLP/bin')
         else:
             self.nlp = StanfordCoreNLP(host, port=port)
+      
+    # renvoie une liste de tuples, contenant les noms propres et les noms
+    # communs, annotés 
+    def get_tokens(self, text: str) -> List[Tuple]:
+        """ 
+        sépare le text en phrase, puis analyse chaque phrase et  renvoie une liste de tuples, 
+        contenant les noms propres et les noms communs, annotés de leur type : PERSON, COUNTRY, ... 
+        pour les noms propres, et TOPIC pour les noms communs (avec répétition) 
+        """
+
+        sentences = text.split(".")
         
-    def analyse(self, text_raw: str):
-        text = text_raw.split(".")
-
-        ner = map( lambda sentence: self.nlp.ner(sentence), text)
-        pos_tag = map( lambda sentence: self.nlp.pos_tag(sentence), text)
-
-    def find_proper_names(self):
-        pass
-    
-    def find_common_names(self):
-        pass
-
-    
-    def get_tokens(self, sentence: str) -> List[Tuple]:
-        pn = self.proper_names_extractor(sentence)
-        nn = map(lambda n : (n , 'TOPIC'), self.names_extractor(sentence))
-        return pn + list(nn)
+        pns = map(lambda s : self.get_proper_names(s), sentences)
+        nns = map(lambda s : (map(lambda n : (n, 'TOPIC'), self.get_names(s))), sentences)
+        res = chain.from_iterable( chain(pns, nns))
+        return list(res)
         
 
-
-    def names_extractor(self, sentence : str) -> List[str] :
+    def get_names(self, sentence : str) -> List[str] :
+        """ 
+        renvoie la liste des noms communs 
+        """
+        
         props={'annotators': 'lemma', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
         out_1 = out['sentences']
-        out_2 = out_1[0]
-        out_3 = out_2['tokens']
-        res = [t['lemma'] for t in out_3 if t['pos'] == 'NN']
-        return res
+
+        if len(out_1) > 0:
+            out_2 = out_1[0]
+            out_3 = out_2['tokens']
+            res = [t['lemma'] for t in out_3 if t['pos'] == 'NN']
+            return res
+        else:
+            return []
         
-    def proper_names_extractor(self, sentence: str, excluded_types=[]) -> List[Tuple]:
+    def get_proper_names(self, sentence: str, excluded_types=[]) -> List[Tuple]:
+        """ 
+        renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) 
+        """
+        
         props={'annotators': 'ner', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
+
         out_1 = out['sentences']
-        out_2 = out_1[0]
-        out_3 = out_2['entitymentions']
+        if len(out_1) > 0:
+            out_2 = out_1[0]
+            out_3 = out_2['entitymentions']
+            
+            res = [(v['text'], v['ner']) for v in out_3 if v['ner'] not in excluded_types]
+            return res
+        else:
+            return []
 
-        res = [(v['text'], v['ner']) for v in out_3 if v['ner'] not in excluded_types]
-        return res
 
-
-    # 
+    
     def proper_nouns_extractor_old(self, sentence: str):
+        """ 
+        utile si on veut recoller ensemble des noms composés de plusieurs mots.
+        ne marche pour l'instant que pour recoller les personnes, mais on peut l'étendre
+        aux autres sujets 
+        """
+
         tokens = self.nlp.ner(sentence)
         print("analysing : ", tokens)
         
