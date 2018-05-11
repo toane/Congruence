@@ -34,7 +34,7 @@ class Analyser(metaclass=Singleton):
         out_2 = out_1[0]
         out_3 = out_2['entitymentions']
 
-        res = [(v['text'], v['ner']) for v in out_3 if v['ner'] != 'O']
+        res = [(v['text'], v['ner']) for v in out_3]
         return res
 
     
