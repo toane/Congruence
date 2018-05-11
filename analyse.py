@@ -27,28 +27,35 @@ class Analyser(metaclass=Singleton):
 
     
     def get_tokens(self, sentence: str) -> List[Tuple]:
-        props={'annotators': 'ner', 'outputFormat':'json'}
+        pn = self.proper_names_extractor(sentence)
+        nn = map(lambda n : (n , 'TOPIC'), self.names_extractor(sentence))
+        return pn + list(nn)
+        
+
+
+    def names_extractor(self, sentence : str) -> List[str] :
+        props={'annotators': 'lemma', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
         out_1 = out['sentences']
         out_2 = out_1[0]
-        out_3 = out_2['entitymentions']
-
-        res = [(v['text'], v['ner']) for v in out_3]
-        return res
-
-    
-    def proper_nouns_extractor_selected(self, sentence: str, types=["PERSON", "ORGANISATION"]) -> List[Tuple]:
-        props={'annotators': 'ner', 'outputFormat':'json'}
-        out_json = self.nlp.annotate(sentence, properties=props)
-        out = json.loads(out_json)
-        out_1 = out['sentences']
-        out_2 = out_1[0]
-        out_3 = out_2['entitymentions']
-
-        res = [(v['text'], v['ner']) for v in out_3 if v['ner'] in types]
+        out_3 = out_2['tokens']
+        res = [t['lemma'] for t in out_3 if t['pos'] == 'NN']
         return res
         
+    def proper_names_extractor(self, sentence: str, excluded_types=[]) -> List[Tuple]:
+        props={'annotators': 'ner', 'outputFormat':'json'}
+        out_json = self.nlp.annotate(sentence, properties=props)
+        out = json.loads(out_json)
+        out_1 = out['sentences']
+        out_2 = out_1[0]
+        out_3 = out_2['entitymentions']
+
+        res = [(v['text'], v['ner']) for v in out_3 if v['ner'] not in excluded_types]
+        return res
+
+
+    # 
     def proper_nouns_extractor_old(self, sentence: str):
         tokens = self.nlp.ner(sentence)
         print("analysing : ", tokens)
@@ -76,9 +83,14 @@ class Analyser(metaclass=Singleton):
         self.nlp.close()
 
 
-# a = Analyser()
-# r = a.proper_nouns_extractor("The deal was agreed betw Michel Fourniret een Iran and the five permanent members of the UN Security Council - the US, UK, France, China and Russia - plus Germany. It was struck under Mr Trump's predecessor, Barack Obama. and Jose")
-#
-# print(r)
-#
-# a.quit()
+if __name__ == "__main__":
+    
+    a = Analyser(host = "http://localhost", port = 9000)
+    s1 = "The deal was agreed betw Michel Fourniret een Iran and the five permanent members of the UN Security Council - the US, UK, France, China and Russia - plus Germany. It was struck under Mr Trump's predecessor, Barack Obama. and Jose"
+
+    s2 = """The component issue, first reported by Spiegel Online on Tuesday, centers on a so-called \"grease nipple\" that is part of the system that cools the wingtip pods that house elements of the self-protection system, which was designed by BAE Systems."""
+    
+    s3 = """The four-times Tour de France winner is fighting to clear his name after a test at the Vuelta revealed him to have double the permitted limit of the asthma medication Salbutamol in his system."""
+
+    print(a.get_tokens(s1))
+    print(a.get_tokens(s2))
