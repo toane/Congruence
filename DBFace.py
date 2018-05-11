@@ -98,8 +98,11 @@ class DBFace(metaclass=Singleton):
         for r in records:
             print('running tokenizer on {} (keyword {})'.format(r['article_url'], r['search_term']))
             tknis = analyser.get_tokens(r['article_content'])
-            self.update_field(r['_id'],tknis,'tokenified')
-
+            tknis_wc = analyser.tokencount(tknis)
+            
+            self.update_field(r['_id'],dict(tknis),'tokenified')
+            self.update_field(r['_id'], dict(tknis_wc), 'wordcount')
+            
     def update_field(self,_id, value: '', field: str='tokenified'):
         """
         updates field with value on record matching _id

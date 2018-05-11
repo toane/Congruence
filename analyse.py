@@ -1,6 +1,6 @@
 from stanfordcorenlp import StanfordCoreNLP
 import json
-from itertools import chain, tee
+from itertools import chain, tee, groupby
 from typing import List, Tuple
 
 from Singleton import Singleton
@@ -29,7 +29,13 @@ class Analyser(metaclass=Singleton):
 
         res = map(make_sentence, sentences_raw['sentences'])
         return res
-            
+
+    def tokencount(self, tokens):
+        sorted_tokens = sorted(tokens)
+        grouped_tokens = groupby(sorted_tokens)
+        res = map(lambda item : (item[0][0], (item[0][1], sum( 1 for x in item[1]))), grouped_tokens)
+        return list(res)
+        
     def get_tokens(self, text: str) -> List[Tuple]:
         """ 
         sépare le text en phrase, puis analyse chaque phrase et  renvoie une liste de tuples, 
@@ -67,7 +73,7 @@ class Analyser(metaclass=Singleton):
         else:
             return []
         
-    def get_proper_names(self, sentence: str, excluded_types=['NUMBER', 'ORDINAL']) -> List[Tuple]:
+    def get_proper_names(self, sentence: str, excluded_types=['NUMBER', 'ORDINAL', 'MONEY']) -> List[Tuple]:
         """ 
         renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) 
         """
