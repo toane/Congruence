@@ -1,5 +1,6 @@
 from stanfordcorenlp import StanfordCoreNLP
 import json
+from itertools import chain
 from typing import List, Tuple
 
 from Singleton import Singleton
@@ -15,15 +16,19 @@ class Analyser(metaclass=Singleton):
       
     # renvoie une liste de tuples, contenant les noms propres et les noms
     # communs, annotés 
-    def get_tokens(self, sentence: str) -> List[(str, str)]:
+    def get_tokens(self, text: str) -> List[Tuple]:
         """ 
-        renvoie une liste de tuples, contenant les noms propres et les noms communs, annotés
-        de leur type : PERSON, COUNTRY, ... pour les noms propres, et TOPIC pour les noms communs 
+        sépare le text en phrase, puis analyse chaque phrase et  renvoie une liste de tuples, 
+        contenant les noms propres et les noms communs, annotés de leur type : PERSON, COUNTRY, ... 
+        pour les noms propres, et TOPIC pour les noms communs (avec répétition) 
         """
+
+        sentences = text.split(".")
         
-        pn = self.proper_names_extractor(sentence)
-        nn = map(lambda n : (n , 'TOPIC'), self.names_extractor(sentence))
-        return pn + list(nn)
+        pns = map(lambda s : self.get_proper_names(s), sentences)
+        nns = map(lambda s : (map(lambda n : (n, 'TOPIC'), self.get_names(s))), sentences)
+        res = chain.from_iterable( chain(pns, nns))
+        return list(res)
         
 
     def get_names(self, sentence : str) -> List[str] :
@@ -35,12 +40,16 @@ class Analyser(metaclass=Singleton):
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
         out_1 = out['sentences']
-        out_2 = out_1[0]
-        out_3 = out_2['tokens']
-        res = [t['lemma'] for t in out_3 if t['pos'] == 'NN']
-        return res
+
+        if len(out_1) > 0:
+            out_2 = out_1[0]
+            out_3 = out_2['tokens']
+            res = [t['lemma'] for t in out_3 if t['pos'] == 'NN']
+            return res
+        else:
+            return []
         
-    def get_proper_names(self, sentence: str, excluded_types=[]) -> List[(str, str)]:
+    def get_proper_names(self, sentence: str, excluded_types=[]) -> List[Tuple]:
         """ 
         renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) 
         """
@@ -48,12 +57,16 @@ class Analyser(metaclass=Singleton):
         props={'annotators': 'ner', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
-        out_1 = out['sentences']
-        out_2 = out_1[0]
-        out_3 = out_2['entitymentions']
 
-        res = [(v['text'], v['ner']) for v in out_3 if v['ner'] not in excluded_types]
-        return res
+        out_1 = out['sentences']
+        if len(out_1) > 0:
+            out_2 = out_1[0]
+            out_3 = out_2['entitymentions']
+            
+            res = [(v['text'], v['ner']) for v in out_3 if v['ner'] not in excluded_types]
+            return res
+        else:
+            return []
 
 
     
