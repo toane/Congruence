@@ -8,11 +8,12 @@ except ImportError as ie:
     from urllib.parse import urlencode, quote
 
 class NYTScrapper(StaticScrapper):
-    def __init__(self, url, keywords, debug=True):
+    def __init__(self, url, keywords, requested_by, debug=True):
+        self.requested_by = requested_by
         url = url+quote(keywords)
         self.debug = debug
         self.lang = "en"
-        super().__init__(url, keywords, callback=self.parse_search_result)
+        super().__init__(url, keywords, callback=self.parse_search_result, requested_by=requested_by)
 
     def parse_search_result(self, url, page_content, keywords):
         soup = BeautifulSoup(page_content, "lxml")
@@ -22,7 +23,7 @@ class NYTScrapper(StaticScrapper):
             # TODO manage full urls like http://query.nytimes.com/gst/abstract.html?res=990CEEDC1539E433A25757C0A9679C946196D6CF
             lnk = i.find_all('a')[0].get('href')
             lnktxt = i.get_text()
-            sc = StaticScrapper("http://www.nytimes.com" + lnk, keywords=keywords, callback=self.parse_page_content)
+            sc = StaticScrapper("http://www.nytimes.com" + lnk, keywords=keywords, callback=self.parse_page_content,requested_by=self.requested_by)
             sc.start()
 
     def parse_page_content(self, url, page_content, keywords):

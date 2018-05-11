@@ -19,33 +19,33 @@ import pymongo
 3) effectuer le calcul a partir d'une requete sur la base
 """
 
+threads=[]
+def thread_accumulator(thread):
+    print("started thread {}".format(thread))
+    threads.append(thread)
 
 def run_scrappers(keywords):
-    ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords)
-    nys = NYTScrapper("https://www.nytimes.com/search/", keywords)
-    bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords)
-    ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords)
-    fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords)
+    ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, thread_accumulator)
+    nys = NYTScrapper("https://www.nytimes.com/search/", keywords, thread_accumulator)
+    bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, thread_accumulator)
+    ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, thread_accumulator)
+    fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, thread_accumulator)
     cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords)
     # # twentymin = VingtMinutesScrapper("https://www.20minutes.fr/search?", keywords)
     #
     bbs.start()
     nys.start()
-    # ls.start()
-    # ns.start()
-    # fs.start()
-    cnn.start()
-    # ls.join()
-    # ns.join()
-    # fs.join()
-    bbs.join()
-    nys.join()
-    cnn.join()
+    ls.start()
+    ns.start()
+    fs.start()
+    # cnn.start()
+    for t in threads:
+        t.join()
 
 
 if __name__ == '__main__':
     print("running on Python version {}".format(sys.version))
-    keywords = 'confident'
+    keywords = 'magic pony'
     # si argument fourni en ligne de commande
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])

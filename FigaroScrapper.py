@@ -9,9 +9,10 @@ except ImportError as ie:
     from urllib.parse import urlencode, quote
 
 class FigaroStaticScrapper(StaticScrapper):
-    def __init__(self, url, keywords):
+    def __init__(self, url, keywords, requested_by):
+        self.requested_by = requested_by
         url = url+quote(keywords)
-        super().__init__(url, keywords,'', callback=self.parse_search_result)
+        super().__init__(url, keywords,'', callback=self.parse_search_result, requested_by=requested_by)
         self.dbf = DBFace()
 
     def parse_search_result(self, url, page_content, keywords):
@@ -24,7 +25,7 @@ class FigaroStaticScrapper(StaticScrapper):
         print("found {} results on figaro".format(len(resdivs)))
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href')
-            sc = StaticScrapper(lnk, keywords=keywords, callback=self.parse_page_content)
+            sc = StaticScrapper(lnk, keywords=keywords, callback=self.parse_page_content,requested_by=self.requested_by)
             sc.start()
 
     def parse_page_content(self,url, page_content, keywords):

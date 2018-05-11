@@ -3,9 +3,10 @@ from bs4 import BeautifulSoup
 
 
 class LiberationStaticScrapper(StaticScrapper):
-    def __init__(self, url, keywords):
+    def __init__(self, url, keywords, requested_by):
+        self.requested_by = requested_by
         url_args = {'q': keywords}
-        super().__init__(url, keywords, url_args, callback=self.parse_search_result)
+        super().__init__(url, keywords, url_args, callback=self.parse_search_result, requested_by=requested_by)
 
     def parse_search_result(self, url, page_content, keywords):
         # print("libe received {}".format(len(page_content)))
@@ -17,7 +18,7 @@ class LiberationStaticScrapper(StaticScrapper):
             # TODO detecter les url style http: // www.liberation.frhttp: // next.liberation.fr / arts / 2018 / 05 / 0
             lnk = i.find_all('a')[0].get('href')  # TODO si url trouvee complete, ne pas ajouter www.liberation.fr
             lnktxt = i.get_text()
-            sc = StaticScrapper("http://www.liberation.fr" + lnk, keywords=keywords, callback=self.parse_page_content)
+            sc = StaticScrapper("http://www.liberation.fr" + lnk, keywords=keywords, callback=self.parse_page_content,requested_by=self.requested_by)
             sc.start()
 
     def parse_page_content(self, url, page_content, keywords):
