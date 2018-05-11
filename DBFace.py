@@ -61,13 +61,15 @@ class DBFace(metaclass=Singleton):
                        tokenified = data['tokenified'],
                        mongo_id=data['_id'])
 
-    def find_with_content(self, search_term: str) -> List[Article]:
+    def find_with_content(self, search_term: str, exact=False) -> List[Article]:
         """
         returns Document containing search_term
         :param search_term:
+        :param exact: if true searches for exact string
         :return: list[Document]
         """
-        # search_term: TODO doubles quote autour ou pas ? Pour recherche exacte
+        if exact:
+            search_term = "\"" + search_term + "\""
         return [self.build_doc(d) for d in self.coll.find({"$text": {"$search": search_term}})]
 
     def find_with_search_term(self, search_term: str) -> List[Article]:
