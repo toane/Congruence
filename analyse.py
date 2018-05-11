@@ -1,6 +1,6 @@
 from stanfordcorenlp import StanfordCoreNLP
 import json
-from itertools import chain
+from itertools import chain, tee
 from typing import List, Tuple
 
 from Singleton import Singleton
@@ -36,10 +36,15 @@ class Analyser(metaclass=Singleton):
         contenant les noms propres et les noms communs, annotés de leur type : PERSON, COUNTRY, ... 
         pour les noms propres, et TOPIC pour les noms communs (avec répétition) 
         """
-        sentences = self.advanced_sentences_split(text)
+        sentences1,sentences2 = tee(self.advanced_sentences_split(text))
+        #print("sentences: \n", list(sentences3))
         
-        pns = map(lambda s : self.get_proper_names(s), sentences)
-        nns = map(lambda s : (map(lambda n : (n, 'TOPIC'), self.get_names(s))), sentences)
+        pns = map(lambda s : self.get_proper_names(s), sentences1)
+        #print("pns :\n", list(pns))
+        
+        nns = map(lambda s : (map(lambda n : (n, 'TOPIC'), self.get_names(s))), sentences2)
+        #print("nns :\n", list(nns))
+        
         res = chain.from_iterable( chain(pns, nns))
         return list(res)
         
@@ -62,7 +67,7 @@ class Analyser(metaclass=Singleton):
         else:
             return []
         
-    def get_proper_names(self, sentence: str, excluded_types=[]) -> List[Tuple]:
+    def get_proper_names(self, sentence: str, excluded_types=['NUMBER', 'ORDINAL']) -> List[Tuple]:
         """ 
         renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) 
         """
@@ -77,11 +82,13 @@ class Analyser(metaclass=Singleton):
             out_3 = out_2['entitymentions']
             
             res = [(v['text'], v['ner']) for v in out_3 if v['ner'] not in excluded_types]
-            return res
+            return self.clean_proper_names(res, excluded_types)
         else:
             return []
 
-
+    def clean_proper_names(self, proper_names_tokens, excluded_types):
+        excluded_names = ["he", "his", "she", "her"]
+        return [t for t in proper_names_tokens if t[0] not in excluded_names and t[1] not in excluded_types]
     
     def proper_nouns_extractor_old(self, sentence: str):
         """ 
