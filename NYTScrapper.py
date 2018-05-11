@@ -26,6 +26,8 @@ class NYTScrapper(StaticScrapper):
             sc = StaticScrapper("http://www.nytimes.com" + lnk, keywords=keywords, callback=self.parse_page_content,requested_by=self.requested_by)
             sc.start()
 
+
+    # TODO : ajouter un espace entre les paragraphes </p><p>
     def parse_page_content(self, url, page_content, keywords):
         out_text = []
         """

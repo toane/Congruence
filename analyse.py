@@ -13,16 +13,29 @@ class Analyser(metaclass=Singleton):
             self.nlp = StanfordCoreNLP(r'stanfordNLP/bin')
         else:
             self.nlp = StanfordCoreNLP(host, port=port)
-      
-    # renvoie une liste de tuples, contenant les noms propres et les noms
-    # communs, annotés 
+            
+    def simple_sentences_split(self, text):
+        return text.split(".")
+
+    def advanced_sentences_split(self, text):
+        props={'annotators': 'ssplit', 'outputFormat':'json'}
+        sentences_json = self.nlp.annotate(text, properties=props)
+        sentences_raw = json.loads(sentences_json)
+        
+        def make_sentence(raw_sentence):
+            raw_tokens = raw_sentence['tokens']
+            seq_tokens =  chain.from_iterable( map(lambda t : (t['originalText'], t['after']), raw_tokens))
+            return "".join(seq_tokens)
+
+        res = map(make_sentence, sentences_raw['sentences'])
+        return res
+            
     def get_tokens(self, text: str) -> List[Tuple]:
         """ 
         sépare le text en phrase, puis analyse chaque phrase et  renvoie une liste de tuples, 
         contenant les noms propres et les noms communs, annotés de leur type : PERSON, COUNTRY, ... 
         pour les noms propres, et TOPIC pour les noms communs (avec répétition) 
         """
-
         sentences = text.split(".")
         
         pns = map(lambda s : self.get_proper_names(s), sentences)
@@ -105,12 +118,18 @@ class Analyser(metaclass=Singleton):
 
 if __name__ == "__main__":
     
-    a = Analyser(host = "http://localhost", port = 9000)
+    analyser = Analyser(host = "http://localhost", port = 9000)
     s1 = "The deal was agreed betw Michel Fourniret een Iran and the five permanent members of the UN Security Council - the US, UK, France, China and Russia - plus Germany. It was struck under Mr Trump's predecessor, Barack Obama. and Jose"
 
     s2 = """The component issue, first reported by Spiegel Online on Tuesday, centers on a so-called \"grease nipple\" that is part of the system that cools the wingtip pods that house elements of the self-protection system, which was designed by BAE Systems."""
-    
-    s3 = """The four-times Tour de France winner is fighting to clear his name after a test at the Vuelta revealed him to have double the permitted limit of the asthma medication Salbutamol in his system."""
 
-    print(a.get_tokens(s1))
-    print(a.get_tokens(s2))
+    s3 = """She replaces Manhattan District Attorney Cyrus R. Vance Jr. Cuomo says he picked a replacement to avoid a possible perception of conflict. Vance objected, but says he understands. ___3:35 p.m.New York's governor and the Manhattan District Attorney are putting aside a squabble over who should be investigating sexual misconduct allegations against former Attorney General Eric Schneiderman. District Attorney Cyrus R. Vance, Jr. and Gov. Andrew Cuomo appeared at a news conference Thursday in New York City to show support for the probe. Schneiderman was accused of abuse by four women in a New Yorker article published Monday. He resigned hours later. Cuomo replaced Vance on the case with Nassau County District Attorney Madeline Singas as special prosecutor. He says the move was to avoid a possible perception of conflict."""
+
+    #print(analyser.get_tokens(s1))
+    #print(analyser.get_tokens(s2))
+
+    a = analyser.advanced_sentences_split(s3)
+    print(list(a))
+                                         
+
+    
