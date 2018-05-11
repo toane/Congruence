@@ -10,6 +10,9 @@ import os
 from pymongo.errors import ServerSelectionTimeoutError
 from typing import List, Dict
 
+from analyse import Analyser
+
+
 class DBFace(metaclass=Singleton):
 
     def __init__(self):
@@ -45,13 +48,18 @@ class DBFace(metaclass=Singleton):
                 f.write(content)
 
     def build_doc(self, data):
-        return Article(data['search_term'],
-                       data['article_url'],
-                       data['article_content'],
-                       data['timestamp'],
-                       data['weight'],
-                       data['blob'],
-                       data['url_hash'])
+        return Article(search_term=data['search_term'],
+                       current_search_term=data['current_search_term'],
+                       article_url=data['article_url'],
+                       article_content=data['article_content'],
+                       lang=data['lang'],
+                       timestamp=data['timestamp'],
+                       weight=data['weight'],
+                       blob=data['blob'],
+                       url_hash=data['url_hash'],
+                       wordcount=data['wordcount'],
+                       tokenified = data['tokenified'],
+                       mongo_id=data['_id'])
 
     def find_with_content(self, search_term: str) -> List[Article]:
         """
@@ -77,7 +85,7 @@ class DBFace(metaclass=Singleton):
         """
         return self.coll.find({"tokenified": None})
 
-    def batch_tokenify(self, records):
+    def batch_tokenify(self, records: Dict, analyser: Analyser):
         """
         runs content tokenization for all records
         :param records:
@@ -86,16 +94,9 @@ class DBFace(metaclass=Singleton):
         n = records.count()
         print("computing tokenization for {} document{}".format(n, '' if n <=1 else 's'))
         for r in records:
-            cnt = r['article_content']
-            id = r['_id']
-            l = randrange(len(cnt))
-            u = randrange(len(cnt))
-            if l > u:
-                l, u = u, l
-            nv = cnt[l:u]
-            # TODO tokenizer pour de vrai
-            print('update tokenified field for {} (text length {}) with\n{}'.format(id, len(cnt),nv))
-            self.update_field(id,nv,'tokenified')
+            print('running tokenizer on {} (keyword {})'.format(r['article_url'], r['search_term']))
+            tknis = analyser.get_tokens(r['article_content'])
+            self.update_field(r['_id'],tknis,'tokenified')
 
     def update_field(self,_id, value: '', field: str='tokenified'):
         """

@@ -22,7 +22,6 @@ class Article:
         self.lang = lang
         self.mongo_id = mongo_id
 
-
     @property
     def json_value(self):
         # return vars(self)
@@ -36,6 +35,7 @@ class Article:
                 "timestamp": self.timestamp, \
                 "url_hash": self.url_hash,\
                 "weight": self.weight,\
-                "blob": self.blob
+                "blob": self.blob,
+                "mongo_id": self.mongo_id
                 }
 
