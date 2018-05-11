@@ -53,13 +53,14 @@ if __name__ == '__main__':
     run_scrappers(keywords)
 
     dbf = DBFace()
+    analyser = Analyser('http://192.168.1.53',9000)
     fwst = dbf.find_with_search_term(keywords)
     print("found {} document{} originating from keyword {}".format(len(fwst), '' if len(fwst) <= 1 else 's', keywords))
     fwc = dbf.find_with_content(keywords)
     print("found {} document{} containing text {}".format(len(fwc), '' if len(fwc) <= 1 else 's', keywords))
     notk = dbf.find_tokenifiable()
     print("found {} tokenifiable doc{}".format(notk.count(), '' if notk.count() <= 1 else 's'))
-    dbf.batch_tokenify(notk)
+    dbf.batch_tokenify(notk, analyser)
     # print(notk.next().keys())
 
 
