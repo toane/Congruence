@@ -102,3 +102,9 @@ if __name__ == '__main__':
     #
     #     max_depth = max_depth + 1
     #
+
+
+    ##### mongo db commands
+
+    # # brouillon wordcound
+    # db.articol.aggregate([ { $match: {search_term : "magic pony"} }, { $project : { wordcount : 1} } ])

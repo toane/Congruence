@@ -100,8 +100,8 @@ class DBFace(metaclass=Singleton):
             tknis = analyser.get_tokens(r['article_content'])
             tknis_wc = analyser.tokencount(tknis)
             
-            self.update_field(r['_id'],dict(tknis),'tokenified')
-            self.update_field(r['_id'], dict(tknis_wc), 'wordcount')
+            self.update_field(r['_id'], tknis,'tokenified')
+            self.update_field(r['_id'], tknis_wc, 'wordcount')
             
     def update_field(self,_id, value: '', field: str='tokenified'):
         """
