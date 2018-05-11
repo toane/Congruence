@@ -25,7 +25,20 @@ class Analyser(metaclass=Singleton):
     def find_common_names(self):
         pass
 
-    def proper_nouns_extractor(self, sentence: str, types=["PERSON", "ORGANISATION"]) -> List[Tuple]:
+    
+    def proper_nouns_extractor(self, sentence: str) -> List[Tuple]:
+        props={'annotators': 'ner', 'outputFormat':'json'}
+        out_json = self.nlp.annotate(sentence, properties=props)
+        out = json.loads(out_json)
+        out_1 = out['sentences']
+        out_2 = out_1[0]
+        out_3 = out_2['entitymentions']
+
+        res = [(v['text'], v['ner']) for v in out_3]
+        return res
+
+    
+    def proper_nouns_extractor_selected(self, sentence: str, types=["PERSON", "ORGANISATION"]) -> List[Tuple]:
         props={'annotators': 'ner', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
