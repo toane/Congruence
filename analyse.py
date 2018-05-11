@@ -16,8 +16,10 @@ class Analyser(metaclass=Singleton):
     # renvoie une liste de tuples, contenant les noms propres et les noms
     # communs, annotés 
     def get_tokens(self, sentence: str) -> List[(str, str)]:
-        """ renvoie une liste de tuples, contenant les noms propres et les noms communs, annotés
-        de leur type : PERSON, COUNTRY, ... pour les noms propres, et TOPIC pour les noms communs """
+        """ 
+        renvoie une liste de tuples, contenant les noms propres et les noms communs, annotés
+        de leur type : PERSON, COUNTRY, ... pour les noms propres, et TOPIC pour les noms communs 
+        """
         
         pn = self.proper_names_extractor(sentence)
         nn = map(lambda n : (n , 'TOPIC'), self.names_extractor(sentence))
@@ -25,7 +27,9 @@ class Analyser(metaclass=Singleton):
         
 
     def get_names(self, sentence : str) -> List[str] :
-        """ renvoie la liste des noms communs """
+        """ 
+        renvoie la liste des noms communs 
+        """
         
         props={'annotators': 'lemma', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
@@ -37,7 +41,9 @@ class Analyser(metaclass=Singleton):
         return res
         
     def get_proper_names(self, sentence: str, excluded_types=[]) -> List[(str, str)]:
-        """ renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) """
+        """ 
+        renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) 
+        """
         
         props={'annotators': 'ner', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
@@ -52,9 +58,11 @@ class Analyser(metaclass=Singleton):
 
     
     def proper_nouns_extractor_old(self, sentence: str):
-        """ utile si on veut recoller ensemble des noms composés de plusieurs mots.
+        """ 
+        utile si on veut recoller ensemble des noms composés de plusieurs mots.
         ne marche pour l'instant que pour recoller les personnes, mais on peut l'étendre
-        aux autres sujets """
+        aux autres sujets 
+        """
 
         tokens = self.nlp.ner(sentence)
         print("analysing : ", tokens)
