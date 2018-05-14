@@ -105,3 +105,8 @@ if __name__ == '__main__':
 
     #print("running wordcount with mongo mapreduce")
     #dbf.mongo_wordcount(keywords, "super")
+
+    a = dbf.python_wordcount(keywords, "super")
+    b = dbf.compute_global_wordcount(a)
+    c = list(map(lambda wc : dbf.take_firsts(wc), b.values()))
+    print(c)

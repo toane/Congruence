@@ -55,6 +55,6 @@ class NYTScrapper(StaticScrapper):
         # print("found {} {} with {} {} on {}".format(len(content_p), tagtype, tag_attr, ' '.join(tag_attr_values), url))
         for maincnt in content_p:
             pt = maincnt.get_text()
-            out_text.append(pt)
+            out_text.append(" " + pt)
         # print("read {} chars on {}".format(len(''.join(out_text)), url))
         self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)

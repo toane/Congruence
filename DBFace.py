@@ -4,6 +4,8 @@ from pymongo import MongoClient, TEXT, ReturnDocument
 from pymongo.errors import ServerSelectionTimeoutError
 from bson.code import Code
 
+from itertools import chain, groupby
+
 from Singleton import Singleton
 from Article import Article
 import hashlib
@@ -148,8 +150,37 @@ class DBFace(metaclass=Singleton):
     def python_wordcount(self, search_term : str, result_collection : str):
         docs = self.coll.find({"search_term": search_term})
         wordcounts = [doc['wordcount'] for doc in docs]
+        chained = []
+        for article in wordcounts:
+            for item in article:
+                chained.append(item)
         
+#        chained = chain(wordcounts)
+        grouped = groupby(sorted(chained), key = lambda item : item[0])
+        #[print(item[0], list(item[1])) for item in grouped]
 
+        res = map(lambda item : (item[0], sum(map(lambda it : it[1], item[1]))), grouped)
+        return list(res)
+
+    def compute_global_wordcount(self, wordcount):
+        
+        # noms_propres = filter(lambda item : item[0][1] == "NAME", wordcount)
+        # organisations = filter(lambda item : item[0][1] == "ORGANIZATION", wordcount)
+        # noms_communs = filter(lambda item : item[0][1] == "TOPIC", wordcount)
+        
+        noms_propres =  [item for item in wordcount if  item[0][1] == "PERSON"]
+        organisations = [item for item in wordcount if  item[0][1] == "ORGANIZATION"]
+        noms_communs =  [item for item in wordcount if  item[0][1] == "TOPIC"]
+        
+        return {
+            "people" : noms_propres,
+            "orgas": organisations,
+            "nouns": noms_communs
+            }
+
+    def take_firsts(self, wordcount, n = 5):
+        return sorted(wordcount,key = lambda item: - item[1])[0:n]
+        
         
     def mongo_wordcount(self, search_term : str, result_collection : str):
         mapper = Code(
