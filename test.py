@@ -103,13 +103,5 @@ if __name__ == '__main__':
     #     max_depth = max_depth + 1
     #
 
-
-    ##### mongo db commands
-
-    # # brouillon wordcound
-    # var map = function() { for (var i = 0; i < this.wordcount.length; i++)  { emit(this.wordcount[i][0], this.wordcount[i][1][1]);} }
-    # var reduce = function(key, values) { var count = 0; values.forEach( function(v) {count += v}); return count; }
-    # ## affiche le résultat
-    # db.articol.mapReduce(map, reduce,  {out: {inline : true} })
-    # ## enregistre le résultat dans la collection wordcount (un document par mot, c'est pas tip-top)
-    # db.articol.mapReduce(map, reduce,  {out: "wordcount" })
+    #print("running wordcount with mongo mapreduce")
+    #dbf.mongo_wordcount(keywords, "super")

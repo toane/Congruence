@@ -1,13 +1,14 @@
 from random import randrange
 
 from pymongo import MongoClient, TEXT, ReturnDocument
+from pymongo.errors import ServerSelectionTimeoutError
+from bson.code import Code
 
 from Singleton import Singleton
 from Article import Article
 import hashlib
 import codecs
 import os
-from pymongo.errors import ServerSelectionTimeoutError
 from typing import List, Dict
 
 from analyse import Analyser
@@ -142,3 +143,52 @@ class DBFace(metaclass=Singleton):
                 self.coll.insert_one(new_record.json_value)
             except ServerSelectionTimeoutError as sst:
                 print(sst)
+
+
+    def python_wordcount(self, search_term : str, result_collection : str):
+        docs = self.coll.find({"search_term": search_term})
+        wordcounts = [doc['wordcount'] for doc in docs]
+        
+
+        
+    def mongo_wordcount(self, search_term : str, result_collection : str):
+        mapper = Code(
+            """
+            function() { 
+            for (var i = 0; i < this.wordcount.length; i++)  
+            { emit(this.wordcount[i][0], this.wordcount[i][1][1]);} 
+            }
+            """)
+        
+        reducer = Code(
+            """
+            function(key, values) { 
+            var count = 0; 
+            values.forEach( function(v) {count += v}); 
+            return count; 
+            }
+            """)
+
+        params = {
+            "query" : {"search_term" : search_term},
+            "out" : {
+                "replace" : result_collection
+                }
+        }
+
+        self.coll.map_reduce(mapper, reducer, out=result_collection)
+            
+    
+
+    ##### mongo db commands
+    
+    # # # # # brouillon wordcound
+    #
+    # var map = function() { for (var i = 0; i < this.wordcount.length; i++)  { emit(this.wordcount[i][0], this.wordcount[i][1][1]);} }
+    # var reduce = function(key, values) { var count = 0; values.forEach( function(v) {count += v}); return count; }
+    #
+    # ## affiche le résultat
+    # db.articol.mapReduce(map, reduce,  {out: {inline : true} })
+    # ## enregistre le résultat dans la collection wordcount (un document par mot, c'est pas tip-top)
+    # db.articol.mapReduce(map, reduce,  {out: "wordcount" })
+    

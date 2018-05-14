@@ -33,7 +33,7 @@ class Analyser(metaclass=Singleton):
     def tokencount(self, tokens):
         sorted_tokens = sorted(tokens)
         grouped_tokens = groupby(sorted_tokens)
-        res = map(lambda item : (item[0][0], (item[0][1], sum( 1 for x in item[1]))), grouped_tokens)
+        res = map(lambda item : ((item[0][0], item[0][1]), sum( 1 for x in item[1])), grouped_tokens)
         return list(res)
         
     def get_tokens(self, text: str) -> List[Tuple]:
@@ -93,7 +93,7 @@ class Analyser(metaclass=Singleton):
             return []
 
     def clean_proper_names(self, proper_names_tokens, excluded_types):
-        excluded_names = ["he", "his", "she", "her"]
+        excluded_names = ["he", "his", "she", "her", "He", "She"]
         return [t for t in proper_names_tokens if t[0] not in excluded_names and t[1] not in excluded_types]
     
     def proper_nouns_extractor_old(self, sentence: str):
