@@ -73,7 +73,7 @@ class Analyser(metaclass=Singleton):
         else:
             return []
         
-    def get_proper_names(self, sentence: str, excluded_types=['NUMBER', 'ORDINAL', 'MONEY']) -> List[Tuple]:
+    def get_proper_names(self, sentence: str, excluded_types=['NUMBER', 'ORDINAL', 'MONEY', 'PERCENT']) -> List[Tuple]:
         """ 
         renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) 
         """
