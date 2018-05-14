@@ -1,7 +1,7 @@
-from JSScrapper import JSScrapper
 from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
+from scrappers.JSScrapper import JSScrapper
 
 try:
     from selenium import webdriver
@@ -18,6 +18,7 @@ class VingtMinutesScrapper(JSScrapper):
 
     def __init__(self, url, keywords):
         url_args = {'q': keywords}
+        self.lang = "fr"
         super().__init__(url, keywords, url_args, callback=self.parse_search_result)
 
     def parse_search_result(self, full_url_query, keywords):
@@ -46,4 +47,4 @@ class VingtMinutesScrapper(JSScrapper):
             for parag in maincnt.find_all('p'):
                 out_text.append(parag.get_text())
         print("read {} chars on {}".format(len(''.join(out_text)), url))
-        self.dbf.add_record(keywords, url, ''.join(out_text))
+        self.dbf.add_record(keywords, url, ''.join(out_text),lang=self.lang)

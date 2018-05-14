@@ -1,19 +1,16 @@
-from random import randrange
-
-from pymongo import MongoClient, TEXT, ReturnDocument
-from pymongo.errors import ServerSelectionTimeoutError
-from bson.code import Code
-
-from itertools import chain, groupby
-
-from Singleton import Singleton
-from Article import Article
-import hashlib
 import codecs
+import hashlib
 import os
+from itertools import groupby
 from typing import List, Dict
 
+from model.Article import Article
+from bson.code import Code
+from pymongo import MongoClient, TEXT, ReturnDocument
+from pymongo.errors import ServerSelectionTimeoutError
+
 from analyse import Analyser
+from model.Singleton import Singleton
 
 
 class DBFace(metaclass=Singleton):
@@ -83,12 +80,16 @@ class DBFace(metaclass=Singleton):
         """
         return [self.build_doc(d) for d in self.coll.find({"search_term": search_term})]
 
-    def find_tokenifiable(self) -> List[Dict]:
+    def find_tokenifiable(self, langs: List[str]=['en']) -> List[Dict]:
         """
         returns a list of records with an empty tokenified field
+        @param lang only select documents with
         :return:
         """
-        return self.coll.find({"tokenified": None})
+        # return self.coll.find({"tokenified": None, "lang": lang})
+        return self.coll.find({"tokenified": None,"lang": {"$in": langs}})
+
+
 
     def batch_tokenify(self, records: Dict, analyser: Analyser):
         """
@@ -99,14 +100,14 @@ class DBFace(metaclass=Singleton):
         n = records.count()
         print("computing tokenization for {} document{}".format(n, '' if n <=1 else 's'))
         for r in records:
-            print('running tokenizer on {} (keyword {})'.format(r['article_url'], r['search_term']))
+            # print('running tokenizer on {} (keyword {})'.format(r['article_url'], r['search_term']))
             tknis = analyser.get_tokens(r['article_content'])
             tknis_wc = analyser.tokencount(tknis)
-            
             self.update_field(r['_id'], tknis,'tokenified')
             self.update_field(r['_id'], tknis_wc, 'wordcount')
-            
-    def update_field(self,_id, value: '', field: str='tokenified'):
+
+
+    def update_field(self, _id, value: '', field: str='tokenified'):
         """
         updates field with value on record matching _id
         :param _id:
@@ -146,7 +147,6 @@ class DBFace(metaclass=Singleton):
             except ServerSelectionTimeoutError as sst:
                 print(sst)
 
-
     def python_wordcount(self, search_term : str, result_collection : str):
         docs = self.coll.find({"search_term": search_term})
         wordcounts = [doc['wordcount'] for doc in docs]
@@ -154,12 +154,10 @@ class DBFace(metaclass=Singleton):
         for article in wordcounts:
             for item in article:
                 chained.append(item)
-        
-#        chained = chain(wordcounts)
-        grouped = groupby(sorted(chained), key = lambda item : item[0])
-        #[print(item[0], list(item[1])) for item in grouped]
 
-        res = map(lambda item : (item[0], sum(map(lambda it : it[1], item[1]))), grouped)
+        grouped = groupby(sorted(chained), key=lambda item: item[0])
+
+        res = map(lambda item: (item[0], sum(map(lambda it: it[1], item[1]))), grouped)
         return list(res)
 
     def compute_global_wordcount(self, wordcount):
@@ -179,7 +177,7 @@ class DBFace(metaclass=Singleton):
             }
 
     def take_firsts(self, wordcount, n = 5):
-        return sorted(wordcount,key = lambda item: - item[1])[0:n]
+        return sorted(wordcount,key=lambda item: - item[1])[0:n]
         
         
     def mongo_wordcount(self, search_term : str, result_collection : str):

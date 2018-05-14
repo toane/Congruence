@@ -1,9 +1,10 @@
-from stanfordcorenlp import StanfordCoreNLP
 import json
 from itertools import chain, tee, groupby
 from typing import List, Tuple
 
-from Singleton import Singleton
+from stanfordcorenlp import StanfordCoreNLP
+
+from model.Singleton import Singleton
 
 
 class Analyser(metaclass=Singleton):

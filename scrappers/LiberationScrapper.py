@@ -1,11 +1,13 @@
-from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
+
+from scrappers.StaticScrapper import StaticScrapper
 
 
 class LiberationStaticScrapper(StaticScrapper):
     def __init__(self, url, keywords, requested_by):
         self.requested_by = requested_by
         url_args = {'q': keywords}
+        self.lang = "fr"
         super().__init__(url, keywords, url_args, callback=self.parse_search_result, requested_by=requested_by)
 
     def parse_search_result(self, url, page_content, keywords):
@@ -36,4 +38,4 @@ class LiberationStaticScrapper(StaticScrapper):
                 pt = parag.get_text()
                 out_text.append(pt)
         # print("read {} chars on {}".format(len(''.join(out_text)),url))
-        self.dbf.add_record(keywords, url, ''.join(out_text))
+        self.dbf.add_record(keywords, url, ''.join(out_text),lang=self.lang)

@@ -1,7 +1,7 @@
-from JSScrapper import JSScrapper
+from scrappers.StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
-from StaticScrapper import StaticScrapper
+from scrappers.JSScrapper import JSScrapper
 
 try:
     from selenium import webdriver
@@ -15,10 +15,12 @@ except ImportError:
 
 
 class CNNScrapper(JSScrapper):
-    def __init__(self, url, keywords):
+    def __init__(self, url, keywords, requested_by):
+        self.requested_by = requested_by
         self.url_args = {'size': '10', 'q': keywords}
         self.lang = "en"
-        super().__init__(url, keywords, self.url_args, callback=self.parse_search_result, js=True)
+        super().__init__(url, keywords, self.url_args, callback=self.parse_search_result, js=True, requested_by=requested_by)
+
 
     def parse_search_result(self, full_url_query, keywords):
         try:
@@ -31,7 +33,7 @@ class CNNScrapper(JSScrapper):
             for c in result_cells:
                 url = c.find_element_by_tag_name('a').get_attribute('href')
                 # download static html page content
-                jss = StaticScrapper(url, keywords=keywords,callback=self.parse_page_content)
+                jss = StaticScrapper(url, keywords=keywords,callback=self.parse_page_content,requested_by=self.requested_by)
                 jss.start()
         except NameError as ne:
             print("python: no webdriver available")

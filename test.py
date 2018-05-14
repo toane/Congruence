@@ -1,17 +1,15 @@
 #!/usr/bin/python3
-from LiberationScrapper import LiberationStaticScrapper
-from VingtMinutesScrapper import VingtMinutesScrapper
-from NouvelobsScrapper import NouvelobsStaticScrapper
-from FigaroScrapper import FigaroStaticScrapper
-from CNNScrapper import CNNScrapper
-from NYTScrapper import NYTScrapper
-from BBCScrapper import BBCScrapper
-from DBFace import DBFace
 import sys
+
+from scrappers.CNNScrapper import CNNScrapper
+from scrappers.FigaroScrapper import FigaroStaticScrapper
+from scrappers.LiberationScrapper import LiberationStaticScrapper
+from scrappers.NYTScrapper import NYTScrapper
+from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
+
+from DBFace import DBFace
 from analyse import Analyser
-
-import pymongo
-
+from scrappers.BBCScrapper import BBCScrapper
 
 """
 1) lancer les scrappers sur un mot cle
@@ -21,7 +19,7 @@ import pymongo
 
 threads=[]
 def thread_accumulator(thread):
-    print("started thread {}".format(thread))
+    # print("started thread {}".format(thread))
     threads.append(thread)
 
 def run_scrappers(keywords, langs=['en']):
@@ -39,7 +37,7 @@ def run_scrappers(keywords, langs=['en']):
     if 'en' in langs:
         nys = NYTScrapper("https://www.nytimes.com/search/", keywords, thread_accumulator)
         bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, thread_accumulator)
-        cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords)
+        cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, thread_accumulator)
         
         nys.start()
         bbs.start()
@@ -61,7 +59,7 @@ if __name__ == '__main__':
 
 
     print("running search for keywords {}".format(keywords))
-    run_scrappers(keywords)
+    run_scrappers(keywords, langs=['en', 'fr'])
 
     dbf = DBFace()
     analyser = Analyser('http://192.168.1.53',9000)
@@ -69,11 +67,9 @@ if __name__ == '__main__':
     print("found {} document{} originating from keyword {}".format(len(fwst), '' if len(fwst) <= 1 else 's', keywords))
     fwc = dbf.find_with_content(keywords)
     print("found {} document{} containing text {}".format(len(fwc), '' if len(fwc) <= 1 else 's', keywords))
-    notk = dbf.find_tokenifiable()
+    notk = dbf.find_tokenifiable(langs=["fr","en"])
     print("found {} tokenifiable doc{}".format(notk.count(), '' if notk.count() <= 1 else 's'))
     dbf.batch_tokenify(notk, analyser)
-    # print(notk.next().keys())
-
 
     fwst = dbf.find_with_search_term(keywords)
     fwc = dbf.find_with_content(keywords)

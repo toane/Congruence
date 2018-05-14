@@ -1,7 +1,9 @@
 import re
 
-from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
+
+from scrappers.StaticScrapper import StaticScrapper
+
 try:
     from urllib import quote
 except ImportError as ie:
