@@ -7,6 +7,7 @@ from typing import List, Dict, Tuple
 try:
     from tqdm import tqdm
 except ModuleNotFoundError as ne:
+    print(ne)
     def tqdm(iterable, total=0):
         return iterable
 

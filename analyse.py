@@ -92,7 +92,7 @@ class Analyser(metaclass=Singleton):
             return []
 
     def clean_proper_names(self, proper_names_tokens, excluded_types):
-        excluded_names = ["he", "his", "she", "her", "He", "She", "Him", "him"]
+        excluded_names = ["he", "his", "she", "her", "He", "She", "Him", "him","Her"]
         return [t for t in proper_names_tokens if t[0] not in excluded_names and t[1] not in excluded_types]
     
     def proper_nouns_extractor_old(self, sentence: str):
