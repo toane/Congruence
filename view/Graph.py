@@ -1,5 +1,6 @@
 
 
+from utils.Wordcount_methods import Wordcount_methods
 
 class Graph:
     def __init__(self, wordcounts):

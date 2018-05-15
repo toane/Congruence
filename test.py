@@ -12,7 +12,8 @@ from analyse import Analyser
 from scrappers.BBCScrapper import BBCScrapper
 from scrappers.DiplomatScrapper import DiplomatScrapper
 
-from utils.Wordcount_methods import Wordcount_methods
+import utils.Wordcount_methods as wcm
+
 
 """
 1) lancer les scrappers sur un mot cle
@@ -106,7 +107,6 @@ if __name__ == '__main__':
     #print("running wordcount with mongo mapreduce")
     #dbf.mongo_wordcount(keywords, "super")
 
-    wcm = Wordcount_methods()
     
     wordcounts = dbf.get_wordcounts(keywords)
     global_wordcount = wcm.global_wordcount(wordcounts)
