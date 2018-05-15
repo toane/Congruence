@@ -68,8 +68,8 @@ if __name__ == '__main__':
     run_scrappers(keywords, langs=['en'])
 
     dbf = DBFace()
-    # analyser = Analyser('http://192.168.1.53', 9000)
-    analyser = Analyser('http://localhost', 9000)
+    analyser = Analyser('http://192.168.1.53', 9000)
+    # analyser = Analyser('http://localhost', 9000)
     # print(analyser.annotate("TUMBLR"))
 
     fwst = dbf.find_with_search_term(keywords)
