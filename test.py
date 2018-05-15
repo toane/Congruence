@@ -12,6 +12,8 @@ from analyse import Analyser
 from scrappers.BBCScrapper import BBCScrapper
 from scrappers.DiplomatScrapper import DiplomatScrapper
 
+from utils.Wordcount_methods import Wordcount_methods
+
 """
 1) lancer les scrappers sur un mot cle
 2) ils cherchent des articles et les ajoutent à la bdd si ceux-ci n'existent pas avec une url identique
@@ -104,7 +106,11 @@ if __name__ == '__main__':
     #print("running wordcount with mongo mapreduce")
     #dbf.mongo_wordcount(keywords, "super")
 
-    a = dbf.python_wordcount(keywords, "super")
-    b = dbf.compute_global_wordcount(a)
-    c = list(map(lambda wc: dbf.take_firsts(wc), b.values()))
+    wcm = Wordcount_methods()
+    
+    wordcounts = dbf.get_wordcounts(keywords)
+    global_wordcount = wcm.global_wordcount(wordcounts)
+    filtered_wordcounts = wcm.filter(global_wordcount)
+    
+    c = list(map(lambda wc: wcm.take_firsts(wc), filtered_wordcounts.values()))
     print(c)
