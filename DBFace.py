@@ -153,7 +153,10 @@ class DBFace(metaclass=Singleton):
         :param result_collection:
         :return:
         """
-        docs = self.coll.find({"wordcount": {"$ne": None}, "search_term": search_term})
+        docs = self.coll.find({"wordcount": {"$ne": None},
+                               {"$or" :[ {"search_term": search_term},
+                                         {"$text" :{"$search" : search_term}} ] })
+                                
         wordcounts = [doc['wordcount'] for doc in docs]
         chained = []
         for article in wordcounts:
