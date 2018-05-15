@@ -14,6 +14,7 @@ from scrappers.DiplomatScrapper import DiplomatScrapper
 
 import utils.Wordcount_methods as wcm
 
+from view.Graph import Graph
 
 """
 1) lancer les scrappers sur un mot cle
@@ -110,7 +111,11 @@ if __name__ == '__main__':
     
     wordcounts = dbf.get_wordcounts(keywords)
     global_wordcount = wcm.global_wordcount(wordcounts)
-    filtered_wordcounts = wcm.filter(global_wordcount)
+    filtered_wordcounts = wcm.select_subjects(global_wordcount)
     
     c = list(map(lambda wc: wcm.take_firsts(wc), filtered_wordcounts.values()))
     print(c)
+
+
+    g = Graph(wordcounts)
+    g.to_dot()

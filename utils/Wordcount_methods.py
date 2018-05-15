@@ -26,7 +26,7 @@ def take_firsts(wordcount, n=5):
     
     return sorted(wordcount, key=lambda item: - item[1])[0:n]    
 
-def filter(wordcount: List[Tuple],
+def select_subjects(wordcount: List[Tuple],
            subjects : List[str] = ["PERSON", "ORGANIZATION", "TOPIC"]) -> Dict:
     """
     filters wordcount aggregate by word type and returns a dictionary
@@ -51,3 +51,10 @@ def filter(wordcount: List[Tuple],
     #     "nouns": noms_communs
     # }
     return res
+
+
+def aggregate_subjects(wordcount_dict):
+    """
+    met les différents tokens du dictionnaire dans une seule liste
+    """
+    return list(chain.from_iterable(wordcount_dict.values()))
