@@ -10,6 +10,7 @@ from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
 from DBFace import DBFace
 from analyse import Analyser
 from scrappers.BBCScrapper import BBCScrapper
+from scrappers.DiplomatScrapper import DiplomatScrapper
 
 """
 1) lancer les scrappers sur un mot cle
@@ -38,10 +39,12 @@ def run_scrappers(keywords, langs=['en']):
         nys = NYTScrapper("https://www.nytimes.com/search/", keywords, thread_accumulator)
         bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, thread_accumulator)
         cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, thread_accumulator)
+        dps = DiplomatScrapper('https://www.googleapis.com/customsearch/v1element?', keywords, thread_accumulator)
         
         nys.start()
         bbs.start()
         cnn.start()
+        dps.start()
         
     # # twentymin = VingtMinutesScrapper("https://www.20minutes.fr/search?", keywords)
     #
@@ -52,17 +55,18 @@ def run_scrappers(keywords, langs=['en']):
 
 if __name__ == '__main__':
     print("running on Python version {}".format(sys.version))
-    keywords = "jared kushner"
+    keywords = "kim jong"
     # si argument fourni en ligne de commande
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
-
 
     print("running search for keywords {}".format(keywords))
     run_scrappers(keywords, langs=['en', 'fr'])
 
     dbf = DBFace()
     analyser = Analyser('http://192.168.1.53', 9000)
+    # print(analyser.annotate("TUMBLR"))
+
     fwst = dbf.find_with_search_term(keywords)
     print("found {} document{} originating from keyword {}".format(len(fwst), '' if len(fwst) <= 1 else 's', keywords))
     fwc = dbf.find_with_content(keywords, exact=True)
