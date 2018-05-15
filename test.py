@@ -14,7 +14,7 @@ from scrappers.DiplomatScrapper import DiplomatScrapper
 
 import utils.Wordcount_methods as wcm
 
-from view.Graph import Graph
+import view.Graph as graph
 
 """
 1) lancer les scrappers sur un mot cle
@@ -68,7 +68,8 @@ if __name__ == '__main__':
     run_scrappers(keywords, langs=['en'])
 
     dbf = DBFace()
-    analyser = Analyser('http://192.168.1.53', 9000)
+    # analyser = Analyser('http://192.168.1.53', 9000)
+    analyser = Analyser('http://localhost', 9000)
     # print(analyser.annotate("TUMBLR"))
 
     fwst = dbf.find_with_search_term(keywords)
@@ -117,5 +118,5 @@ if __name__ == '__main__':
     print(c)
 
 
-    g = Graph(wordcounts)
+    g = graph.GlobalGraph(wordcounts)
     g.to_dot()
