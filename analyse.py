@@ -34,7 +34,7 @@ class Analyser(metaclass=Singleton):
     def tokencount(self, tokens):
         sorted_tokens = sorted(tokens)
         grouped_tokens = groupby(sorted_tokens)
-        res = map(lambda item : ((item[0][0], item[0][1]), sum( 1 for x in item[1])), grouped_tokens)
+        res = map(lambda item: ((item[0][0], item[0][1]), sum(1 for x in item[1])), grouped_tokens)
         return list(res)
         
     def get_tokens(self, text: str) -> List[Tuple]:
@@ -54,7 +54,6 @@ class Analyser(metaclass=Singleton):
         
         res = chain.from_iterable( chain(pns, nns))
         return list(res)
-        
 
     def get_names(self, sentence : str) -> List[str] :
         """ 
@@ -78,8 +77,7 @@ class Analyser(metaclass=Singleton):
         """ 
         renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) 
         """
-        
-        props={'annotators': 'ner', 'outputFormat':'json'}
+        props = {'annotators': 'ner', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
 
@@ -94,7 +92,7 @@ class Analyser(metaclass=Singleton):
             return []
 
     def clean_proper_names(self, proper_names_tokens, excluded_types):
-        excluded_names = ["he", "his", "she", "her", "He", "She"]
+        excluded_names = ["he", "his", "she", "her", "He", "She", "Him"]
         return [t for t in proper_names_tokens if t[0] not in excluded_names and t[1] not in excluded_types]
     
     def proper_nouns_extractor_old(self, sentence: str):

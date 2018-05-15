@@ -2,7 +2,7 @@ import codecs
 import hashlib
 import os
 from itertools import groupby
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 from model.Article import Article
 from bson.code import Code
@@ -80,20 +80,20 @@ class DBFace(metaclass=Singleton):
         """
         return [self.build_doc(d) for d in self.coll.find({"search_term": search_term})]
 
-    def find_tokenifiable(self, langs: List[str]=['en']) -> List[Dict]:
+    def find_tokenifiable(self,langs: List[str]=['en']) -> List[Dict]:
         """
         returns a list of records with an empty tokenified field
         @param lang only select documents with
+        @param langs run search on docs with lang in langs
         :return:
         """
         # return self.coll.find({"tokenified": None, "lang": lang})
         return self.coll.find({"tokenified": None,"lang": {"$in": langs}})
 
-
-
     def batch_tokenify(self, records: Dict, analyser: Analyser):
         """
         runs content tokenization for all records
+        :param analyser: Analyser object (StanfordNLP client)
         :param records:
         :return:
         """
@@ -105,7 +105,6 @@ class DBFace(metaclass=Singleton):
             tknis_wc = analyser.tokencount(tknis)
             self.update_field(r['_id'], tknis,'tokenified')
             self.update_field(r['_id'], tknis_wc, 'wordcount')
-
 
     def update_field(self, _id, value: '', field: str='tokenified'):
         """
@@ -148,37 +147,41 @@ class DBFace(metaclass=Singleton):
                 print(sst)
 
     def python_wordcount(self, search_term : str, result_collection : str):
-        docs = self.coll.find({"search_term": search_term})
+        """
+        effectue le wordcount des champs "tokenified" pour les enregistrements
+        dont le search_term est search_term
+        :param search_term:
+        :param result_collection:
+        :return:
+        """
+        docs = self.coll.find({"wordcount": {"$ne": None}, "search_term": search_term})
         wordcounts = [doc['wordcount'] for doc in docs]
         chained = []
         for article in wordcounts:
             for item in article:
                 chained.append(item)
-
         grouped = groupby(sorted(chained), key=lambda item: item[0])
-
         res = map(lambda item: (item[0], sum(map(lambda it: it[1], item[1]))), grouped)
         return list(res)
 
-    def compute_global_wordcount(self, wordcount):
+    def compute_global_wordcount(self, wordcount:List[Tuple]) -> Dict:
         
         # noms_propres = filter(lambda item : item[0][1] == "NAME", wordcount)
         # organisations = filter(lambda item : item[0][1] == "ORGANIZATION", wordcount)
         # noms_communs = filter(lambda item : item[0][1] == "TOPIC", wordcount)
         
-        noms_propres =  [item for item in wordcount if  item[0][1] == "PERSON"]
-        organisations = [item for item in wordcount if  item[0][1] == "ORGANIZATION"]
-        noms_communs =  [item for item in wordcount if  item[0][1] == "TOPIC"]
+        noms_propres = [item for item in wordcount if item[0][1] == "PERSON"]
+        organisations = [item for item in wordcount if item[0][1] == "ORGANIZATION"]
+        noms_communs = [item for item in wordcount if item[0][1] == "TOPIC"]
         
         return {
-            "people" : noms_propres,
+            "people": noms_propres,
             "orgas": organisations,
             "nouns": noms_communs
             }
 
-    def take_firsts(self, wordcount, n = 5):
-        return sorted(wordcount,key=lambda item: - item[1])[0:n]
-        
+    def take_firsts(self, wordcount, n=5):
+        return sorted(wordcount, key=lambda item: - item[1])[0:n]
         
     def mongo_wordcount(self, search_term : str, result_collection : str):
         mapper = Code(

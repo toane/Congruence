@@ -9,7 +9,7 @@ except ImportError as ie:
 
 
 class BBCScrapper(StaticScrapper):
-    def __init__(self, url, keywords,requested_by, debug=False):
+    def __init__(self, url, keywords, requested_by, debug=False):
         self.requested_by = requested_by
         url_args = {'q': keywords}
         self.debug = debug
@@ -23,7 +23,7 @@ class BBCScrapper(StaticScrapper):
         for i in resdivs:
             lnk = i.find_all('a')[0].get('href')
             lnktxt = i.get_text()
-            sc = StaticScrapper(lnk, keywords=keywords, callback=self.parse_page_content,requested_by=self.requested_by)
+            sc = StaticScrapper(lnk, keywords=keywords, callback=self.parse_page_content, requested_by=self.requested_by)
             sc.start()
 
     def parse_page_content(self, url, page_content, keywords):
