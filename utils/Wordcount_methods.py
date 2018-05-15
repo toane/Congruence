@@ -26,7 +26,8 @@ def take_firsts(wordcount, n=5):
     
     return sorted(wordcount, key=lambda item: - item[1])[0:n]    
 
-def filter(wordcount: List[Tuple]) -> Dict:
+def filter(wordcount: List[Tuple],
+           subjects : List[str] = ["PERSON", "ORGANIZATION", "TOPIC"]) -> Dict:
     """
     filters wordcount aggregate by word type and returns a dictionary
     :param wordcount:
@@ -35,13 +36,18 @@ def filter(wordcount: List[Tuple]) -> Dict:
     # noms_propres = filter(lambda item : item[0][1] == "NAME", wordcount)
     # organisations = filter(lambda item : item[0][1] == "ORGANIZATION", wordcount)
     # noms_communs = filter(lambda item : item[0][1] == "TOPIC", wordcount)
+
+    res = {}
+    for subject in subjects : 
+        res[subject] = [item for item in wordcount if item[0][1] == subject]
+        
+    # noms_propres = [item for item in wordcount if item[0][1] == "PERSON"]
+    # organisations = [item for item in wordcount if item[0][1] == "ORGANIZATION"]
+    # noms_communs = [item for item in wordcount if item[0][1] == "TOPIC"]
     
-    noms_propres = [item for item in wordcount if item[0][1] == "PERSON"]
-    organisations = [item for item in wordcount if item[0][1] == "ORGANIZATION"]
-    noms_communs = [item for item in wordcount if item[0][1] == "TOPIC"]
-    
-    return {
-        "people": noms_propres,
-        "orgas": organisations,
-        "nouns": noms_communs
-    }
+    # return {
+    #     "people": noms_propres,
+    #     "orgas": organisations,
+    #     "nouns": noms_communs
+    # }
+    return res

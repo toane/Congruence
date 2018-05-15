@@ -64,7 +64,7 @@ if __name__ == '__main__':
         keywords = ' '.join(sys.argv[1:])
 
     print("running search for keywords {}".format(keywords))
-    run_scrappers(keywords, langs=['en', 'fr'])
+    run_scrappers(keywords, langs=['en'])
 
     dbf = DBFace()
     analyser = Analyser('http://192.168.1.53', 9000)
