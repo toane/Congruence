@@ -52,7 +52,7 @@ def run_scrappers(keywords, langs=['en']):
 
 if __name__ == '__main__':
     print("running on Python version {}".format(sys.version))
-    keywords = 'magic pony'
+    keywords = "jared kushner"
     # si argument fourni en ligne de commande
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
@@ -62,19 +62,17 @@ if __name__ == '__main__':
     run_scrappers(keywords, langs=['en', 'fr'])
 
     dbf = DBFace()
-    analyser = Analyser('http://192.168.1.53',9000)
+    analyser = Analyser('http://192.168.1.53', 9000)
     fwst = dbf.find_with_search_term(keywords)
     print("found {} document{} originating from keyword {}".format(len(fwst), '' if len(fwst) <= 1 else 's', keywords))
-    fwc = dbf.find_with_content(keywords)
+    fwc = dbf.find_with_content(keywords, exact=True)
     print("found {} document{} containing text {}".format(len(fwc), '' if len(fwc) <= 1 else 's', keywords))
-    notk = dbf.find_tokenifiable(langs=["fr","en"])
-    print("found {} tokenifiable doc{}".format(notk.count(), '' if notk.count() <= 1 else 's'))
+    notk = dbf.find_tokenifiable(langs=["en"])
+    nowc = dbf.find_wordcountable(langs=["en"])
+    print("found {} tokenifiable doc{}".format(notk.count(), '' if notk.count() == 1 else 's'))
+    print("found {} wordcountable doc{}".format(nowc.count(), '' if nowc.count() == 1 else 's'))
     dbf.batch_tokenify(notk, analyser)
-
-    fwst = dbf.find_with_search_term(keywords)
-    fwc = dbf.find_with_content(keywords)
-
-    initial_kw = [[keywords]]
+    # dbf.batch_wordcount(nowc, analyser)
 
     # tknifier = Analyser(host='http://localhost', port=9000)
     # txt = fwst[2].article_content
@@ -104,5 +102,5 @@ if __name__ == '__main__':
 
     a = dbf.python_wordcount(keywords, "super")
     b = dbf.compute_global_wordcount(a)
-    c = list(map(lambda wc : dbf.take_firsts(wc), b.values()))
+    c = list(map(lambda wc: dbf.take_firsts(wc), b.values()))
     print(c)
