@@ -4,6 +4,13 @@ import os
 from itertools import groupby
 from typing import List, Dict, Tuple
 
+try:
+    from tqdm import tqdm
+except ModuleNotFoundError as ne:
+    print(ne)
+    def tqdm(iterable, total=0):
+        return iterable
+
 from model.Article import Article
 from bson.code import Code
 from pymongo import MongoClient, TEXT, ReturnDocument
@@ -80,7 +87,7 @@ class DBFace(metaclass=Singleton):
         """
         return [self.build_doc(d) for d in self.coll.find({"search_term": search_term})]
 
-    def find_tokenifiable(self,langs: List[str]=['en']) -> List[Dict]:
+    def find_tokenifiable(self, langs: List[str]=['en']) -> List[Dict]:
         """
         returns a list of records with an empty tokenified field
         @param lang only select documents with
@@ -88,7 +95,25 @@ class DBFace(metaclass=Singleton):
         :return:
         """
         # return self.coll.find({"tokenified": None, "lang": lang})
-        return self.coll.find({"tokenified": None,"lang": {"$in": langs}})
+        return self.coll.find({"tokenified": None, "lang": {"$in": langs}})
+
+    def find_wordcountable(self, langs: List[str]=['en']) -> List[Dict]:
+        """
+        returns a list of records with an empty wordcount field
+        @param lang only select documents with
+        @param langs run search on docs with lang in langs
+        :return:
+        """
+        return self.coll.find({"wordcount": None, "lang": {"$in": langs}})
+
+    #UNUSED
+    def batch_wordcount(self, records: Dict, analyser: Analyser):
+        n = records.count()
+        print("computing wordcount for {} document{}".format(n, '' if n == 1 else 's'))
+        for r in tqdm(records, total=n):
+            tknis = analyser.get_tokens(r['article_content'])
+            tknis_wc = analyser.tokencount(tknis)
+            self.update_field(r['_id'], tknis_wc, 'wordcount')
 
     def batch_tokenify(self, records: Dict, analyser: Analyser):
         """
@@ -98,12 +123,12 @@ class DBFace(metaclass=Singleton):
         :return:
         """
         n = records.count()
-        print("computing tokenization for {} document{}".format(n, '' if n <=1 else 's'))
-        for r in records:
+        print("computing tokenization for {} document{}".format(n, '' if n ==1 else 's'))
+        for r in tqdm(records, total=n):
             # print('running tokenizer on {} (keyword {})'.format(r['article_url'], r['search_term']))
             tknis = analyser.get_tokens(r['article_content'])
             tknis_wc = analyser.tokencount(tknis)
-            self.update_field(r['_id'], tknis,'tokenified')
+            self.update_field(r['_id'], tknis, 'tokenified')
             self.update_field(r['_id'], tknis_wc, 'wordcount')
 
     def update_field(self, _id, value: '', field: str='tokenified'):
@@ -146,9 +171,9 @@ class DBFace(metaclass=Singleton):
             except ServerSelectionTimeoutError as sst:
                 print(sst)
 
-    def python_wordcount(self, search_term : str, result_collection : str):
+    def python_wordcount(self, search_term: str, result_collection : str):
         """
-        TODO
+        aggregate wordcounts for documents matching search_term
         :param search_term:
         :param result_collection:
         :return:
@@ -166,8 +191,12 @@ class DBFace(metaclass=Singleton):
         res = map(lambda item: (item[0], sum(map(lambda it: it[1], item[1]))), grouped)
         return list(res)
 
-    def compute_global_wordcount(self, wordcount:List[Tuple]) -> Dict:
-        
+    def compute_global_wordcount(self, wordcount: List[Tuple]) -> Dict:
+        """
+        sorts wordcount aggregate by word type
+        :param wordcount:
+        :return:
+        """
         # noms_propres = filter(lambda item : item[0][1] == "NAME", wordcount)
         # organisations = filter(lambda item : item[0][1] == "ORGANIZATION", wordcount)
         # noms_communs = filter(lambda item : item[0][1] == "TOPIC", wordcount)
@@ -225,4 +254,3 @@ class DBFace(metaclass=Singleton):
     # db.articol.mapReduce(map, reduce,  {out: {inline : true} })
     # ## enregistre le résultat dans la collection wordcount (un document par mot, c'est pas tip-top)
     # db.articol.mapReduce(map, reduce,  {out: "wordcount" })
-    
