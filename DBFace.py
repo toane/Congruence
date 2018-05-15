@@ -148,8 +148,7 @@ class DBFace(metaclass=Singleton):
 
     def python_wordcount(self, search_term : str, result_collection : str):
         """
-        effectue le wordcount des champs "tokenified" pour les enregistrements
-        dont le search_term est search_term
+        TODO
         :param search_term:
         :param result_collection:
         :return:
