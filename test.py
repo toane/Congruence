@@ -99,8 +99,12 @@ def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
 if __name__ == '__main__':
     print("running on Python version {}".format(sys.version))
     keywords = "kim jong"
+    
+    # si argument fourni en ligne de commande
+    if len(sys.argv) > 1:
+        keywords = ' '.join(sys.argv[1:])
 
-    recursive_search(keywords, keywords, 2, langs = ['en'])
+    #recursive_search(keywords, keywords, 2, langs = ['en'])
     
     dbf = DBFace()
     
@@ -112,5 +116,5 @@ if __name__ == '__main__':
     print(c)
 
 
-    g = graph.GlobalGraph(wordcounts)
+    g = graph.GlobalGraph(wordcounts, n=6)
     g.to_dot()

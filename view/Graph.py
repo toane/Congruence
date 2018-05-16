@@ -1,9 +1,10 @@
 
-from itertools import chain, combinations
+from itertools import chain, combinations, groupby
 
 import utils.Wordcount_methods as wcm
 import graphviz as gv
-
+import numpy as np
+import math
 node_colors = {
     "PERSON" : "blue",
     "ORGANIZATION" : "red",
@@ -63,17 +64,22 @@ class ArticlesGraph:
 
 
 class GlobalGraph:
-    def __init__(self, wordcounts):
+    def __init__(self, wordcounts, \
+                 n = 5, \
+                 subjects = ["PERSON", "ORGANIZATION", "TOPIC"]):
 
         # wordcounts_dicts : list of dictionnaries
-        wordcount_dicts = list(map(wcm.select_subjects, wordcounts))
+        wordcount_dicts = list(map(lambda wc: \
+                                   wcm.select_subjects(wc,subjects = subjects),
+                                   wordcounts))
 
         
         
         global_wordcount = wcm.global_wordcount(wordcounts)
-        global_wordcount_dict = wcm.select_subjects(global_wordcount)
+        global_wordcount_dict = wcm.select_subjects(global_wordcount, \
+                                                    subjects = subjects)
         global_wordcount_dict_best = \
-            { k : wcm.take_firsts(v, n=10) for k,v in global_wordcount_dict.items() }
+            { k : wcm.take_firsts(v, n=n) for k,v in global_wordcount_dict.items() }
 
         def item_in_wordcount(item, wordcount):
             wordcount_keys = map(lambda item: item[0], wordcount)
@@ -98,18 +104,28 @@ class GlobalGraph:
         dot = gv.Graph()
 
         for node in self.nodes:
-            dot.attr("node", color=node_colors[node[0][1]])
-            dot.node(node[0][0])
+            dot.node(node[0][0], **{"color" :node_colors[node[0][1]], \
+                                    "width" : str(math.sqrt(node[1])), \
+                                    "fontsize" :  str(10*math.sqrt(node[1])), \
+                                    "shape" : "circle"} )
 
-        print("\nedges : ", self.edges, "\n")
-        print("\nedges_small ",  [(edge[0][0][0], edge[1][0][0]) for edge in self.edges], "\n")
-        print("\nedges_set ",  set([(edge[0][0][0], edge[1][0][0]) for edge in self.edges]), "\n")
+        # print("\nedges : ", self.edges, "\n")
+        # print("\nedges_small ",  [(edge[0][0][0], edge[1][0][0]) for edge in self.edges], "\n")
+        # print("\nedges_set ",  set([(edge[0][0][0], edge[1][0][0]) for edge in self.edges]), "\n")
             
-        graph_edges = set([(edge[0][0][0], edge[1][0][0]) for edge in self.edges])
-            
-        for edge in graph_edges:
+        graph_edges_multiple = sorted([(edge[0][0][0], edge[1][0][0]) for edge in self.edges])
+        graph_edges_grouped = groupby(graph_edges_multiple)
+        graph_edges_weighted = list(map(lambda it : (it[0], len(list(it[1]))), graph_edges_grouped))
+
+        weights = np.array(list(map(lambda x:x[1], graph_edges_weighted)))
+        q1 = np.percentile(weights, 25)
+        q2 = np.percentile(weights, 50)
+        
+        print(graph_edges_weighted)
+        for edge in graph_edges_weighted:
             # print("edge : ", edge)
+            if edge[1] >= q2:
 
-            dot.edge(edge[0], edge[1])
+                dot.edge(edge[0][0], edge[0][1], **{"penwidth": str(edge[1])})
 
         dot.view()
