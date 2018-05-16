@@ -73,7 +73,7 @@ class GlobalGraph:
         global_wordcount = wcm.global_wordcount(wordcounts)
         global_wordcount_dict = wcm.select_subjects(global_wordcount)
         global_wordcount_dict_best = \
-            { k : wcm.take_firsts(v) for k,v in global_wordcount_dict.items() }
+            { k : wcm.take_firsts(v, n=10) for k,v in global_wordcount_dict.items() }
 
         def item_in_wordcount(item, wordcount):
             wordcount_keys = map(lambda item: item[0], wordcount)
@@ -101,10 +101,15 @@ class GlobalGraph:
             dot.attr("node", color=node_colors[node[0][1]])
             dot.node(node[0][0])
 
-        
-        for edge in self.edges:
+        print("\nedges : ", self.edges, "\n")
+        print("\nedges_small ",  [(edge[0][0][0], edge[1][0][0]) for edge in self.edges], "\n")
+        print("\nedges_set ",  set([(edge[0][0][0], edge[1][0][0]) for edge in self.edges]), "\n")
+            
+        graph_edges = set([(edge[0][0][0], edge[1][0][0]) for edge in self.edges])
+            
+        for edge in graph_edges:
             # print("edge : ", edge)
 
-            dot.edge(edge[0][0][0], edge[1][0][0])
+            dot.edge(edge[0], edge[1])
 
         dot.view()
