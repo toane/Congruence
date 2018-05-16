@@ -5,10 +5,16 @@ import utils.Wordcount_methods as wcm
 import graphviz as gv
 import numpy as np
 import math
-node_colors = {
+dot_node_colors = {
     "PERSON" : "blue",
     "ORGANIZATION" : "red",
     "TOPIC" : "green"
+}
+
+json_node_colors = {
+    "PERSON" : "rgb( 0, 51, 102)",
+    "ORGANIZATION" : "rgb(255, 204, 0)",
+    "TOPIC" : "rgb( 204, 204, 204)"
 }
 
 class ArticlesGraph:
@@ -51,7 +57,7 @@ class ArticlesGraph:
         dot = gv.Graph()
 
         for node in self.nodes:
-            dot.attr("node", color=node_colors[node[0][1]])
+            dot.attr("node", color=dot_node_colors[node[0][1]])
             dot.node(node[0][0])
 
         
@@ -104,7 +110,7 @@ class GlobalGraph:
         dot = gv.Graph()
 
         for node in self.nodes:
-            dot.node(node[0][0], **{"color" :node_colors[node[0][1]], \
+            dot.node(node[0][0], **{"color" :dot_node_colors[node[0][1]], \
                                     "width" : str(math.sqrt(node[1])), \
                                     "fontsize" :  str(10*math.sqrt(node[1])), \
                                     "shape" : "circle"} )
@@ -129,3 +135,69 @@ class GlobalGraph:
                 dot.edge(edge[0][0], edge[0][1], **{"penwidth": str(edge[1])})
 
         dot.view()
+
+    def to_json(self):
+        """
+        builds JSON for vis.js graph data
+        node=dict{id: 1, value: 5, label: 'Balkany' , color: 'rgb(237,28,36)'}
+        :return:
+        """
+        json_output = ''
+        class Node:
+            def __init__(self, id, value, label, color):
+                self.id=id
+                self.value=value
+                self.label=label
+                self.color=color
+
+            def get_json(self):
+                ret = []
+                for k, v in self.__dict__.items():
+                    ret.append("{}:'{}'".format(k, v))
+                return '{'+','.join(ret)+'}'
+
+        class Edge:
+            def __init__(self, from_node, to_node, title, color):
+                self.from_node = from_node
+                self.to_node = to_node
+                self.title = title
+                self.color = color
+
+            def get_json(self):
+                ret = []
+                for k, v in self.__dict__.items():
+                    ret.append("{}:'{}'".format(k, v))
+                return '{'+','.join(ret)+'}'
+
+        graph_edges = set([(edge[0][0][0], edge[1][0][0]) for edge in self.edges])
+
+        node_names = list(set(node[0][0] for node in self.nodes))
+
+        json_nodes = []
+        json_edges = []
+        node_name_type = dict()
+
+        graph_edges_multiple = sorted([(edge[0][0][0], edge[1][0][0]) for edge in self.edges])
+        graph_edges_grouped = groupby(graph_edges_multiple)
+        graph_edges_weighted = list(map(lambda it : (it[0], len(list(it[1]))), graph_edges_grouped))
+
+        for node in self.nodes:
+            node_type = node[0][1]
+            node_name = node[0][0]
+            node_name_type[node_name] = node_type
+
+        for idx, node_name in enumerate(node_names):
+            node_type = node_name_type[node_name]
+            color = json_node_colors[node_type]
+            node = Node(idx, 1, node_name,color)
+            json_nodes.append(node)
+
+        for edge in graph_edges_weighted:
+            # if edge[1] >= q2:
+            # print('edge value', edge[1])
+            print("{} -> {} ".format(edge[0][0], edge[0][1]))
+            edge = Edge(edge[0][0], edge[0][1],1,'rgb(100,100,100')
+            json_edges.append(edge)
+
+        print("nodes = [{}]".format(','.join([node.get_json() for node in json_nodes])))
+        print("edges = [{}]".format(','.join([edge.get_json() for edge in json_edges])))
