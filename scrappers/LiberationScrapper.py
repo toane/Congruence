@@ -1,4 +1,8 @@
 from bs4 import BeautifulSoup
+try:
+    from urllib import quote
+except ImportError as ie:
+    from urllib.parse import urlencode, quote, urlparse, parse_qs
 
 from scrappers.StaticScrapper import StaticScrapper
 
@@ -19,8 +23,14 @@ class LiberationStaticScrapper(StaticScrapper):
         for i in resdivs:
             # TODO detecter les url style http: // www.liberation.frhttp: // next.liberation.fr / arts / 2018 / 05 / 0
             lnk = i.find_all('a')[0].get('href')  # TODO si url trouvee complete, ne pas ajouter www.liberation.fr
+            netloc = urlparse(lnk).netloc
             lnktxt = i.get_text()
-            sc = StaticScrapper("http://www.liberation.fr" + lnk, keywords=keywords, callback=self.parse_page_content,requested_by=self.requested_by)
+            # print(lnk, netloc)
+            if len(netloc) > 0:
+                url_pref = ''
+            else:
+                url_pref = "http://www.liberation.fr"
+            sc = StaticScrapper(url_pref + lnk, keywords=keywords, callback=self.parse_page_content,requested_by=self.requested_by)
             sc.start()
 
     def parse_page_content(self, url, page_content, keywords):

@@ -8,7 +8,7 @@ from scrappers.StaticScrapper import StaticScrapper
 try:
     from urllib import quote
 except ImportError as ie:
-    from urllib.parse import urlencode, quote
+    from urllib.parse import urlencode, quote, urlparse, parse_qs
 
 class DiplomatScrapper(StaticScrapper):
     def __init__(self, url, keywords, requested_by=None):
@@ -33,9 +33,11 @@ class DiplomatScrapper(StaticScrapper):
     def parse_search_result(self, url, page_content, keywords):
         print("Diplomat: got {} chars".format(len(page_content)))
         result = json.loads(page_content)
-        print(page_content)
         for i in result['results']:
             lnk = i['clicktrackUrl']
+            query_part = urlparse(lnk).query
+            query_comps = parse_qs(query_part)
+            lnk = query_comps['q'][0]
             sc = StaticScrapper(lnk, keywords=keywords, callback=self.parse_page_content, requested_by=self.requested_by)
             sc.start()
 
