@@ -23,9 +23,12 @@ def aggregate_proper_names(person_names_tokens):
     """
 
     to_replace = {}
+
+    
     for person in set(person_names_tokens):
         possible_long_names = [p for p in person_names_tokens \
-                               if (person[0] in p[0] and person[0] != p[0] and person[1] == p[1])]
+                               if (person[0] in p[0] and person[0] != p[0] \
+                                   and person[1] == 'PERSON')]
 
         
         if len(possible_long_names) > 0: 
@@ -49,28 +52,36 @@ def aggregate_proper_names_in_wordcount(person_names_tokens):
     """ 
     aggregates person names in a wordcount list
     """
-    
+
     to_add = []
     to_remove = []
+    
+    #print("\nall persons : ", set([person for person in person_names_tokens if person[0][1] == 'PERSON']))
     
     for i,person in enumerate(person_names_tokens):
         possible_long_names = [(j,p) for j,p in enumerate(person_names_tokens) \
                                if (person[0][0] in p[0][0] and person[0][0] != p[0][0] \
-                                   and person[1] == p[1])]
+                                   and person[0][1] == 'PERSON')]
 
         if len(possible_long_names) > 0: 
             best_long_name = sorted(possible_long_names, key = lambda x:x[1], reverse=True)[0]
             to_remove.append(person)
-            to_add.append( (best_long_name[0], person[1]) )
+            to_add.append( (best_long_name[0], person[1], person[0][0], best_long_name[1]) )
 
     res = list(person_names_tokens)
+
+    print("to add : ", to_add, "\n")
+    print("to remove :", to_remove, "\n\n")
     
     for thing in to_add:
         i = thing[0]
         res[i] = (res[i][0], res[i][1] + thing[1])    
-            
+        
     for person in to_remove:
-        res.remove(person)
+        try:
+            res.remove(person)
+        except ValueError:
+            pass
     return res
 
 

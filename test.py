@@ -9,6 +9,7 @@ from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
 
 from DBFace import DBFace
 from analyse import Analyser
+import analyse
 from scrappers.BBCScrapper import BBCScrapper
 from scrappers.DiplomatScrapper import DiplomatScrapper
 
@@ -104,13 +105,14 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
 
-    recursive_search(keywords, keywords, 1, langs = ['en'])
+    # recursive_search(keywords, keywords, 1, langs = ['en'])
     
     dbf = DBFace()
     
     wordcounts = dbf.get_wordcounts(keywords)
     global_wordcount = wcm.global_wordcount(wordcounts)
-    filtered_wordcounts = wcm.select_subjects(global_wordcount)
+    global_wordcount_aggregated = analyse.aggregate_proper_names_in_wordcount(global_wordcount)
+    filtered_wordcounts = wcm.select_subjects(global_wordcount_aggregated)
     
     c = list(map(lambda wc: wcm.take_firsts(wc, n=3), filtered_wordcounts.values()))
     print(c)
