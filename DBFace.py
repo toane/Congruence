@@ -157,19 +157,18 @@ class DBFace(metaclass=Singleton):
         """
 
         url_hash = self.get_hash(url)
-
+        try:
         # check if article is already archived
-        if self.coll.find({"url_hash": url_hash}).count() > 0:
-            print("article {} already present in db, skipping".format(url))
-        elif len(content) == 0:
-            print("scraped text length = 0 for {}, skipping".format(url))
-        else:
-            new_record = Article(search_terms, url, content, url_hash=url_hash, lang=lang)
-            print('adding article {}, length {}'.format(url, len(content)))
-            try:
+            if self.coll.find({"url_hash": url_hash}).count() > 0:
+                print("article {} already present in db, skipping".format(url))
+            elif len(content) == 0:
+                print("not content found on {}, skipping".format(url))
+            else:
+                new_record = Article(search_terms, url, content, url_hash=url_hash, lang=lang)
+                print('adding article {}, length {}'.format(url, len(content)))
                 self.coll.insert_one(new_record.json_value)
-            except ServerSelectionTimeoutError as sst:
-                print(sst)
+        except ServerSelectionTimeoutError as sst:
+            print("pymongo couldn't connect to mongodb server")
 
     def get_wordcounts(self, search_term: str):
         """

@@ -36,7 +36,7 @@ class NYTScrapper(StaticScrapper):
         :param e contient le texte d'une page de resultat
         :return:
         """
-        print("looking for content on {}".format(url))
+        # print("looking for content on {}".format(url))
         soup = BeautifulSoup(page_content, "lxml")
         tagtype = "div"
         tag_attr = "class"

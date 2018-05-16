@@ -59,5 +59,5 @@ class FigaroStaticScrapper(StaticScrapper):
             for parag in maincnt.find_all('p'):
                 # print(parag.get_text())
                 out_text.append(parag.get_text())
-        print("read {} chars on {}".format(len(''.join(out_text)), url))
+        # print("read {} chars on {}".format(len(''.join(out_text)), url))
         self.dbf.add_record(keywords, url, ''.join(out_text),lang=self.lang)

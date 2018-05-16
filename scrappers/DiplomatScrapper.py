@@ -31,7 +31,7 @@ class DiplomatScrapper(StaticScrapper):
         self.dbf = DBFace()
 
     def parse_search_result(self, url, page_content, keywords):
-        print("Diplomat: got {} chars".format(len(page_content)))
+        print("The Diplomat: got {} chars".format(len(page_content)))
         result = json.loads(page_content)
         for i in result['results']:
             lnk = i['clicktrackUrl']
@@ -50,7 +50,7 @@ class DiplomatScrapper(StaticScrapper):
             for parag in maincnt.find_all('p'):
                 pt = parag.get_text()
                 out_text.append(pt)
-        print("read {} chars on {}".format(len(''.join(out_text)), url))
+        # print("read {} chars on {}".format(len(''.join(out_text)), url))
         self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)
 
 

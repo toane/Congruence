@@ -44,7 +44,7 @@ class CNNScrapper(JSScrapper):
         content_p = soup.find_all('div', {'class': 'zn-body__paragraph'})
         for maincnt in content_p:
             out_text.append(maincnt.get_text())
-        print("read {} chars on {}".format(len(''.join(out_text)), url))
+        # print("read {} chars on {}".format(len(''.join(out_text)), url))
         self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)
 
 
