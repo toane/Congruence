@@ -7,6 +7,16 @@ from stanfordcorenlp import StanfordCoreNLP
 from model.Singleton import Singleton
 import utils.Wordcount_methods as wcm
 
+def is_short_name(short_name, long_name):
+    i = long_name.find(short_name)
+
+    if i == 0:
+        return (long_name.find(short_name + " ") != -1)
+    if i + len(short_name) == len(long_name):
+        return (long_name.find(" " + short_name) != -1)
+    return (long_name.find(" " + short_name + " " != 1)
+
+    
 def clean_proper_names(proper_names_tokens, excluded_types):
     """
     removes unwanted tokens from proper names
