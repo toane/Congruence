@@ -25,7 +25,7 @@ def aggregate_proper_names(person_names_tokens):
     to_replace = {}
     for person in set(person_names_tokens):
         possible_long_names = [p for p in person_names_tokens \
-                               if (person[0] in p[0] and person[0] != p[0])]
+                               if (person[0] in p[0] and person[0] != p[0] and person[1] == p[1])]
 
         
         if len(possible_long_names) > 0: 
@@ -35,14 +35,43 @@ def aggregate_proper_names(person_names_tokens):
             to_replace[person] = best_long_name
             
     res = list(person_names_tokens)
-    
+    print("before replace : ", res)
     for i, person in enumerate(res):
         if person in to_replace.keys():
             res[i] = to_replace[person]
-    
+            
+    print("after replace : ", res, "\n\n\n")
     return res
 
     
+
+def aggregate_proper_names_in_wordcount(person_names_tokens):
+    """ 
+    aggregates person names in a wordcount list
+    """
+    
+    to_add = []
+    to_remove = []
+    
+    for i,person in enumerate(person_names_tokens):
+        possible_long_names = [(j,p) for j,p in enumerate(person_names_tokens) \
+                               if (person[0][0] in p[0][0] and person[0][0] != p[0][0] \
+                                   and person[1] == p[1])]
+
+        if len(possible_long_names) > 0: 
+            best_long_name = sorted(possible_long_names, key = lambda x:x[1], reverse=True)[0]
+            to_remove.append(person)
+            to_add.append( (best_long_name[0], person[1]) )
+
+    res = list(person_names_tokens)
+    
+    for thing in to_add:
+        i = thing[0]
+        res[i] = (res[i][0], res[i][1] + thing[1])    
+            
+    for person in to_remove:
+        res.remove(person)
+    return res
 
 
 
@@ -187,31 +216,4 @@ if __name__ == "__main__":
 
 
     
-def old_aggregate_proper_names(person_names_tokens):
-    """ 
-    aggregates person names in a wordcount list
-    """
-    
-    to_add = []
-    to_remove = []
-    
-    for i,person in enumerate(person_names_tokens):
-        possible_long_names = [(j,p) for j,p in enumerate(person_names_tokens) \
-                               if (person[0][0] in p[0][0] and person[0][0] != p[0][0])]
-
-        if len(possible_long_names) > 0: 
-            best_long_name = sorted(possible_long_names, key = lambda x:x[1], reverse=True)[0]
-            to_remove.append(person)
-            to_add.append( (best_long_name[0], person[1]) )
-
-    res = list(person_names_tokens)
-    
-    for thing in to_add:
-        i = thing[0]
-        res[i] = (res[i][0], res[i][1] + thing[1])    
-            
-    for person in to_remove:
-        res.remove(person)
-    return res
-
     

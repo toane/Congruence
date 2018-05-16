@@ -3,7 +3,7 @@ from itertools import groupby, chain
 from typing import List, Dict, Tuple
 
 def wordcount(words):
-    grouped = grouby(sorted(words))
+    grouped = groupby(sorted(words))
     wordcount = map(lambda x : (x[0], sum(1 for a in x[1])), grouped)
     return list(wordcount)
 
