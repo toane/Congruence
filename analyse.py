@@ -6,6 +6,39 @@ from stanfordcorenlp import StanfordCoreNLP
 
 from model.Singleton import Singleton
 
+def clean_proper_names(proper_names_tokens, excluded_types):
+    """
+    removes unwanted tokens from proper names
+    """
+    excluded_names = ["he", "his", "she", "her", "him", "her"]
+    
+    return [t for t in proper_names_tokens \
+            if t[0].lower() not in excluded_names \
+            and t[1] not in excluded_types]
+
+def aggregate_proper_names(person_names_tokens):
+    to_add = []
+    to_remove = []
+    
+    for i,person in enumerate(person_names_tokens):
+        possible_long_names = [(j,p) for j,p in enumerate(person_names_tokens) \
+                               if (person[0][0] in p[0][0] and person[0][0] != p[0][0])]
+
+        if len(possible_long_names) > 0: 
+            best_long_name = sorted(possible_long_names, key = lambda x:x[1], reverse=True)[0]
+            to_remove.append(person)
+            to_add.append( (best_long_name[0], person[1]) )
+
+    res = list(person_names_tokens)
+    
+    for thing in to_add:
+        i = thing[0]
+        res[i] = (res[i][0], res[i][1] + thing[1])    
+            
+    for person in to_remove:
+        res.remove(person)
+    return res
+
 
 class Analyser(metaclass=Singleton):
     
@@ -73,6 +106,8 @@ class Analyser(metaclass=Singleton):
         else:
             return []
         
+
+
     def get_proper_names(self, sentence: str, excluded_types=['NUMBER', 'ORDINAL', 'MONEY', 'PERCENT']) -> List[Tuple]:
         """ 
         renvoie la liste des noms propres anotés de leur type (PERSON, COUNTRY, etc.) 
@@ -80,24 +115,17 @@ class Analyser(metaclass=Singleton):
         props = {'annotators': 'ner', 'outputFormat':'json'}
         out_json = self.nlp.annotate(sentence, properties=props)
         out = json.loads(out_json)
-
         out_1 = out['sentences']
         if len(out_1) > 0:
             out_2 = out_1[0]
             out_3 = out_2['entitymentions']
             
-            res = [(v['text'], v['ner']) for v in out_3 if v['ner'] not in excluded_types]
-            return self.clean_proper_names(res, excluded_types)
+            raw_res = [(v['text'], v['ner']) for v in out_3 if v['ner'] not in excluded_types]
+            cleaned_res = clean_proper_names(raw_res, excluded_types)
+            aggregated_res = aggregate_proper_names(cleaned_res)
+            return aggregated_res
         else:
             return []
-
-    def clean_proper_names(self, proper_names_tokens, excluded_types):
-        
-        excluded_names = ["he", "his", "she", "her", "him", "her"]
-
-        return [t for t in proper_names_tokens \
-                if t[0].lower() not in excluded_names \
-                and t[1] not in excluded_types]
     
     def proper_nouns_extractor_old(self, sentence: str):
         """ 
