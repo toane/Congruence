@@ -68,7 +68,7 @@ class DBFace(metaclass=Singleton):
                        blob=data['blob'],
                        url_hash=data['url_hash'],
                        wordcount=data['wordcount'],
-                       tokenified = data['tokenified'],
+                       tokenified=data['tokenified'],
                        mongo_id=data['_id'])
 
     def find_with_content(self, search_term: str, exact=False) -> List[Article]:
