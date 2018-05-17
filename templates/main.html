@@ -1,0 +1,46 @@
+<!doctype html>
+<!--<script type="text/javascript" src="{{ url_for('static', filename = 'mootools-custom.js') }}"></script>-->
+<script src="https://fastcdn.org/MooTools/1.5.2/MooTools-Core-compat-compressed.js"></script>
+
+<title>Hello from Flask</title>
+{% if name %}
+<h1>Hello {{ name }}!</h1>
+{% else %}
+<h1>Hello, World!</h1>
+{% endif %}
+<div id="receptor">top toot</div>
+
+<form id="search_form">
+  <input type="text" id=search_field" name="search_field">
+</form>
+
+<button onclick="backend_call();">joel</button>
+<script>
+
+
+    var recepdiv = document.id('receptor');
+    var search_field = document.getElement('#search_form > input');
+
+
+
+    function backend_call(){
+      var search_text = search_field.get('value')
+      var myRequest = new Request({
+         url: '/search/',
+         method: 'get',
+         data:{'keyword': search_text},
+
+        onProgress: function(event, xhr){
+        var loaded = event.loaded, total = event.total;
+        //$('myInput').appendText(xhr.responseText)
+        console.log("responseText",xhr.responseText);
+        recepdiv.set('text',xhr.responseText);
+
+        //console.log(search_field.get('text'))
+    }
+});
+myRequest.send();
+    }
+</script>
+
+</html>

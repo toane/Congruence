@@ -25,8 +25,8 @@ class DBFace(metaclass=Singleton):
     def __init__(self):
         print("new DBFace instance {}".format(id(self)))
         try:
-            client = MongoClient("mongodb://localhost", 27017, serverSelectionTimeoutMS=5000)
-            db = client.mdb
+            self.client = MongoClient("mongodb://localhost", 27017, serverSelectionTimeoutMS=5000)
+            db = self.client.mdb
             self.coll = db.articol
             content_col = "article_content"
             mongo_idx_name = '_'.join([content_col,"text"])
@@ -35,6 +35,9 @@ class DBFace(metaclass=Singleton):
                 db.articol.create_index([("article_content", TEXT)])
         except ServerSelectionTimeoutError as sste:
             print("pymongo couldn't connect to mongodb server")
+
+    def get_client(self):
+        return self.client
 
     def get_hash(self, url: str):
         return hashlib.md5(url.encode('utf-8')).hexdigest()
