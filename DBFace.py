@@ -162,7 +162,7 @@ class DBFace(metaclass=Singleton):
             if self.coll.find({"url_hash": url_hash}).count() > 0:
                 print("article {} already present in db, skipping".format(url))
             elif len(content) == 0:
-                print("not content found on {}, skipping".format(url))
+                print("no content found on {}, skipping".format(url))
             else:
                 new_record = Article(search_terms, url, content, url_hash=url_hash, lang=lang)
                 print('adding article {}, length {}'.format(url, len(content)))

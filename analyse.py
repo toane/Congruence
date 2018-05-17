@@ -14,7 +14,7 @@ def is_short_name(short_name, long_name):
         return (long_name.find(short_name + " ") != -1)
     if i + len(short_name) == len(long_name):
         return (long_name.find(" " + short_name) != -1)
-    return (long_name.find(" " + short_name + " " != 1)
+    return (long_name.find(" " + short_name + " " != 1))
 
     
 def clean_proper_names(proper_names_tokens, excluded_types):
@@ -161,8 +161,6 @@ class Analyser(metaclass=Singleton):
             return res
         else:
             return []
-        
-
 
     def get_proper_names(self, sentence: str, excluded_types=['NUMBER', 'ORDINAL', 'MONEY', 'PERCENT']) -> List[Tuple]:
         """ 

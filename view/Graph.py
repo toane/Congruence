@@ -4,6 +4,7 @@ from itertools import chain, combinations, groupby
 import utils.Wordcount_methods as wcm
 import graphviz as gv
 import numpy as np
+from typing import Dict
 import math
 dot_node_colors = {
     "PERSON" : "blue",
@@ -50,8 +51,6 @@ class ArticlesGraph:
                                  map(lambda wc : list(combinations(wc, 2)), wordcount_best)))
 
         # print("edges : ", list(self.edges))
-
-
     
     def to_dot(self):
         dot = gv.Graph()
@@ -60,7 +59,6 @@ class ArticlesGraph:
             dot.attr("node", color=dot_node_colors[node[0][1]])
             dot.node(node[0][0])
 
-        
         for edge in self.edges:
             # print("edge : ", edge)
 
@@ -78,8 +76,6 @@ class GlobalGraph:
         wordcount_dicts = list(map(lambda wc: \
                                    wcm.select_subjects(wc,subjects = subjects),
                                    wordcounts))
-
-        
         
         global_wordcount = wcm.global_wordcount(wordcounts)
         global_wordcount_dict = wcm.select_subjects(global_wordcount, \
@@ -136,7 +132,7 @@ class GlobalGraph:
 
         dot.view()
 
-    def to_json(self):
+    def to_json(self) -> Dict:
         """
         builds JSON for vis.js graph data
         node=dict{id: 1, value: 5, label: 'Balkany' , color: 'rgb(237,28,36)'}
@@ -158,8 +154,9 @@ class GlobalGraph:
 
         class Edge:
             def __init__(self, from_node, to_node, title, color):
-                self.from_node = from_node
-                self.to_node = to_node
+                # recupere un id (ici position dans la liste node_names)
+                self.from_node = node_names.index(from_node)
+                self.to_node = node_names.index(to_node)
                 self.title = title
                 self.color = color
 
@@ -183,6 +180,7 @@ class GlobalGraph:
         graph_edges_grouped = groupby(graph_edges_multiple)
         graph_edges_weighted = list(map(lambda it : (it[0], len(list(it[1]))), graph_edges_grouped))
 
+        # construction d'un dict nom_de_la_node: type{person/orga/topic}
         for node in self.nodes:
             node_type = node[0][1]
             node_name = node[0][0]
@@ -201,5 +199,6 @@ class GlobalGraph:
             edge = Edge(edge[0][0], edge[0][1],1,'rgb(100,100,100')
             json_edges.append(edge)
 
-        print("nodes = [{}]".format(','.join([node.get_json() for node in json_nodes])))
-        print("edges = [{}]".format(','.join([edge.get_json() for edge in json_edges])))
+        nodes_dec = "nodes = [{}]".format(','.join([node.get_json() for node in json_nodes]))
+        edges_doc="edges = [{}]".format(','.join([edge.get_json() for edge in json_edges]))
+        return {"nodes": nodes_dec, "edges": edges_doc}
