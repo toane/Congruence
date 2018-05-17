@@ -17,11 +17,8 @@
 <button onclick="backend_call();">joel</button>
 <script>
 
-
     var recepdiv = document.id('receptor');
     var search_field = document.getElement('#search_form > input');
-
-
 
     function backend_call(){
       var search_text = search_field.get('value')
@@ -32,11 +29,8 @@
 
         onProgress: function(event, xhr){
         var loaded = event.loaded, total = event.total;
-        //$('myInput').appendText(xhr.responseText)
         console.log("responseText",xhr.responseText);
         recepdiv.set('text',xhr.responseText);
-
-        //console.log(search_field.get('text'))
     }
 });
 myRequest.send();

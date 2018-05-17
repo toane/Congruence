@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from DBFace import DBFace
-
+import sys
 app = Flask(__name__)
 
 dbf = DBFace()
@@ -9,7 +9,6 @@ dbcli = dbf.get_client()
 
 @app.route("/run/<string:search_term>/")
 def run(search_term):
-    st = "db status: "+str(get_db_status())+" running program on keyword "+search_term+ "<br/>"
     st = "found {} docs ".format(len(dbf.find_with_content("trump")))
     return render_template('main.html', name=search_term)
 
@@ -24,12 +23,14 @@ def index():
 
 @app.route("/search/")
 def search():
-    keyword='default keyword'
+    keyword = 'app.py:search() key error'
     try:
         keyword = request.args.get('keyword', '')
+        article = dbf.find_with_content(keyword)
+        ergs = str(len(article))
+        return "{} search returned {} results".format(keyword, ergs)
     except KeyError:
-        pass
-    return keyword[::-1]
+        keyword = 'app.py:search() key error'
 
 
 @app.route('/user/<username>')
