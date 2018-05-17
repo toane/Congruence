@@ -7,14 +7,18 @@ from stanfordcorenlp import StanfordCoreNLP
 from model.Singleton import Singleton
 import utils.Wordcount_methods as wcm
 
-def is_short_name(short_name, long_name):
+def is_short_name(short_name_, long_name_):
+    short_name = short_name_.lower()
+    long_name = long_name_.lower()
+    
     i = long_name.find(short_name)
 
     if i == 0:
         return (long_name.find(short_name + " ") != -1)
     if i + len(short_name) == len(long_name):
         return (long_name.find(" " + short_name) != -1)
-    return (long_name.find(" " + short_name + " " != 1)
+    
+    return (long_name.find(" " + short_name + " ") != -1)
 
     
 def clean_proper_names(proper_names_tokens, excluded_types):
@@ -37,8 +41,8 @@ def aggregate_proper_names(person_names_tokens):
     
     for person in set(person_names_tokens):
         possible_long_names = [p for p in person_names_tokens \
-                               if (person[0] in p[0] and person[0] != p[0] \
-                                   and person[1] == 'PERSON')]
+                               if (is_short_name(person[0], p[0]) \
+                                   and person[1] == 'PERSON' and p[0] == 'PERSON')]
 
         
         if len(possible_long_names) > 0: 
@@ -70,18 +74,21 @@ def aggregate_proper_names_in_wordcount(person_names_tokens):
     
     for i,person in enumerate(person_names_tokens):
         possible_long_names = [(j,p) for j,p in enumerate(person_names_tokens) \
-                               if (person[0][0] in p[0][0] and person[0][0] != p[0][0] \
-                                   and person[0][1] == 'PERSON')]
+                               if (is_short_name(person[0][0], p[0][0]) \
+                                   and p[0][1] == 'PERSON')]
 
         if len(possible_long_names) > 0: 
-            best_long_name = sorted(possible_long_names, key = lambda x:x[1], reverse=True)[0]
+            best_long_name = sorted(possible_long_names, key = lambda x:x[1][1], reverse=True)[0]
             to_remove.append(person)
             to_add.append( (best_long_name[0], person[1], person[0][0], best_long_name[1]) )
 
     res = list(person_names_tokens)
 
+    to_remove.sort(key=lambda x: x[1], reverse=True)
     print("to add : ", to_add, "\n")
     print("to remove :", to_remove, "\n\n")
+
+    
     
     for thing in to_add:
         i = thing[0]

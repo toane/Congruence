@@ -1,6 +1,6 @@
 
 from itertools import chain, combinations, groupby
-
+import analyse
 import utils.Wordcount_methods as wcm
 import graphviz as gv
 import numpy as np
@@ -82,7 +82,8 @@ class GlobalGraph:
         
         
         global_wordcount = wcm.global_wordcount(wordcounts)
-        global_wordcount_dict = wcm.select_subjects(global_wordcount, \
+        global_wordcount_aggregated = analyse.aggregate_proper_names_in_wordcount(global_wordcount)
+        global_wordcount_dict = wcm.select_subjects(global_wordcount_aggregated, \
                                                     subjects = subjects)
         global_wordcount_dict_best = \
             { k : wcm.take_firsts(v, n=n) for k,v in global_wordcount_dict.items() }
