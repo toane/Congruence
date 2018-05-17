@@ -166,6 +166,8 @@ class GlobalGraph:
             def get_json(self):
                 ret = []
                 for k, v in self.__dict__.items():
+                    if k == "from_node": k = "from"
+                    if k == "to_node": k = "to"
                     ret.append("{}:'{}'".format(k, v))
                 return '{'+','.join(ret)+'}'
 
@@ -195,7 +197,7 @@ class GlobalGraph:
         for edge in graph_edges_weighted:
             # if edge[1] >= q2:
             # print('edge value', edge[1])
-            print("{} -> {} ".format(edge[0][0], edge[0][1]))
+            # print("{} -> {} ".format(edge[0][0], edge[0][1]))
             edge = Edge(edge[0][0], edge[0][1],1,'rgb(100,100,100')
             json_edges.append(edge)
 

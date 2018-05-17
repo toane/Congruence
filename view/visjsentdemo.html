@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
 <head>
-<title>Network | Sizing</title>
+    <title>Network | Sizing</title>
 
-<style type="text/css">
+    <style type="text/css">
 html, body {
 font: 10pt arial;
 }
@@ -12,12 +12,13 @@ width: 600px;
 height: 600px;
 border: 1px solid lightgray;
 }
-</style>
 
-<script type="text/javascript" src="vis.min.js"></script>
-<link href="vis.min.css" rel="stylesheet" type="text/css" />
+    </style>
 
-<script type="text/javascript">
+    <script type="text/javascript" src="vis.min.js"></script>
+    <link href="vis.min.css" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript">
 var nodes = null;
 var edges = null;
 var network = null;
@@ -25,20 +26,126 @@ var network = null;
 function draw() {
 // create people.
 // value corresponds with the age of the person
-nodes = [
-{id: 1, value: 5, label: 'Balkany' , color: 'rgb(237,28,36)'},
-{id: 2, value: 5, label: 'Sarkozy', color: 'rgb(31,119,180)'},
-{id: 3, value: 5, label: 'Idiot Fucker', color: 'rgb(31,119,180)'},
-{id: 4, value: 5, label: 'Dongerman', color: 'rgb(255,168,7)'}
-];
+nodes = [{color:'rgb(255, 204, 0)',id:'0',label:'CNN',value:'1'},{color:'rgb(255, 204, 0)',id:'1',label:'White House',value:'1'},{color:'rgb( 0, 51, 102)',id:'2',label:'Bolton',value:'1'},{color:'rgb( 0, 51, 102)',id:'3',label:'Donald Trump',value:'1'},{color:'rgb( 204, 204, 204)',id:'4',label:'president',value:'1'},{color:'rgb( 0, 51, 102)',id:'5',label:'Cohen',value:'1'},{color:'rgb( 204, 204, 204)',id:'6',label:'time',value:'1'},{color:'rgb( 0, 51, 102)',id:'7',label:'Mattis',value:'1'},{color:'rgb( 204, 204, 204)',id:'8',label:'administration',value:'1'},{color:'rgb( 204, 204, 204)',id:'9',label:'xi',value:'1'},{color:'rgb(255, 204, 0)',id:'10',label:'Mar-a-Lago',value:'1'},{color:'rgb( 0, 51, 102)',id:'11',label:'Trump',value:'1'},{color:'rgb( 204, 204, 204)',id:'12',label:'campaign',value:'1'},{color:'rgb(255, 204, 0)',id:'13',label:'Secret Service',value:'1'},{color:'rgb(255, 204, 0)',id:'14',label:'Novartis',value:'1'},{color:'rgb( 204, 204, 204)',id:'15',label:'club',value:'1'},{color:'rgb(255, 204, 0)',id:'16',label:'State Department',value:'1'},{color:'rgb( 0, 51, 102)',id:'17',label:'Donnelly',value:'1'}];
+
 
 // create connections between people
 // value corresponds with the amount of contact between two people
-edges = [
-{from: 1, to: 2, value: 1,  title:"Being Gay", color:{color:'rgb(195,195,195)'} },
-{from: 1, to: 3, value: 1, title:"Poop and scoop", color:{color:'rgb(195,195,195)'}},
-{from: 1, to: 4,value: 1, color:{color:'rgb(195,195,195)'} }
-];
+edges = [{to:'CNN',title:'1',color:'rgb(100,100,100',from:'Bolton'},
+{to:'Mar-a-Lago',title:'1',color:'rgb(100,100,100',from:'Bolton'},
+{to:'Mattis',title:'1',color:'rgb(100,100,100',from:'Bolton'},
+{to:'Trump',title:'1',color:'rgb(100,100,100',from:'Bolton'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Bolton'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'Bolton'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'Bolton'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Bolton'},
+{to:'Mar-a-Lago',title:'1',color:'rgb(100,100,100',from:'CNN'},
+{to:'Novartis',title:'1',color:'rgb(100,100,100',from:'CNN'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'CNN'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'CNN'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'CNN'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'CNN'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'CNN'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'CNN'},
+{to:'CNN',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'Donald Trump',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'Mar-a-Lago',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'Novartis',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'Trump',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Cohen'},
+{to:'Mar-a-Lago',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'Secret Service',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'State Department',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'Trump',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'Donald Trump'},
+{to:'Mar-a-Lago',title:'1',color:'rgb(100,100,100',from:'Donnelly'},
+{to:'Secret Service',title:'1',color:'rgb(100,100,100',from:'Donnelly'},
+{to:'Trump',title:'1',color:'rgb(100,100,100',from:'Donnelly'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Donnelly'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'Donnelly'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'Donnelly'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Donnelly'},
+{to:'Novartis',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'Secret Service',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'State Department',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'Mar-a-Lago'},
+{to:'CNN',title:'1',color:'rgb(100,100,100',from:'Mattis'},
+{to:'Mar-a-Lago',title:'1',color:'rgb(100,100,100',from:'Mattis'},
+{to:'Trump',title:'1',color:'rgb(100,100,100',from:'Mattis'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Mattis'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'Mattis'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'Mattis'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Mattis'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Novartis'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'Novartis'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'Novartis'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'Novartis'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'Novartis'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Novartis'},
+{to:'State Department',title:'1',color:'rgb(100,100,100',from:'Secret Service'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Secret Service'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'Secret Service'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'Secret Service'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'Secret Service'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Secret Service'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'Secret Service'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'State Department'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'State Department'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'State Department'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'State Department'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'State Department'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'State Department'},
+{to:'CNN',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'Mar-a-Lago',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'Novartis',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'Secret Service',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'State Department',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'White House',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'Trump'},
+{to:'administration',title:'1',color:'rgb(100,100,100',from:'White House'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'White House'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'White House'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'White House'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'White House'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'White House'},
+{to:'campaign',title:'1',color:'rgb(100,100,100',from:'administration'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'administration'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'administration'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'administration'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'administration'},
+{to:'club',title:'1',color:'rgb(100,100,100',from:'campaign'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'campaign'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'campaign'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'campaign'},
+{to:'president',title:'1',color:'rgb(100,100,100',from:'club'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'club'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'club'},
+{to:'time',title:'1',color:'rgb(100,100,100',from:'president'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'president'},
+{to:'xi',title:'1',color:'rgb(100,100,100',from:'time'}];
+
 
 // Instantiate our network object.
 var container = document.getElementById('mynetwork');
@@ -59,11 +166,12 @@ max:20
 };
 network = new vis.Network(container, data, options);
 }
-</script>
+
+    </script>
 </head>
 <body onload="draw()">
 <p>
-Scale nodes and edges depending on their value. Hover over edges to get a popup with more information.
+    Scale nodes and edges depending on their value. Hover over edges to get a popup with more information.
 </p>
 <div id="mynetwork"></div>
 </body>
