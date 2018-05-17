@@ -115,7 +115,7 @@ if __name__ == '__main__':
     filtered_wordcounts = wcm.select_subjects(global_wordcount_aggregated)
     
     c = list(map(lambda wc: wcm.take_firsts(wc, n=3), filtered_wordcounts.values()))
-    print(c)
+    #print(c)
 
 
     g = graph.GlobalGraph(wordcounts, n=6)
