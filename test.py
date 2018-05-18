@@ -105,7 +105,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
 
-    # recursive_search(keywords, keywords, 1, langs = ['en'])
+    recursive_search(keywords, keywords, 1, langs = ['en'])
     
     dbf = DBFace()
     
