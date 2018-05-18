@@ -26,11 +26,12 @@ class DiplomatScrapper(StaticScrapper):
             'cse_tok': "ABPF6HjAnG5F-oJ6m6bhPdqFeqLbLiqrMw:1526570098210",
             "q": keywords
         }
-        super().__init__(url, keywords, url_args, callback=self.parse_search_result, requested_by=requested_by)
+        super().__init__(url, keywords, url_args, callback=self.get_search_result, requested_by=requested_by)
         self.lang = "en"
         self.dbf = DBFace()
-
-    def parse_search_result(self, url, page_content, keywords):
+    @staticmethod
+    def parse_search_result(page_content):
+        links = []
         print("The Diplomat: got {} chars".format(len(page_content)))
         result = json.loads(page_content)
         if 'error' in result.keys():
@@ -42,10 +43,10 @@ class DiplomatScrapper(StaticScrapper):
                 query_part = urlparse(lnk).query
                 query_comps = parse_qs(query_part)
                 lnk = query_comps['q'][0]
-                sc = StaticScrapper(lnk, keywords=keywords, callback=self.parse_page_content, requested_by=self.requested_by)
-                sc.start()
+                links.append(lnk)
+        return links
 
-    def parse_page_content(self,url, page_content, keywords):
+    def parse_page_content(page_content):
         out_text = []
         soup = BeautifulSoup(page_content, "lxml")
         content_p = soup.find_all('div', {'itemprop': ['articleBody']})
@@ -55,7 +56,20 @@ class DiplomatScrapper(StaticScrapper):
                 pt = parag.get_text()
                 out_text.append(pt)
         # print("read {} chars on {}".format(len(''.join(out_text)), url))
-        self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)
+        return out_text
+
+        
+    def get_search_result(self, url, page_content, keywords):
+        links = DiplomatScrapper.parse_search_result(page_content)
+        for lnk in links:
+            sc = StaticScrapper(lnk, keywords=keywords, callback=self.get_page_content, requested_by=self.requested_by)
+            sc.start()
+
+    def get_page_content(self, url, page_content, keywords):
+        text = ''.join(DiplomatScrapper.parse_page_content(page_content))
+        # print("read {} chars on {}".format(len(''.join(out_text)), url))
+        self.dbf.add_record(keywords, url, text, lang=self.lang)
+        
 
 
 if __name__ == '__main__':

@@ -15,27 +15,32 @@ class NYTScrapper(StaticScrapper):
         url = url+quote(keywords)
         self.debug = debug
         self.lang = "en"
-        super().__init__(url, keywords, callback=self.parse_search_result, requested_by=requested_by)
+        super().__init__(url, keywords, callback=self.get_search_result, requested_by=requested_by)
 
-    def parse_search_result(self, url, page_content, keywords):
+    @staticmethod
+    def parse_search_result(page_content):
+        links = []
         soup = BeautifulSoup(page_content, "lxml")
         # look for result links
         resdivs = soup.find_all('li', {'class': re.compile("(SearchResults-item*)")})
         for i in resdivs:
-            # TODO manage full urls like http://query.nytimes.com/gst/abstract.html?res=990CEEDC1539E433A25757C0A9679C946196D6CF
             lnk = i.find_all('a')[0].get('href')
             lnktxt = i.get_text()
-            sc = StaticScrapper("http://www.nytimes.com" + lnk, keywords=keywords, callback=self.parse_page_content,requested_by=self.requested_by)
+            if not "nytimes.com" in lnk:
+                lnk = "http://www.nytimes.com" + lnk
+            links.append(lnk)
+        return links
+        
+    def get_search_result(self, url, page_content, keywords):
+        links = NYTScrapper.parse_search_result(page_content)
+        for lnk in links:
+            sc = StaticScrapper(lnk, keywords=keywords, callback=self.get_page_content, requested_by=self.requested_by)
             sc.start()
 
-
-    # TODO : ajouter un espace entre les paragraphes </p><p>
-    def parse_page_content(self, url, page_content, keywords):
+    
+    @staticmethod
+    def parse_page_content(page_content):
         out_text = []
-        """
-        :param e contient le texte d'une page de resultat
-        :return:
-        """
         # print("looking for content on {}".format(url))
         soup = BeautifulSoup(page_content, "lxml")
         tagtype = "div"
@@ -59,4 +64,11 @@ class NYTScrapper(StaticScrapper):
             pt = maincnt.get_text()
             out_text.append(" " + pt)
         # print("read {} chars on {}".format(len(''.join(out_text)), url))
-        self.dbf.add_record(keywords, url, ''.join(out_text), lang=self.lang)
+        return out_text
+        
+
+    def get_page_content(self, url, page_content, keywords):
+        text = ''.join(NYTScrapper.parse_page_content(page_content))
+        # print("read {} chars on {}".format(len(''.join(out_text)), url))
+        self.dbf.add_record(keywords, url, text, lang=self.lang)
+        

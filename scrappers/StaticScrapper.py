@@ -29,19 +29,23 @@ class StaticScrapper(Thread):
     def parse_search_result(self, url, page_content, keywords):
         raise NotImplementedError
 
-    def run(self):
+    @staticmethod
+    def fetch(url, url_args):
         try:
-            encoded_args = urlencode(self.url_args)
-            self.request_url = self.url + encoded_args
+            encoded_args = urlencode(url_args)
+            request_url = url + encoded_args
         except TypeError as te:
-            self.request_url = self.url
+            request_url = url
             pass
         try:
-            r = requests.get(self.request_url)
-            if self.callback is not None:
-                self.callback(self.url, r.text, self.keywords)
+            r = requests.get(request_url)
             return r.text
         except requests.exceptions.ConnectionError as ce:
             print(ce)
         except urllib3.exceptions.MaxRetryError as mre:
             print(mre)
+            
+    def run(self):
+        text = StaticScrapper.fetch(self.url, self.url_args)
+        if self.callback is not None:
+            self.callback(self.url, text, self.keywords)
