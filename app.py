@@ -7,10 +7,11 @@ dbf = DBFace()
 dbcli = dbf.get_client()
 
 
-@app.route("/run/<string:search_term>/")
-def run(search_term):
-    st = "found {} docs ".format(len(dbf.find_with_content("trump")))
-    return render_template('main.html', name=search_term)
+@app.route("/run/")
+def run():
+    # st = "found {} docs ".format(len(dbf.find_with_content("trump")))
+    # return render_template('main.html', name=search_term)
+    return render_template('main.html')
 
 @app.route("/something/<search_term>")
 def get_something(search_term):
