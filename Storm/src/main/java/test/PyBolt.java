@@ -22,7 +22,7 @@ import java.util.*;
 class BoltTest extends ShellBolt implements IRichBolt {
 
     public BoltTest(){
-        super("python", "/home/mathias/bigdata/projet/Congruence/Storm/src/main/python/NLPBolt.py");
+        super("python", "/home/mathias/bigdata/projet/Congruence/Storm/src/main/python/pyjava/NLPBolt.py");
         Map env = new HashMap();
         env.put("PYTHONPATH", "/bin/");
         this.setEnv(env);
