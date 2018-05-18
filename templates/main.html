@@ -3,12 +3,169 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="https://fastcdn.org/MooTools/1.5.2/MooTools-Core-compat-compressed.js"></script>
+    <script src="{{ url_for('static', filename='vendor/vis.min.js') }}"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
           integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/vis.min.css') }}">
 
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>-->
     <title>Congruence</title>
+
+    <script type="text/javascript">
+var nodes = null;
+var edges = null;
+var network = null;
+
+function draw() {
+// create people.
+// value corresponds with the age of the person
+nodes = [{color:'rgb(255, 204, 0)',id:'0',label:'CNN',value:'1'},{color:'rgb(255, 204, 0)',id:'1',label:'White House',value:'1'},{color:'rgb( 0, 51, 102)',id:'2',label:'Bolton',value:'1'},{color:'rgb( 0, 51, 102)',id:'3',label:'Donald Trump',value:'1'},{color:'rgb( 204, 204, 204)',id:'4',label:'president',value:'1'},{color:'rgb( 0, 51, 102)',id:'5',label:'Cohen',value:'1'},{color:'rgb( 204, 204, 204)',id:'6',label:'time',value:'1'},{color:'rgb( 0, 51, 102)',id:'7',label:'Mattis',value:'1'},{color:'rgb( 204, 204, 204)',id:'8',label:'administration',value:'1'},{color:'rgb( 204, 204, 204)',id:'9',label:'xi',value:'1'},{color:'rgb(255, 204, 0)',id:'10',label:'Mar-a-Lago',value:'1'},{color:'rgb( 0, 51, 102)',id:'11',label:'Trump',value:'1'},{color:'rgb( 204, 204, 204)',id:'12',label:'campaign',value:'1'},{color:'rgb(255, 204, 0)',id:'13',label:'Secret Service',value:'1'},{color:'rgb(255, 204, 0)',id:'14',label:'Novartis',value:'1'},{color:'rgb( 204, 204, 204)',id:'15',label:'club',value:'1'},{color:'rgb(255, 204, 0)',id:'16',label:'State Department',value:'1'},{color:'rgb( 0, 51, 102)',id:'17',label:'Donnelly',value:'1'}];
+
+
+// create connections between people
+// value corresponds with the amount of contact between two people
+edges = [{to:'0',title:'1',color:'rgb(100,100,100',from:'2'},
+{to:'10',title:'1',color:'rgb(100,100,100',from:'2'},
+{to:'7',title:'1',color:'rgb(100,100,100',from:'2'},
+{to:'11',title:'1',color:'rgb(100,100,100',from:'2'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'2'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'2'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'2'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'2'},
+{to:'10',title:'1',color:'rgb(100,100,100',from:'0'},
+{to:'14',title:'1',color:'rgb(100,100,100',from:'0'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'0'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'0'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'0'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'0'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'0'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'0'},
+{to:'0',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'3',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'10',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'14',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'11',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'5'},
+{to:'10',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'13',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'16',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'11',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'3'},
+{to:'10',title:'1',color:'rgb(100,100,100',from:'17'},
+{to:'13',title:'1',color:'rgb(100,100,100',from:'17'},
+{to:'11',title:'1',color:'rgb(100,100,100',from:'17'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'17'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'17'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'17'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'17'},
+{to:'14',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'13',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'16',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'10'},
+{to:'0',title:'1',color:'rgb(100,100,100',from:'7'},
+{to:'10',title:'1',color:'rgb(100,100,100',from:'7'},
+{to:'11',title:'1',color:'rgb(100,100,100',from:'7'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'7'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'7'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'7'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'7'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'14'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'14'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'14'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'14'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'14'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'14'},
+{to:'16',title:'1',color:'rgb(100,100,100',from:'13'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'13'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'13'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'13'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'13'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'13'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'13'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'16'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'16'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'16'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'16'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'16'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'16'},
+{to:'0',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'10',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'14',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'13',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'16',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'1',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'11'},
+{to:'8',title:'1',color:'rgb(100,100,100',from:'1'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'1'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'1'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'1'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'1'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'1'},
+{to:'12',title:'1',color:'rgb(100,100,100',from:'8'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'8'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'8'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'8'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'8'},
+{to:'15',title:'1',color:'rgb(100,100,100',from:'12'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'12'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'12'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'12'},
+{to:'4',title:'1',color:'rgb(100,100,100',from:'15'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'15'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'15'},
+{to:'6',title:'1',color:'rgb(100,100,100',from:'4'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'4'},
+{to:'9',title:'1',color:'rgb(100,100,100',from:'6'}];
+
+
+// Instantiate our network object.
+var container = document.getElementById('mynetwork');
+var data = {
+nodes: nodes,
+edges: edges
+};
+var options = {
+nodes: {
+shape: 'dot',
+scaling:{
+label: {
+min:8,
+max:20
+}
+}
+}
+};
+network = new vis.Network(container, data, options);
+}
+
+
+
+    </script>
+
+
 </head>
 <body class="text-center">
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column" id="content">
@@ -23,31 +180,38 @@
         </div>
         <div class="row">
             <div class="col-sm">
-                <div data-dismiss="alert" class="alert alert-success" role="alert" id="db_status_box"></div>
-                <div data-dismiss="alert" class="alert alert-success" role="alert" id="opennlp_status_box"></div>
+
+            </div>
+            <div class="col-6">
+                <div class="figure" id="receptor"></div>
+                <div id="mynetwork"></div>
             </div>
             <div class="col-sm">
-                <div id="receptor"></div>
+                <div data-dismiss="alert" class="alert alert-success" role="alert" id="db_status_box"></div>
+                <div data-dismiss="alert" class="alert alert-success" role="alert" id="opennlp_status_box"></div>
+                <input type="text" id="stream_field" name="keyword">
                 <form id="search_form" method="get" onsubmit="backend_call(); return false;">
                     <input type="text" id="search_field" name="keyword">
                     <button onclick="backend_call();" class="btn btn-primary">go</button>
                 </form>
-                <input type="text" id="stream_field" name="keyword">
+                <!--<ul>-->
+                <!--<li><img class="rounded" src="https://us.v-cdn.net/5021068/uploads/userpics/620/p3TNH1ATZKBG4.png">-->
+                <!--</li>-->
+                <!--<li><img class="rounded" src="https://78.media.tumblr.com/avatar_8e7842a29083_128.pnj"></li>-->
+                <!--<li><img class="rounded" src="https://78.media.tumblr.com/avatar_f53d371062e3_128.pnj"></li>-->
+                <!--</ul>-->
             </div>
-            <div class="col-sm">
-                <ul>
-                    <li><img class="rounded" src="https://us.v-cdn.net/5021068/uploads/userpics/620/p3TNH1ATZKBG4.png">
-                    </li>
-                    <li><img class="rounded" src="https://78.media.tumblr.com/avatar_8e7842a29083_128.pnj"></li>
-                    <li><img class="rounded" src="https://78.media.tumblr.com/avatar_f53d371062e3_128.pnj"></li>
-                </ul>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
             </div>
+            <div class="col"></div>
         </div>
     </header>
 </div>
 
-<script src="{{ url_for('static', filename='js/coms.js') }}"
-"></script>
+<script src="{{ url_for('static', filename='js/coms.js') }}"></script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

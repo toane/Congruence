@@ -35,14 +35,14 @@ function get_db_status() {
             var loaded = event.loaded,
                 total = event.total;
             console.log("get_db_status: ", xhr.responseText);
-            console.log("get_db_status; ", xhr.responseText.localeCompare("error"));
+//            console.log("get_db_status; ", xhr.responseText.localeCompare("error"));
 
             if (xhr.responseText.localeCompare("error") == 0) {
                 db_status_box.removeClass("alert alert-success");
                 db_status_box.addClass("alert alert-info");
                 db_status_box.set('text', "db unresponsive");
             } else {
-                db_status_box.set('text', "db ok");
+                db_status_box.set('text', "db status ok");
             }
 
         }
@@ -62,14 +62,14 @@ function get_opennlp_status() {
             var loaded = event.loaded,
                 total = event.total;
             console.log("get_opennlp_status: ", xhr.responseText);
-            console.log("get_opennlp_status: ", xhr.responseText.localeCompare("error"));
+//            console.log("get_opennlp_status: ", xhr.responseText.localeCompare("error"));
 
             if (xhr.responseText.localeCompare("error") == 0) {
                 db_status_box.removeClass("alert alert-success");
                 db_status_box.addClass("alert alert-info");
                 db_status_box.set('text', "OpenNLP unresponsive");
             } else {
-                db_status_box.set('text', "OpenNLP ok");
+                db_status_box.set('text', "OpenNLP status ok");
             }
 
         }
@@ -79,16 +79,20 @@ function get_opennlp_status() {
 
 var read_stream = function() {
     var stream_box = document.getElement('#stream_field');
-    console.log(stream_box)
     var myRequest = new Request({
         url: '/streamed_data/',
         method: 'get',
         onProgress: function(event, xhr) {
-            console.log("read_stream", xhr.responseText);
+//            console.log("read_stream", xhr.responseText);
             stream_box.set('value', xhr.responseText);
-            read_stream();
+//            read_stream();
+        },
+        onSuccess: function(responseText, responseXML){
+            setTimeout(read_stream, 200);
         }
     });
     myRequest.send();
 }
 read_stream();
+
+draw();

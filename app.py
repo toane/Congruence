@@ -69,6 +69,7 @@ def get_stream():
 @app.route("/storm/scrapper_progress/")
 def get_scrapper_data():
     """
+    reagit aux requetes vers http://127.0.0.1:5000/storm/scrapper_progress/?data=...
     reçoit les données de progression des scrappers
     messages de la forme
         {
@@ -92,3 +93,16 @@ def get_graph_data():
     """
     json_data = request.args.get('data', '')
     return "called app.py:get_graph_data()"
+
+@app.route("/storm/token_progress/")
+def get_token_progress():
+    """
+    methode de suivi de la tokenisation
+    reagit aux requetes vers http://127.0.0.1:5000/storm/token_progress/?data=...
+    attend des messages de la forme
+    {"tokenifiable_documents": nb docs a tokenifier}
+    OU
+    {"tokenized_document": 1}
+    """
+    json_data = request.args.get('data', '')
+    return "called app.py:get_token_progress()"
