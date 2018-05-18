@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 from DBFace import DBFace
+import random
+import string
 import sys
 app = Flask(__name__)
 
@@ -55,3 +57,38 @@ def get_db_status():
 def get_opennlp_status():
     #TODO actual call
     return "error"
+
+@app.route("/streamed_data/")
+def get_stream():
+    # def generate():
+    #         while True:
+    #             yield ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    return Response(''.join(random.choices(string.ascii_uppercase + string.digits, k=8)), mimetype='text/html')
+
+
+@app.route("/storm/scrapper_progress/")
+def get_scrapper_data():
+    """
+    reçoit les données de progression des scrappers
+    messages de la forme
+        {
+        'scrapper_name':'CNNScrapper',
+        'nb_results': 10
+        }
+        OU
+        {
+        'scrapper_name':'CNNScrapper',
+        'page_download':1
+        }
+    :return:
+    """
+    scrapper_data = request.args.get('data', '')
+    return "called app.py:get_scrapper_data()"
+
+@app.route("/storm/graph_json/")
+def get_graph_data():
+    """reagit aux requetes vers http://127.0.0.1:5000/storm/graph_json/?data=...
+    attend les donénes de Graph.py::to_json()
+    """
+    json_data = request.args.get('data', '')
+    return "called app.py:get_graph_data()"
