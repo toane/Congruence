@@ -3,7 +3,7 @@ from threading import Thread
 
 import urllib3
 
-from DBFace import DBFace
+from utils.DBFace import DBFace
 try:
     from urllib import urlencode
 except ImportError as ie:

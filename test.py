@@ -7,9 +7,9 @@ from scrappers.LiberationScrapper import LiberationStaticScrapper
 from scrappers.NYTScrapper import NYTScrapper
 from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
 
-from DBFace import DBFace
-from analyse import Analyser
-import analyse
+from utils.DBFace import DBFace
+from utils.analyse import Analyser
+import utils.analyse as analyse
 from scrappers.BBCScrapper import BBCScrapper
 from scrappers.DiplomatScrapper import DiplomatScrapper
 
@@ -63,7 +63,8 @@ def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
         return None
         
     dbf = DBFace()
-    analyser = Analyser('http://192.168.1.53', 9000)
+    #analyser = Analyser('http://192.168.1.53', 9000)
+    analyser = Analyser('http://localhost', 9000)
 
     print("running recursive search at depth {} for keyword {} from initial keyword {}".format(depth, current_keywords, initial_keywords))
     run_scrappers(current_keywords, langs=['en'])

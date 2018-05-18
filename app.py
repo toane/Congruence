@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, Response
-from DBFace import DBFace
+from utils.DBFace import utils.DBFace
 import random
 import string
 import sys

@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from DBFace import DBFace
+from utils.DBFace import DBFace
 from scrappers.StaticScrapper import StaticScrapper
 
 try:

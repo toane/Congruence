@@ -16,7 +16,7 @@ from bson.code import Code
 from pymongo import MongoClient, TEXT, ReturnDocument
 from pymongo.errors import ServerSelectionTimeoutError
 
-from analyse import Analyser
+from utils.analyse import Analyser
 from model.Singleton import Singleton
 
 

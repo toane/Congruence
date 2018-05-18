@@ -51,12 +51,12 @@ def aggregate_proper_names(person_names_tokens):
             to_replace[person] = best_long_name
             
     res = list(person_names_tokens)
-    print("before replace : ", res)
+    #print("before replace : ", res)
     for i, person in enumerate(res):
         if person in to_replace.keys():
             res[i] = to_replace[person]
             
-    print("after replace : ", res, "\n\n\n")
+    #print("after replace : ", res, "\n\n\n")
     return res
 
     
@@ -114,6 +114,9 @@ class Analyser(metaclass=Singleton):
         return text.split(".")
 
     def advanced_sentences_split(self, text):
+        if text.count(".") <= 1:
+            return [text]
+        
         props={'annotators': 'ssplit', 'outputFormat':'json'}
         sentences_json = self.nlp.annotate(text, properties=props)
         sentences_raw = json.loads(sentences_json)
