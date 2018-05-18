@@ -39,9 +39,9 @@ def show_user_profile(username):
     # show the user profile for that user
     return 'User %s' % username
 
-
+@app.route("/get_db_status/")
 def get_db_status():
-    #TODO dont wait for db
+    #TODO async wait for db ?
     sts = False
     try:
         servdata = dbcli.server_info()
@@ -49,4 +49,9 @@ def get_db_status():
         sts = str(servdata['ok'])
         return sts
     except:
-        pass
+        return "error"
+
+@app.route("/get_opennlp_status/")
+def get_opennlp_status():
+    #TODO actual call
+    return "error"

@@ -5,19 +5,12 @@
     <script src="https://fastcdn.org/MooTools/1.5.2/MooTools-Core-compat-compressed.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
           integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>-->
     <title>Congruence</title>
 </head>
 <body class="text-center">
-
-<!--{% if name %}-->
-<!--<h1>Hello {{ name }}!</h1>-->
-<!--{% else %}-->
-<!--<h1>Hello, World!</h1>-->
-<!--{% endif %}-->
-
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column" id="content">
     <header class="masthead mb-auto">
         <div class="row">
@@ -29,48 +22,31 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm"></div>
+            <div class="col-sm">
+                <div data-dismiss="alert" class="alert alert-success" role="alert" id="db_status_box"></div>
+                <div data-dismiss="alert" class="alert alert-success" role="alert" id="opennlp_status_box"></div>
+            </div>
             <div class="col-sm">
                 <div id="receptor"></div>
                 <form id="search_form" method="get" onsubmit="backend_call(); return false;">
                     <input type="text" id="search_field" name="keyword">
-                    <button onclick="backend_call();">go</button>
+                    <button onclick="backend_call();" class="btn btn-primary">go</button>
                 </form>
             </div>
             <div class="col-sm">
                 <ul>
-                    <li><img src="https://us.v-cdn.net/5021068/uploads/userpics/620/p3TNH1ATZKBG4.png"></li>
-                    <li><img src="https://78.media.tumblr.com/avatar_8e7842a29083_128.pnj"></li>
-                    <li><img src="https://78.media.tumblr.com/avatar_f53d371062e3_128.pnj"></li>
+                    <li><img class="rounded" src="https://us.v-cdn.net/5021068/uploads/userpics/620/p3TNH1ATZKBG4.png">
+                    </li>
+                    <li><img class="rounded" src="https://78.media.tumblr.com/avatar_8e7842a29083_128.pnj"></li>
+                    <li><img class="rounded" src="https://78.media.tumblr.com/avatar_f53d371062e3_128.pnj"></li>
                 </ul>
             </div>
         </div>
     </header>
 </div>
-<script>
 
-    var recepdiv = document.id('receptor');
-    var search_field = document.getElement('#search_form > input');
-
-    function backend_call(){
-      var search_text = search_field.get('value')
-      var myRequest = new Request({
-         url: '/search/',
-         method: 'get',
-         data:{'keyword': search_text},
-
-        onProgress: function(event, xhr){
-        var loaded = event.loaded, total = event.total;
-        console.log("responseText",xhr.responseText);
-        recepdiv.set('text',xhr.responseText);
-    }
-});
-myRequest.send();
-    }
-
-
-
-</script>
+<script src="{{ url_for('static', filename='js/coms.js') }}"
+"></script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
