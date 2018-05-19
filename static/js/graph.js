@@ -2,10 +2,15 @@ var nodes = null;
 var edges = null;
 var network = null;
 
+function get_graph_data() {
+    var search_text = search_field.get('value');
+    var request = new Request.JSON({
 
-var get_graph_data = new Request.JSON({
-        url: '/storm/graph_json_nodes/',
+        url: '/launch/',
         method: 'get',
+        data: {
+            'data': search_text
+        },
         onProgress: function(event, xhr) {
         },
         onSuccess: function(responseJSON, responseText){
@@ -15,9 +20,11 @@ var get_graph_data = new Request.JSON({
         onError(text, error){
             console.log(text, error)
         }
-    });
+    })
+    request.send();
+}
 
-get_graph_data.send();
+
 
 function draw(nodes_data, edges_data) {
 // create people.
