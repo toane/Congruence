@@ -60,11 +60,10 @@ def get_opennlp_status():
 
 @app.route("/streamed_data/")
 def get_stream():
-    # def generate():
-    #         while True:
-    #             yield ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-    return Response(''.join(random.choices(string.ascii_uppercase + string.digits, k=8)), mimetype='text/html')
-
+    if 'choices' in dir(random):
+        return Response(''.join(random.choices(string.ascii_uppercase + string.digits, k=8)), mimetype='text/html')
+    else:
+        return Response(''.join([random.choice(string.ascii_uppercase + string.digits) for f in range(8)]), mimetype='text/html')
 
 @app.route("/storm/scrapper_progress/")
 def get_scrapper_data():
@@ -86,13 +85,38 @@ def get_scrapper_data():
     scrapper_data = request.args.get('data', '')
     return "called app.py:get_scrapper_data()"
 
-@app.route("/storm/graph_json/")
+@app.route("/storm/graph_json_nodes/")
 def get_graph_data():
-    """reagit aux requetes vers http://127.0.0.1:5000/storm/graph_json/?data=...
-    attend les donénes de Graph.py::to_json()
+    """reagit aux requetes vers http://127.0.0.1:5000/storm/graph_json_nodes/?data=...
+    attend les données de Graph.py::to_json()
     """
-    json_data = request.args.get('data', '')
-    return "called app.py:get_graph_data()"
+    json_data = request.args.get('data', '') # stocke les données reçues ici
+    nodes = "{\"nodes\": [{\"group\": \"ORGANIZATION\", \"label\": \"CNN\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 0},\
+    {\"group\": \"PERSON\", \"label\": \"Jerry Sandusky\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 1},\
+    {\"group\": \"PERSON\", \"label\": \"Joe Paterno\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 2},\
+    {\"group\": \"ORGANIZATION\", \"label\": \"Adelphi\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 3},\
+    {\"group\": \"TOPIC\", \"label\": \"show\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 4},\
+    {\"group\": \"ORGANIZATION\", \"label\": \"New York Times\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 5},\
+    {\"group\": \"PERSON\", \"label\": \"Christoph B\\u00fcchel\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 6},\
+    {\"group\": \"TOPIC\", \"label\": \"time\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 7},\
+    {\"group\": \"PERSON\", \"label\": \"Donald Trump\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 8},\
+    {\"group\": \"TOPIC\", \"label\": \"art\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 9},\
+    {\"group\": \"TOPIC\", \"label\": \"urinal\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 10},\
+    {\"group\": \"TOPIC\", \"label\": \"money\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 11},\
+    {\"group\": \"ORGANIZATION\", \"label\": \"Forestry Commission\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 12},\
+    {\"group\": \"PERSON\", \"label\": \"John Weber Gallery\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 13},\
+    {\"group\": \"PERSON\", \"label\": \"Jeff Koons\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 14},\
+    {\"group\": \"TOPIC\", \"label\": \"work\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 15},\
+    {\"group\": \"ORGANIZATION\", \"label\": \"Penn State\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 16},\
+    {\"group\": \"ORGANIZATION\", \"label\": \"MAGA\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 17}]\
+    }"
+
+    return nodes
+
+@app.route("/storm/graph_json_edges/")
+def get_graph_data_edges():
+    #TODO: test renvoie le parametre recu par l'appel précédent
+    pass
 
 @app.route("/storm/token_progress/")
 def get_token_progress():

@@ -93,6 +93,5 @@ var read_stream = function() {
     });
     myRequest.send();
 }
-read_stream();
+//read_stream();
 
-draw();
