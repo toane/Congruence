@@ -1,6 +1,6 @@
 
 from itertools import chain, combinations, groupby
-import analyse
+import utils.analyse as analyse
 import utils.Wordcount_methods as wcm
 import graphviz as gv
 import numpy as np

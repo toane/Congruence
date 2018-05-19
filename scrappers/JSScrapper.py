@@ -1,9 +1,6 @@
 from threading import Thread
-from scrappers.StaticScrapper import StaticScrapper
-from DBFace import DBFace
-from threading import Thread
 
-from DBFace import DBFace
+from utils.DBFace import DBFace
 from scrappers.StaticScrapper import StaticScrapper
 
 try:
