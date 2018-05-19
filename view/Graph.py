@@ -6,6 +6,8 @@ import graphviz as gv
 import numpy as np
 from typing import Dict
 import math
+import json
+
 dot_node_colors = {
     "PERSON" : "blue",
     "ORGANIZATION" : "red",
@@ -141,17 +143,15 @@ class GlobalGraph:
         """
         json_output = ''
         class Node:
-            def __init__(self, id, value, label, color):
-                self.id=id
-                self.value=value
-                self.label=label
-                self.color=color
+            def __init__(self, id, value, label, color, group=''):
+                self.id = id
+                self.value = value
+                self.label = label
+                self.color = color
+                self.group = group
 
-            def get_json(self):
-                ret = []
-                for k, v in self.__dict__.items():
-                    ret.append("{}:'{}'".format(k, v))
-                return '{'+','.join(ret)+'}'
+            def get_dict(self):
+                return self.__dict__
 
         class Edge:
             def __init__(self, from_node, to_node, title, color):
@@ -161,13 +161,11 @@ class GlobalGraph:
                 self.title = title
                 self.color = color
 
-            def get_json(self):
-                ret = []
-                for k, v in self.__dict__.items():
-                    if k == "from_node": k = "from"
-                    if k == "to_node": k = "to"
-                    ret.append("{}:'{}'".format(k, v))
-                return '{'+','.join(ret)+'}'
+            def get_dict(self):
+                vals = self.__dict__
+                vals["from"] = vals.pop('from_node')
+                vals["to"] = vals.pop('to_node')
+                return vals
 
         graph_edges = set([(edge[0][0][0], edge[1][0][0]) for edge in self.edges])
 
@@ -190,7 +188,7 @@ class GlobalGraph:
         for idx, node_name in enumerate(node_names):
             node_type = node_name_type[node_name]
             color = json_node_colors[node_type]
-            node = Node(idx, 1, node_name,color)
+            node = Node(idx, 1, node_name,color, node_type)
             json_nodes.append(node)
 
         for edge in graph_edges_weighted:
@@ -200,6 +198,7 @@ class GlobalGraph:
             edge = Edge(edge[0][0], edge[0][1],1,'rgb(100,100,100')
             json_edges.append(edge)
 
-        nodes_dec = "nodes = [{}]".format(','.join([node.get_json() for node in json_nodes]))
-        edges_doc="edges = [{}]".format(','.join([edge.get_json() for edge in json_edges]))
-        return {"nodes": nodes_dec, "edges": edges_doc}
+        nodes_dec = [node.get_dict() for node in json_nodes] # liste de dicts
+        edges_doc = [edge.get_dict() for edge in json_edges]
+        # return json.dumps({"nodes": nodes_dec, "edges": edges_doc})
+        return json.dumps({"nodes": nodes_dec, "edges": edges_doc})

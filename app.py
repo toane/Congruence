@@ -90,28 +90,90 @@ def get_graph_data():
     """reagit aux requetes vers http://127.0.0.1:5000/storm/graph_json_nodes/?data=...
     attend les données de Graph.py::to_json()
     """
-    json_data = request.args.get('data', '') # stocke les données reçues ici
-    nodes = "{\"nodes\": [{\"group\": \"ORGANIZATION\", \"label\": \"CNN\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 0},\
-    {\"group\": \"PERSON\", \"label\": \"Jerry Sandusky\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 1},\
-    {\"group\": \"PERSON\", \"label\": \"Joe Paterno\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 2},\
-    {\"group\": \"ORGANIZATION\", \"label\": \"Adelphi\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 3},\
-    {\"group\": \"TOPIC\", \"label\": \"show\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 4},\
-    {\"group\": \"ORGANIZATION\", \"label\": \"New York Times\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 5},\
-    {\"group\": \"PERSON\", \"label\": \"Christoph B\\u00fcchel\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 6},\
-    {\"group\": \"TOPIC\", \"label\": \"time\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 7},\
-    {\"group\": \"PERSON\", \"label\": \"Donald Trump\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 8},\
-    {\"group\": \"TOPIC\", \"label\": \"art\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 9},\
-    {\"group\": \"TOPIC\", \"label\": \"urinal\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 10},\
-    {\"group\": \"TOPIC\", \"label\": \"money\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 11},\
-    {\"group\": \"ORGANIZATION\", \"label\": \"Forestry Commission\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 12},\
-    {\"group\": \"PERSON\", \"label\": \"John Weber Gallery\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 13},\
-    {\"group\": \"PERSON\", \"label\": \"Jeff Koons\", \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"id\": 14},\
-    {\"group\": \"TOPIC\", \"label\": \"work\", \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"id\": 15},\
-    {\"group\": \"ORGANIZATION\", \"label\": \"Penn State\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 16},\
-    {\"group\": \"ORGANIZATION\", \"label\": \"MAGA\", \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"id\": 17}]\
-    }"
-
-    return nodes
+    # json_data = request.args.get('data', '') # stocke les données reçues ici
+    json_data = "{\"edges\": [{\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 17, \"to\": 14},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 17, \"to\": 12},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 17, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 17, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 14, \"to\": 12},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 14, \"to\": 7},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 14, \"to\": 10},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 14, \"to\": 15},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 14, \"to\": 3},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 14, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 14, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 0, \"to\": 12},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 0, \"to\": 3},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 0, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 0, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 12, \"to\": 3},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 12, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 12, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 1, \"to\": 6},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 5, \"to\": 9},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 5, \"to\": 3},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 5, \"to\": 16},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 5, \"to\": 11},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 5, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 5, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 5, \"to\": 6},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 7, \"to\": 10},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 7, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 7, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 10, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 10, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 9, \"to\": 3},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 9, \"to\": 16},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 9, \"to\": 11},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 9, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 9, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 9, \"to\": 6},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 4, \"to\": 0},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 4, \"to\": 12},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 4, \"to\": 3},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 4, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 4, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 2, \"to\": 16},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 2, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 2, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 2, \"to\": 6},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 15, \"to\": 7},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 15, \"to\": 10},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 15, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 15, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 3, \"to\": 16},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 3, \"to\": 11},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 3, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 3, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 3, \"to\": 6},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 16, \"to\": 11},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 16, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 16, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 16, \"to\": 6},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 11, \"to\": 13},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 11, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 11, \"to\": 6},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 13, \"to\": 8},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 13, \"to\": 6},\
+    {\"title\": 1, \"color\": \"rgb(100,100,100\", \"from\": 8, \"to\": 6}], \"nodes\": [{\"id\": 0, \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"label\": \"Christoph B\u00fcchel\", \"group\": \"PERSON\"},\
+    {\"id\": 1, \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"label\": \"Forestry Commission\", \"group\": \"ORGANIZATION\"},\
+    {\"id\": 2, \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"label\": \"New York Times\", \"group\": \"ORGANIZATION\"},\
+    {\"id\": 3, \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"label\": \"art\", \"group\": \"TOPIC\"},\
+    {\"id\": 4, \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"label\": \"MAGA\", \"group\": \"ORGANIZATION\"},\
+    {\"id\": 5, \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"label\": \"Jeff Koons\", \"group\": \"PERSON\"},\
+    {\"id\": 6, \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"label\": \"work\", \"group\": \"TOPIC\"},\
+    {\"id\": 7, \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"label\": \"Jerry Sandusky\", \"group\": \"PERSON\"},\
+    {\"id\": 8, \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"label\": \"urinal\", \"group\": \"TOPIC\"},\
+    {\"id\": 9, \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"label\": \"John Weber Gallery\", \"group\": \"PERSON\"},\
+    {\"id\": 10, \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"label\": \"Joe Paterno\", \"group\": \"PERSON\"},\
+    {\"id\": 11, \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"label\": \"show\", \"group\": \"TOPIC\"},\
+    {\"id\": 12, \"color\": \"rgb( 0, 51, 102)\", \"value\": 1, \"label\": \"Donald Trump\", \"group\": \"PERSON\"},\
+    {\"id\": 13, \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"label\": \"time\", \"group\": \"TOPIC\"},\
+    {\"id\": 14, \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"label\": \"CNN\", \"group\": \"ORGANIZATION\"},\
+    {\"id\": 15, \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"label\": \"Penn State\", \"group\": \"ORGANIZATION\"},\
+    {\"id\": 16, \"color\": \"rgb( 204, 204, 204)\", \"value\": 1, \"label\": \"money\", \"group\": \"TOPIC\"},\
+    {\"id\": 17, \"color\": \"rgb(255, 204, 0)\", \"value\": 1, \"label\": \"Adelphi\", \"group\": \"ORGANIZATION\"}]}"
+    return json_data
 
 @app.route("/storm/graph_json_edges/")
 def get_graph_data_edges():
