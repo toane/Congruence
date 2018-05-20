@@ -1,14 +1,31 @@
 import os
+import sys
 
 from streamparse import Bolt
 
-class ScrapBolt(Bolt):
-    outputs = ['info', 'text']
+from scrappers.v2.BBCScrapper import BBCScrapper
+from scrappers.v2.NYTScrapper import NYTScrapper
+from scrappers.v2.DiplomatScrapper import DiplomatScrapper
+
+
+scrap_functions = {
+    "BBC" :  BBCScrapper.get_scrap_results,
+    "NYT" : NYTScrapper.get_scrap_results,
+    "Diplo" : DiplomatScrapper.get_scrap_results
+}
+
+
+class OmniScrapBolt(Bolt):
+    outputs = ['info', 'parag']
+    
 
     def initialize(self, conf, ctx):
         self.pid = os.getpid()
+        self.searched = set()
+        self.name = conf["OmniScrapBoltName"]
+        self.scrap_function = scrap_functions[self.name]
         self.scraped = set()
-        
+
     def process(self, tup):
         info = tup.values[0]
         keyword = info["keyword"]
