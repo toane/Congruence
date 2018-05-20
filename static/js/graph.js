@@ -100,4 +100,9 @@ var options = {
     }
 };
 network = new vis.Network(container, data, options);
+
+network.on("click", function (params) {
+    params.event = "[original event]";
+    console.log('click event, getNodeAt returns: ' + this.getNodeAt(params.pointer.DOM));
+});
 }
