@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, Response
+from stanfordcorenlp import StanfordCoreNLP
+
 from utils.DBFace import DBFace
 from congruence import Congruence
 import random
@@ -7,6 +9,8 @@ import sys
 app = Flask(__name__)
 dbf = DBFace()
 dbcli = dbf.get_client()
+cong = Congruence()
+
 
 @app.route("/run/")
 def run():
@@ -19,7 +23,6 @@ def get_something(search_term):
 @app.route("/")
 def index():
     return "the root"
-
 
 @app.route("/search/")
 def search():
@@ -35,8 +38,7 @@ def search():
 @app.route('/launch/')
 def launch():
     keyword = request.args.get('data', '')
-    cong = Congruence(keyword)
-    gdt = cong.run()
+    gdt = cong.run(keyword)
     return gdt
 
 @app.route("/get_db_status/")
@@ -46,6 +48,17 @@ def get_db_status():
         servdata = dbcli.server_info()
         ndlist = '\n'.join(servdata.keys())
         sts = str(servdata['ok'])
+        return sts
+    except:
+        return "error"
+
+@app.route("/get_nlp_status/")
+def get_nlp_status():
+    sts = False
+    try:
+        nlp = StanfordCoreNLP("http://localhost", port=9000) # TODO ne pas marquer l'uri en dur
+        sts = ",".join(dir(nlp))
+        nlp.close()
         return sts
     except:
         return "error"
@@ -101,7 +114,7 @@ def get_token_progress():
     {"tokenized_document": 1}
     """
     json_data = request.args.get('data', '')
-    return "called app.py:get_token_progress()"
+    return "called app.py:get_token_progress(%s)" % json_data
 
 
 @app.errorhandler(404)

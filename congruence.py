@@ -20,12 +20,13 @@ import view.Graph as graph
 
 class Congruence:
 
-    def __init__(self, keywords):
+    def __init__(self):
         self.threads = []
-        self.keywords = keywords
+        self.keywords = ''
         self.dbf = DBFace()
 
-    def run(self):
+    def run(self, keywords):
+        self.keywords = keywords
         self.recursive_search(self.keywords, self.keywords, 1, langs = ['en'])
         wordcounts = self.dbf.get_wordcounts(self.keywords)
         global_wordcount = wcm.global_wordcount(wordcounts)
@@ -54,12 +55,12 @@ class Congruence:
         if 'en' in langs:
             nys = NYTScrapper("https://www.nytimes.com/search/", keywords, self.thread_accumulator)
             bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, self.thread_accumulator)
-            cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, self.thread_accumulator)
+            # cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, self.thread_accumulator)
             dps = DiplomatScrapper('https://www.googleapis.com/customsearch/v1element?', keywords, self.thread_accumulator)
 
             nys.start()
             bbs.start()
-            cnn.start()
+            # cnn.start()
             dps.start()
 
         for t in self.threads:
