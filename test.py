@@ -32,9 +32,9 @@ def thread_accumulator(thread):
 def run_scrappers(keywords, langs=['en']):
 
     if 'fr' in langs:
-        ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, thread_accumulator)
-        ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, thread_accumulator)
-        fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, thread_accumulator)
+        ns = NouvelobsStaticScrapper(keywords, requested_by = thread_accumulator)
+        ls = LiberationStaticScrapper(keywords, requested_by = thread_accumulator)
+        fs = FigaroStaticScrapper( keywords, requested_by = thread_accumulator)
         
         ls.start()
         ns.start()
@@ -59,7 +59,7 @@ def run_scrappers(keywords, langs=['en']):
         t.join()
 
 
-def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
+def recursive_search(initial_keywords, current_keywords, depth, langs = ['en', 'fr']):
     if depth == 0:
         return None
         
@@ -68,7 +68,7 @@ def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
     analyser = Analyser('http://localhost', 9000)
 
     print("running recursive search at depth {} for keyword {} from initial keyword {}".format(depth, current_keywords, initial_keywords))
-    run_scrappers(current_keywords, langs=['en'])
+    run_scrappers(current_keywords, langs=langs)
 
     
     fwst = dbf.find_with_search_term(current_keywords)
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
 
-    recursive_search(keywords, keywords, 1, langs = ['en'])
+    recursive_search(keywords, keywords, 1, langs = ['en', 'fr'])
     
     dbf = DBFace()
     

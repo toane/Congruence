@@ -5,17 +5,20 @@ from streamparse import Bolt
 # from libs.scrappers.BBCScrapper import get_search_result as BBC_search_result
 # from libs.scrappers.DiplomatScrapper import get_search_result as Diplo_search_result
 # from libs.scrappers.NYTScrapper import  get_search_result as NYT_search_result
+#import sys
+#sys.path.append("..")
 
-from ..scrappers.BBCScrapper import BBCScrapper
-from ..scrappers.NYTScrapper import NYTScrapper
-from ..scrappers.DiploScrapper import DiploScrapper
+from libs.scrappers.BBCScrapper import BBCScrapper
+from libs.scrappers.NYTScrapper import NYTScrapper
+from libs.scrappers.DiplomatScrapper import DiplomatScrapper
 
-from ..scrappers.StaticScrapper import StaticScrapper.fetch as fetch
+from scrappers.v2.StaticScrapper import StaticScrapper
 
+fetch = StaticScrapper.fetch_url
 search_functions = {
-    "BBC" :  BBC_parse_search,
-    "NYT" : NYT_parse_search,
-    "Diplo" : Diplo_parse_search
+    "BBC" :  BBCScrapper.get_search_page,
+    "NYT" : NYTScrapper.get_search_page,
+    "Diplo" : DiplomatScrapper.get_search_page
 }
 
 class OmniSearchBolt(Bolt):
