@@ -1,11 +1,7 @@
 from bs4 import BeautifulSoup
-from scrappers.DynamicScrapper import JSScrapper
 
-<<<<<<< HEAD:scrappers/v1/CNNScrapper.py
 from scrappers.v1.StaticScrapper import StaticScrapper
-=======
-from scrappers.DynamicScrapper import JSScrapper
->>>>>>> 6b025c5dc170cf7fc49a1eeb458b3209a034f119:scrappers/CNNScrapper.py
+from scrappers.v1.DynamicScrapper import JSScrapper
 
 try:
     from selenium import webdriver
