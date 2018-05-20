@@ -1,8 +1,6 @@
-from itertools import cycle
+
 
 from streamparse import Spout
-
-
 import socket
 
 class SocketListener:

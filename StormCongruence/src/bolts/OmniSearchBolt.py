@@ -8,8 +8,6 @@ from streamparse import Bolt
 # from libs.scrappers.BBCScrapper import get_search_result as BBC_search_result
 # from libs.scrappers.DiplomatScrapper import get_search_result as Diplo_search_result
 # from libs.scrappers.NYTScrapper import  get_search_result as NYT_search_result
-#import sys
-#sys.path.append("..")
 
 from scrappers.v2.BBCScrapper import BBCScrapper
 from scrappers.v2.NYTScrapper import NYTScrapper
