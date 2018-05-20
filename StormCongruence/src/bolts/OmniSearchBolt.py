@@ -1,4 +1,7 @@
 import os
+import sys
+
+print("path: ", sys.path)
 
 from streamparse import Bolt
 
@@ -8,9 +11,9 @@ from streamparse import Bolt
 #import sys
 #sys.path.append("..")
 
-from libs.scrappers.BBCScrapper import BBCScrapper
-from libs.scrappers.NYTScrapper import NYTScrapper
-from libs.scrappers.DiplomatScrapper import DiplomatScrapper
+from scrappers.v2.BBCScrapper import BBCScrapper
+from scrappers.v2.NYTScrapper import NYTScrapper
+from scrappers.v2.DiplomatScrapper import DiplomatScrapper
 
 from scrappers.v2.StaticScrapper import StaticScrapper
 
