@@ -1,21 +1,18 @@
 #!/usr/bin/python3
 import sys
 
-from scrappers.CNNScrapper import CNNScrapper
-from scrappers.FigaroScrapper import FigaroStaticScrapper
-from scrappers.LiberationScrapper import LiberationStaticScrapper
-from scrappers.NYTScrapper import NYTScrapper
-from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
-
-from utils.DBFace import DBFace
-from utils.analyse import Analyser
-import utils.analyse as analyse
-from scrappers.BBCScrapper import BBCScrapper
-from scrappers.DiplomatScrapper import DiplomatScrapper
+from scrappers.v1.BBCScrapper import BBCScrapper
+from scrappers.v1.FigaroScrapper import FigaroStaticScrapper
+from scrappers.v1.LiberationScrapper import LiberationStaticScrapper
+from scrappers.v1.NYTScrapper import NYTScrapper
+from scrappers.v1.NouvelobsScrapper import NouvelobsStaticScrapper
 
 import utils.Wordcount_methods as wcm
-
+import utils.analyse as analyse
 import view.Graph as graph
+from scrappers.v1.DiplomatScrapper import DiplomatScrapper
+from utils.DBFace import DBFace
+from utils.analyse import Analyser
 
 
 class Congruence:

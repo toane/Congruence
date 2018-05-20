@@ -1,21 +1,19 @@
 #!/usr/bin/python3
 import sys
 
+from scrappers.BBCScrapper import BBCScrapper
 from scrappers.CNNScrapper import CNNScrapper
 from scrappers.FigaroScrapper import FigaroStaticScrapper
 from scrappers.LiberationScrapper import LiberationStaticScrapper
 from scrappers.NYTScrapper import NYTScrapper
 from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
 
+import utils.Wordcount_methods as wcm
+import utils.analyse as analyse
+import view.Graph as graph
+from scrappers.v1.DiplomatScrapper import DiplomatScrapper
 from utils.DBFace import DBFace
 from utils.analyse import Analyser
-import utils.analyse as analyse
-from scrappers.BBCScrapper import BBCScrapper
-from scrappers.DiplomatScrapper import DiplomatScrapper
-
-import utils.Wordcount_methods as wcm
-
-import view.Graph as graph
 
 """
 1) lancer les scrappers sur un mot cle
@@ -63,7 +61,7 @@ def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
         return None
         
     dbf = DBFace()
-    #analyser = Analyser('http://192.168.1.53', 9000)
+    # analyser = Analyser('http://192.168.1.53', 9000)
     analyser = Analyser('http://localhost', 9000)
 
     print("running recursive search at depth {} for keyword {} from initial keyword {}".format(depth, current_keywords, initial_keywords))
@@ -120,4 +118,4 @@ if __name__ == '__main__':
 
 
     g = graph.GlobalGraph(wordcounts, n=6)
-    g.to_dot()
+    print(g.to_json())

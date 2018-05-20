@@ -4,7 +4,7 @@ try:
 except ImportError as ie:
     from urllib.parse import urlencode, quote, urlparse, parse_qs
 
-from scrappers.StaticScrapper import StaticScrapper
+from scrappers.v1.StaticScrapper import StaticScrapper
 
 
 class LiberationStaticScrapper(StaticScrapper):

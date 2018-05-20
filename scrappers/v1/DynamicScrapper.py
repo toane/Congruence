@@ -1,7 +1,7 @@
 from threading import Thread
 
+from scrappers.v1.StaticScrapper import StaticScrapper
 from utils.DBFace import DBFace
-from scrappers.StaticScrapper import StaticScrapper
 
 try:
     from urllib import urlencode

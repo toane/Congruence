@@ -39,7 +39,9 @@ digraph G {
 "NouvelobsScrapper" -> "DBFace"
 "FigaroScrapper" -> "DBFace"
 "CNNScrapper" -> "DBFace"
-"DBFace" -> "Document"
+"DBFace" -> "Article"
+"Graph" -> "Analyser"
+"Flask" -> "Graph"
 
 
 }

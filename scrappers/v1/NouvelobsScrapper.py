@@ -1,5 +1,6 @@
-from scrappers.StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
+
+from scrappers.v1.StaticScrapper import StaticScrapper
 
 
 class NouvelobsStaticScrapper(StaticScrapper):

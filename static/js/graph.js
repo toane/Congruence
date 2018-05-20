@@ -29,14 +29,12 @@ function get_graph_data() {
             console.log(container)
         },
         onSuccess: function(responseJSON, responseText){
-            //cree element my network
-            //appeler draw
             search_field.removeProperty('readonly');
             if (responseJSON['nodes'].length > 0) {
                draw(responseJSON['nodes'], responseJSON['edges'])
               }
               else{
-                //afficher un message
+                //TODO afficher un message
 //               draw([{nodes: [{id: "NO DATA", label: 'No data'}] }] )
               }
         },
@@ -102,7 +100,8 @@ var options = {
 network = new vis.Network(container, data, options);
 
 network.on("click", function (params) {
-    params.event = "[original event]";
-    console.log('click event, getNodeAt returns: ' + this.getNodeAt(params.pointer.DOM));
-});
+        params.event = "[original event]";
+        console.log('click event, getNodeAt returns: ' + this.getNodeAt(params.pointer.DOM));
+    });
+
 }
