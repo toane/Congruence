@@ -1,21 +1,32 @@
 #!/usr/bin/python3
 import sys
 
-from scrappers.CNNScrapper import CNNScrapper
-from scrappers.FigaroScrapper import FigaroStaticScrapper
-from scrappers.LiberationScrapper import LiberationStaticScrapper
-from scrappers.NYTScrapper import NYTScrapper
-from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
+scrappers_version = 1
 
+if scrappers_version == 1:
+    from scrappers.CNNScrapper import CNNScrapper
+    from scrappers.FigaroScrapper import FigaroStaticScrapper
+    from scrappers.LiberationScrapper import LiberationStaticScrapper
+    from scrappers.NYTScrapper import NYTScrapper
+    from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
+    from scrappers.BBCScrapper import BBCScrapper
+    from scrappers.DiplomatScrapper import DiplomatScrapper
+else:
+    from scrappers.v2.CNNScrapper import CNNScrapper
+    from scrappers.v2.FigaroScrapper import FigaroStaticScrapper
+    from scrappers.v2.LiberationScrapper import LiberationStaticScrapper
+    from scrappers.v2.NYTScrapper import NYTScrapper
+    from scrappers.v2.NouvelobsScrapper import NouvelobsStaticScrapper
+    from scrappers.v2.BBCScrapper import BBCScrapper
+    from scrappers.v2.DiplomatScrapper import DiplomatScrapper
+    
 from utils.DBFace import DBFace
 from utils.analyse import Analyser
 import utils.analyse as analyse
-from scrappers.BBCScrapper import BBCScrapper
-from scrappers.DiplomatScrapper import DiplomatScrapper
 
 import utils.Wordcount_methods as wcm
 
-import view.Graph as graph
+import utils.Graph as graph
 
 
 class Congruence:
@@ -43,9 +54,14 @@ class Congruence:
     def run_scrappers(self,keywords, langs=['en']):
 
         if 'fr' in langs:
-            ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, self.thread_accumulator)
-            ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, self.thread_accumulator)
-            fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, self.thread_accumulator)
+            if scrappers_version == 1:
+                ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, self.thread_accumulator)
+                ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, self.thread_accumulator)
+                fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, self.thread_accumulator)
+            else:
+                ns = NouvelobsStaticScrapper(keywords, requested_by= self.thread_accumulator)
+                ls = LiberationStaticScrapper(keywords, requested_by= self.thread_accumulator)
+                fs = FigaroStaticScrapper(keywords, requested_by= self.thread_accumulator)
 
             ls.start()
             ns.start()
@@ -53,11 +69,17 @@ class Congruence:
 
 
         if 'en' in langs:
-            nys = NYTScrapper("https://www.nytimes.com/search/", keywords, self.thread_accumulator)
-            bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, self.thread_accumulator)
-            # cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, self.thread_accumulator)
-            dps = DiplomatScrapper('https://www.googleapis.com/customsearch/v1element?', keywords, self.thread_accumulator)
-
+            if scrappers_version == 1:
+                nys = NYTScrapper("https://www.nytimes.com/search/", keywords, self.thread_accumulator)
+                bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, self.thread_accumulator)
+                # cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, self.thread_accumulator)
+                dps = DiplomatScrapper('https://www.googleapis.com/customsearch/v1element?', keywords, self.thread_accumulator)
+            else:
+                nys = NYTScrapper(keywords, requested_by=self.thread_accumulator)
+                bbs = BBCScrapper(keywords, requested_by=self.thread_accumulator)
+                # cnn = CNNScrapper(keywords, self.thread_accumulator)
+                dps = DiplomatScrapper(keywords, requested_by=self.thread_accumulator)
+            
             nys.start()
             bbs.start()
             # cnn.start()
