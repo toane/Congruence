@@ -15,7 +15,7 @@ scrap_functions = {
 }
 
 
-class OmniScrapBolt(Bolt):
+class ScrapBolt(Bolt):
     outputs = ['info', 'parag']
     
 

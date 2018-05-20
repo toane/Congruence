@@ -46,11 +46,18 @@ class StaticScrapper(Thread):
         self.dbf.add_record(self.keywords, self.url, ''.join(text), lang=self.lang)
 
     @classmethod
-    def get_search_page(cls, keywords):
-        print("k" ,keywords)
+    def get_search_results(cls, keywords):
         search_params = cls.make_search_params(keywords)
-        return cls.fetch(search_params[0], search_params[1])
-    
+        search_page = cls.fetch_url(search_params[0], search_params[1])
+        search_results = cls.parse_search_page(search_page)
+        return search_results
+        
+    @classmethod
+    def get_scrap_results(cls, url):
+        article_raw = cls.fetch_url(url)
+        article_content = cls.parse_page_content(article_raw)
+        return article_content
+        
     @staticmethod
     def fetch_url(url, url_args = None):
         try:
