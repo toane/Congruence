@@ -1,17 +1,18 @@
 #!/usr/bin/python3
 import sys
 
-from scrappers.CNNScrapper import CNNScrapper
-from scrappers.FigaroScrapper import FigaroStaticScrapper
-from scrappers.LiberationScrapper import LiberationStaticScrapper
-from scrappers.NYTScrapper import NYTScrapper
-from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
+
+from scrappers.v2.CNNScrapper import CNNScrapper
+from scrappers.v2.FigaroScrapper import FigaroStaticScrapper
+from scrappers.v2.LiberationScrapper import LiberationStaticScrapper
+from scrappers.v2.NYTScrapper import NYTScrapper
+from scrappers.v2.NouvelobsScrapper import NouvelobsStaticScrapper
+from scrappers.v2.BBCScrapper import BBCScrapper
+from scrappers.v2.DiplomatScrapper import DiplomatScrapper
 
 from utils.DBFace import DBFace
 from utils.analyse import Analyser
 import utils.analyse as analyse
-from scrappers.BBCScrapper import BBCScrapper
-from scrappers.DiplomatScrapper import DiplomatScrapper
 
 import utils.Wordcount_methods as wcm
 
@@ -41,14 +42,14 @@ def run_scrappers(keywords, langs=['en']):
         
 
     if 'en' in langs:
-        nys = NYTScrapper("https://www.nytimes.com/search/", keywords, thread_accumulator)
-        bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, thread_accumulator)
-        cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, thread_accumulator)
-        dps = DiplomatScrapper('https://www.googleapis.com/customsearch/v1element?', keywords, thread_accumulator)
+        nys = NYTScrapper(keywords, requested_by = thread_accumulator)
+        bbs = BBCScrapper(keywords, requested_by = thread_accumulator)
+        #cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, thread_accumulator)
+        dps = DiplomatScrapper(keywords, requested_by = thread_accumulator)
         
         nys.start()
         bbs.start()
-        cnn.start()
+        #cnn.start()
         dps.start()
         
     # # twentymin = VingtMinutesScrapper("https://www.20minutes.fr/search?", keywords)
@@ -119,5 +120,5 @@ if __name__ == '__main__':
     #print(c)
 
 
-    g = graph.GlobalGraph(wordcounts, n=6)
-    g.to_dot()
+    #g = graph.GlobalGraph(wordcounts, n=6)
+    #g.to_dot()

@@ -1,4 +1,4 @@
-from StaticScrapper import StaticScrapper
+from scrappers.StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
 from scrappers.JSScrapper import JSScrapper

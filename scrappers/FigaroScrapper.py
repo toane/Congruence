@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from utils.DBFace import DBFace
+
 from scrappers.StaticScrapper import StaticScrapper
 
 try:
@@ -14,7 +14,7 @@ class FigaroStaticScrapper(StaticScrapper):
         url = url+quote(keywords)
         super().__init__(url, keywords,'', callback=self.parse_search_result, requested_by=requested_by)
         self.lang = "fr"
-        self.dbf = DBFace()
+
 
     def parse_search_result(self, url, page_content, keywords):
         # print("figaro received {}".format(len(page_content)))

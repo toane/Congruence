@@ -31,7 +31,7 @@ class DiplomatScrapper(StaticScrapper):
         self.requested_by = requested_by
         super().__init__(url, keywords, url_args, callback=self.search_and_scrap, requested_by=requested_by)
         self.lang = "en"
-        self.dbf = DBFace()
+        
 
     @classmethod
     def get_search_page(keywords):
