@@ -1,15 +1,6 @@
 #!/usr/bin/python3
 import sys
 
-
-from scrappers.v1.BBCScrapper import BBCScrapper
-from scrappers.v1.FigaroScrapper import FigaroStaticScrapper
-from scrappers.v1.LiberationScrapper import LiberationStaticScrapper
-from scrappers.v1.NYTScrapper import NYTScrapper
-from scrappers.v1.NouvelobsScrapper import NouvelobsStaticScrapper
-from scrappers.v1.DiplomatScrapper import DiplomatScrapper
-
-
 scrappers_version = 1
 
 if scrappers_version == 1:
