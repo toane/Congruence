@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import sys
 
+<<<<<<< HEAD
 from scrappers.BBCScrapper import BBCScrapper
 from scrappers.CNNScrapper import CNNScrapper
 from scrappers.FigaroScrapper import FigaroStaticScrapper
@@ -14,6 +15,35 @@ import view.Graph as graph
 from scrappers.v1.DiplomatScrapper import DiplomatScrapper
 from utils.DBFace import DBFace
 from utils.analyse import Analyser
+=======
+scrappers_version = 1
+
+if scrappers_version == 1:
+    from scrappers.CNNScrapper import CNNScrapper
+    from scrappers.FigaroScrapper import FigaroStaticScrapper
+    from scrappers.LiberationScrapper import LiberationStaticScrapper
+    from scrappers.NYTScrapper import NYTScrapper
+    from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
+    from scrappers.BBCScrapper import BBCScrapper
+    from scrappers.DiplomatScrapper import DiplomatScrapper
+else:
+    from scrappers.v2.CNNScrapper import CNNScrapper
+    from scrappers.v2.FigaroScrapper import FigaroStaticScrapper
+    from scrappers.v2.LiberationScrapper import LiberationStaticScrapper
+    from scrappers.v2.NYTScrapper import NYTScrapper
+    from scrappers.v2.NouvelobsScrapper import NouvelobsStaticScrapper
+    from scrappers.v2.BBCScrapper import BBCScrapper
+    from scrappers.v2.DiplomatScrapper import DiplomatScrapper
+    
+
+from utils.DBFace import DBFace
+from utils.analyse import Analyser
+import utils.analyse as analyse
+
+import utils.Wordcount_methods as wcm
+
+import utils.Graph as graph
+>>>>>>> 6b025c5dc170cf7fc49a1eeb458b3209a034f119
 
 """
 1) lancer les scrappers sur un mot cle
@@ -26,27 +56,36 @@ def thread_accumulator(thread):
     # print("started thread {}".format(thread))
     threads.append(thread)
 
-def run_scrappers(keywords, langs=['en']):
-
+def run_scrappers(keywords, langs):
+    
     if 'fr' in langs:
-        ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, thread_accumulator)
-        ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, thread_accumulator)
-        fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, thread_accumulator)
-        
+        if scrappers_version == 1:
+            ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, thread_accumulator)
+            ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, thread_accumulator)
+            fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, thread_accumulator)
+        else:
+            ns = NouvelobsStaticScrapper(keywords, requested_by= thread_accumulator)
+            ls = LiberationStaticScrapper(keywords, requested_by= thread_accumulator)
+            fs = FigaroStaticScrapp
         ls.start()
         ns.start()
         fs.start()
         
-
     if 'en' in langs:
-        nys = NYTScrapper("https://www.nytimes.com/search/", keywords, thread_accumulator)
-        bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, thread_accumulator)
-        cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, thread_accumulator)
-        dps = DiplomatScrapper('https://www.googleapis.com/customsearch/v1element?', keywords, thread_accumulator)
-        
+        if scrappers_version == 1:
+            nys = NYTScrapper("https://www.nytimes.com/search/", keywords, thread_accumulator)
+            bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, thread_accumulator)
+            # cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, self.thread_accumulator)
+            dps = DiplomatScrapper('https://www.googleapis.com/customsearch/v1element?', keywords, thread_accumulator)
+        else:
+            nys = NYTScrapper(keywords, requested_by=thread_accumulator)
+            bbs = BBCScrapper(keywords, requested_by=thread_accumulator)
+            # cnn = CNNScrapper(keywords, self.thread_accumulator)
+            dps = DiplomatScrapper(keywords, requested_by=thread_accumulator)
+            
         nys.start()
         bbs.start()
-        cnn.start()
+        #cnn.start()
         dps.start()
         
     # # twentymin = VingtMinutesScrapper("https://www.20minutes.fr/search?", keywords)
@@ -65,7 +104,7 @@ def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
     analyser = Analyser('http://localhost', 9000)
 
     print("running recursive search at depth {} for keyword {} from initial keyword {}".format(depth, current_keywords, initial_keywords))
-    run_scrappers(current_keywords, langs=['en'])
+    run_scrappers(current_keywords, langs)
 
     
     fwst = dbf.find_with_search_term(current_keywords)
@@ -104,7 +143,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
 
-    recursive_search(keywords, keywords, 1, langs = ['en'])
+    recursive_search(keywords, keywords, 1, langs = ['en', 'fr'])
     
     dbf = DBFace()
     
