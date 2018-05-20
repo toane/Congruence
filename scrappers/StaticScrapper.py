@@ -29,6 +29,12 @@ class StaticScrapper(Thread):
     def parse_search_result(self, url, page_content, keywords):
         raise NotImplementedError
 
+    @classmethod
+    def get_search_result(keywords):
+        result_page = self.get_search_page(keywords)
+        result = self.parse_search_page(result_page)
+        return result
+    
     @staticmethod
     def fetch(url, url_args):
         try:

@@ -9,15 +9,25 @@ except ImportError as ie:
 
 
 class BBCScrapper(StaticScrapper):
+    search_url = "https://www.bbc.co.uk/search?"
+    search_args = {"filter" : "news"}
+    
     def __init__(self, url, keywords, requested_by, debug=False):
         self.requested_by = requested_by
-        url_args = {'q': keywords}
+        url_args = dict(self.search_args)
+        url_args['q'] = keywords
         self.debug = debug
         self.lang = "en"
-        super().__init__(url, keywords, url_args, callback=self.get_search_result, requested_by=requested_by)
+        super().__init__(url, keywords, url_args, callback=self.search_and_scrap, requested_by=requested_by)
 
+    @classmethod
+    def get_search_page(keywords):
+        args = dict(self.search_args)
+        args['q'] = keywords
+        return self.fetch(search_url, args)
+        
     @staticmethod
-    def parse_search_result(page_content):
+    def parse_search_page(page_content):
         links = []
         soup = BeautifulSoup(page_content, "lxml")
         # look for result links
@@ -39,8 +49,8 @@ class BBCScrapper(StaticScrapper):
                 out_text.append(" " + pt)
         return out_text
     
-    def get_search_result(self, url, page_content, keywords):
-        links = BBCScrapper.parse_search_result(page_content)
+    def search_and_scrap(self, url, page_content, keywords):
+        links = BBCScrapper.parse_search_page(page_content)
         for lnk in links:
             sc = StaticScrapper(lnk, keywords=keywords, callback=self.get_page_content, requested_by=self.requested_by)
             sc.start()
