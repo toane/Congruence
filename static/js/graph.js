@@ -10,47 +10,93 @@ window.addEvent('domready', function() {
 });
 
 
-function get_graph_data(optional_keyword) {
-//    title_card.dispose(); //faire disparaitre le bloc titre
+function launch(optional_keyword) {
+    /*
+    optional_keyword: pour relancer recherches en cliquant sur une node
+    */
+
+//    flush_graph_db(); //on vide la base de donnée de graphe avant de recommencer
+    loop_db_graph_check();
     title_card.fade('out');
     if(network){
         network.setData({}) //si un graphe est déja la, on le vide
     }
-
     var search_text = search_field.get('value');
-
     if (optional_keyword){
         search_field.setProperty('value',optional_keyword);
         search_text = optional_keyword;
     }
     search_field.set('readonly','true');
     var request = new Request.JSON({
-
         url: '/launch/',
         method: 'get',
         data: {
             'data': search_text
         },
         onProgress: function(event, xhr) {
-            console.log(container)
+
         },
         onSuccess: function(responseJSON, responseText){
-            search_field.removeProperty('readonly');
-            if (responseJSON['nodes'].length > 0) {
-               draw(responseJSON['nodes'], responseJSON['edges'])
-              }
-              else{
-                //TODO afficher un message
-//               draw([{nodes: [{id: "NO DATA", label: 'No data'}] }] )
-              }
+            //DEVRAIT ETRE DANS loop_db_graph_check()
+//            if (responseJSON['nodes'].length > 0) {
+//               draw(responseJSON['nodes'], responseJSON['edges']) //ne pas redessiner si cles identiques ?
+//                console.log(responseJSON)
+//              }
+//              else{
+//
+//              }
         },
         onError(text, error){
             search_field.removeProperty('readonly');
             console.log(text, error)
         }
-    })
+    });
     request.send();
+
 }
+
+var loop_db_graph_check = function() {
+    console.log("loop_db_graph_check(): init");
+    var myRequest = new Request.JSON({
+        url: '/storm/graph_json_nodes/',
+        method: 'get',
+        onProgress: function(event, xhr) {
+
+        },
+        onSuccess: function(responseJSON, responseText){
+            console.log("loop_db_graph_check(): onSuccess", responseText.length);
+            if (responseJSON['nodes'].length > 0) {
+               draw(responseJSON['nodes'], responseJSON['edges']) //ne pas redessiner si cles identiques ?
+//                console.log(responseJSON)
+              }
+              else{
+
+              }
+            setTimeout(loop_db_graph_check, 2000);
+        },
+        onError(text, error){
+            console.log(text, error);
+        }
+    });
+    myRequest.send();
+}
+
+//var flush_graph_db = function() {
+//    var myRequest = new Request({
+//        url: '/storm/flush_graph_db/',
+//        method: 'get',
+//        onProgress: function(event, xhr) {
+//        },
+//        onSuccess: function(responseJSON, responseText){
+//            console.log("flush_graph_db(): onSuccess");
+//        },
+//        onError(text, error){
+//            console.log(text, error);
+//        }
+//    });
+//    myRequest.send();
+//}
+
 
 
 
@@ -67,10 +113,10 @@ var data = {
     edges: edges
 };
 var options = {
-    configure: {
-            enabled: true,
-            showButton: true
-    },
+//    configure: {
+//            enabled: true,
+//            showButton: true
+//    },
     interaction:{
         hoverConnectedEdges: true
     },
@@ -81,7 +127,7 @@ var options = {
            },
 
     },
-    height: "1000px",
+    height: "700px",
     edges: {
         smooth:{
             enabled:false
@@ -105,12 +151,13 @@ var options = {
 };
 network = new vis.Network(container, data, options);
 
+
 network.on("click", function (params) {
         var nodeId = this.getNodeAt(params.pointer.DOM);
         nodeLabel = nodes_data[nodeId].label;
         console.log('click event, getNodeAt returns: ' + nodeLabel);
         console.log('click event, node id: ' + nodeId);
-        get_graph_data(nodeLabel);
+        launch(nodeLabel); //relance recherche avec le label de la node en mot cle
     });
 
 }

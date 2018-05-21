@@ -37,6 +37,7 @@ def search():
 
 @app.route('/launch/')
 def launch():
+    # flush_graph_db()
     keyword = request.args.get('data', '')
     gdt = cong.run(keyword)
     return gdt
@@ -63,10 +64,6 @@ def get_nlp_status():
     except:
         return "error"
 
-@app.route("/get_opennlp_status/")
-def get_opennlp_status():
-    #TODO actual call
-    return "error"
 
 @app.route("/streamed_data/")
 def get_stream():
@@ -75,47 +72,17 @@ def get_stream():
     else:
         return Response(''.join([random.choice(string.ascii_uppercase + string.digits) for f in range(8)]), mimetype='text/html')
 
-@app.route("/storm/scrapper_progress/")
-def get_scrapper_data():
-    """
-    reagit aux requetes vers http://127.0.0.1:5000/storm/scrapper_progress/?data=...
-    reçoit les données de progression des scrappers
-    messages de la forme
-        {
-        'scrapper_name':'CNNScrapper',
-        'nb_results': 10
-        }
-        OU
-        {
-        'scrapper_name':'CNNScrapper',
-        'page_download':1
-        }
-    :return:
-    """
-    scrapper_data = request.args.get('data', '')
-    return "called app.py:get_scrapper_data()"
-
 @app.route("/storm/graph_json_nodes/")
-def get_graph_data():
+def get_graph():
     """reagit aux requetes vers http://127.0.0.1:5000/storm/graph_json_nodes/?data=...
     attend les données de Graph.py::to_json()
     """
-    # json_data = request.args.get('data', '') # stocke les données reçues ici
-    pass
+    return dbf.get_graph()
 
-@app.route("/storm/token_progress/")
-def get_token_progress():
-    """
-    methode de suivi de la tokenisation
-    reagit aux requetes vers http://127.0.0.1:5000/storm/token_progress/?data=...
-    attend des messages de la forme
-    {"tokenifiable_documents": nb docs a tokenifier}
-    OU
-    {"tokenized_document": 1}
-    """
-    json_data = request.args.get('data', '')
-    return "called app.py:get_token_progress(%s)" % json_data
-
+@app.route("/storm/flush_graph_db/")
+def flush_graph_db():
+    r= dbf.flush_graph_db()
+    return "app.py: "+str(r)
 
 @app.errorhandler(404)
 def url_error(e):

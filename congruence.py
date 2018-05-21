@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import json
 import sys
 
 scrappers_version = 1
@@ -19,7 +20,8 @@ else:
     from scrappers.v2.NouvelobsScrapper import NouvelobsStaticScrapper
     from scrappers.v2.BBCScrapper import BBCScrapper
     from scrappers.v2.DiplomatScrapper import DiplomatScrapper
-    
+    from scrappers.v2.TheInterceptScrapper import TheInterceptScrapper
+
 from utils.DBFace import DBFace
 from utils.analyse import Analyser
 import utils.analyse as analyse
@@ -43,7 +45,12 @@ class Congruence:
         filtered_wordcounts = wcm.select_subjects(global_wordcount_aggregated)
         c = list(map(lambda wc: wcm.take_firsts(wc, n=3), filtered_wordcounts.values()))
         self.g = graph.GlobalGraph(wordcounts, n=6)
-        return self.g.to_json()
+        lgg = self.g.to_json()
+        self.dbf.insert_graph(lgg)
+        g = self.dbf.get_graph()
+        # jstr = json.dumps(g)
+        # return str(g)
+        return g
 
     def thread_accumulator(self,thread):
         # print("started thread {}".format(thread))

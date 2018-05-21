@@ -135,9 +135,9 @@ class GlobalGraph:
 
         dot.view()
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> str:
         """
-        builds JSON for vis.js graph data
+        builds JSON str for vis.js graph data
         node=dict{id: 1, value: 5, label: 'Balkany' , color: 'rgb(237,28,36)'}
         :return:
         """

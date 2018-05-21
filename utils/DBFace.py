@@ -15,7 +15,7 @@ from model.Article import Article
 from bson.code import Code
 from pymongo import MongoClient, TEXT, ReturnDocument
 from pymongo.errors import ServerSelectionTimeoutError
-
+from typing import Dict
 from utils.analyse import Analyser
 from model.Singleton import Singleton
 
@@ -28,6 +28,7 @@ class DBFace(metaclass=Singleton):
             self.client = MongoClient("mongodb://localhost", 27017, serverSelectionTimeoutMS=5000)
             db = self.client.mdb
             self.coll = db.articol
+            self.graphcol = db.graphcol # collection contenant l'article avec le graphe
             content_col = "article_content"
             mongo_idx_name = '_'.join([content_col,"text"])
             if mongo_idx_name not in db.articol.index_information().keys():
@@ -35,6 +36,35 @@ class DBFace(metaclass=Singleton):
                 db.articol.create_index([("article_content", TEXT)])
         except ServerSelectionTimeoutError as sste:
             print("pymongo couldn't connect to mongodb server")
+
+    def insert_graph(self, json_graph: str) -> Dict:
+        """
+        remplace le graphe existant dans la bdd, remplace n'importe lequel
+        :param json_graph: Dict {'nodes':[], 'edges':{}]
+        :return:
+        """
+        return self.graphcol.find_one_and_update({}, {'$set': {'json_graph': json_graph}}, upsert=True, return_document=ReturnDocument.AFTER)
+
+    def get_graph(self)->Dict:
+        """
+        renvoie le graphe present dans la collection graphcol (assume un seul présent et le plus à jour)
+        :return:
+        """
+        r = ""
+        try:
+            r = self.graphcol.find_one({})['json_graph']
+        except TypeError:
+            pass
+        # print("DBFace::self.dbf.get_graph() found")
+        return r
+
+    def flush_graph_db(self):
+        """
+        ptet une methode pour nettoyer la collection apres un run
+        :return:
+        """
+        return self.graphcol.drop()
+
 
     def get_client(self):
         return self.client
