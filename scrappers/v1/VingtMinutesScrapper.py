@@ -1,7 +1,7 @@
 from StaticScrapper import StaticScrapper
 from bs4 import BeautifulSoup
 
-from scrappers.JSScrapper import JSScrapper
+from scrappers.v1.DynamicScrapper import JSScrapper
 
 try:
     from selenium import webdriver

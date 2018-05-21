@@ -10,13 +10,19 @@ window.addEvent('domready', function() {
 });
 
 
-function get_graph_data() {
+function get_graph_data(optional_keyword) {
 //    title_card.dispose(); //faire disparaitre le bloc titre
     title_card.fade('out');
     if(network){
         network.setData({}) //si un graphe est déja la, on le vide
     }
+
     var search_text = search_field.get('value');
+
+    if (optional_keyword){
+        search_field.setProperty('value',optional_keyword);
+        search_text = optional_keyword;
+    }
     search_field.set('readonly','true');
     var request = new Request.JSON({
 
@@ -29,14 +35,12 @@ function get_graph_data() {
             console.log(container)
         },
         onSuccess: function(responseJSON, responseText){
-            //cree element my network
-            //appeler draw
             search_field.removeProperty('readonly');
             if (responseJSON['nodes'].length > 0) {
                draw(responseJSON['nodes'], responseJSON['edges'])
               }
               else{
-                //afficher un message
+                //TODO afficher un message
 //               draw([{nodes: [{id: "NO DATA", label: 'No data'}] }] )
               }
         },
@@ -100,4 +104,13 @@ var options = {
     }
 };
 network = new vis.Network(container, data, options);
+
+network.on("click", function (params) {
+        var nodeId = this.getNodeAt(params.pointer.DOM);
+        nodeLabel = nodes_data[nodeId].label;
+        console.log('click event, getNodeAt returns: ' + nodeLabel);
+        console.log('click event, node id: ' + nodeId);
+        get_graph_data(nodeLabel);
+    });
+
 }

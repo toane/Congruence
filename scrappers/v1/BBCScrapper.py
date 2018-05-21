@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from scrappers.StaticScrapper import StaticScrapper
+from scrappers.v1.StaticScrapper import StaticScrapper
 
 try:
     from urllib import quote

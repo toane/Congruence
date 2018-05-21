@@ -2,8 +2,8 @@ import json
 
 from bs4 import BeautifulSoup
 
+from scrappers.v1.StaticScrapper import StaticScrapper
 from utils.DBFace import DBFace
-from scrappers.StaticScrapper import StaticScrapper
 
 try:
     from urllib import quote
@@ -23,7 +23,7 @@ class DiplomatScrapper(StaticScrapper):
             'gss': ".com",
             'sig': "d5630e36052d1355ead71530c29be9ea",
             'cx': "006972344228181832854:w07k6emi2wk",
-            'cse_tok': "ABPF6HjAnG5F-oJ6m6bhPdqFeqLbLiqrMw:1526570098210",
+            'cse_tok': "ABPF6HibCVLLP6-x8toeGUn5PJY3CrbCXw:1526812940946",
             "q": keywords
         }
         super().__init__(url, keywords, url_args, callback=self.parse_search_result, requested_by=requested_by)

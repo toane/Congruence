@@ -1,20 +1,18 @@
 #!/usr/bin/python3
 import sys
 
+from DBFace import DBFace
+from analyse import Analyser
+from scrappers.BBCScrapper import BBCScrapper
 from scrappers.CNNScrapper import CNNScrapper
 from scrappers.FigaroScrapper import FigaroStaticScrapper
 from scrappers.LiberationScrapper import LiberationStaticScrapper
 from scrappers.NYTScrapper import NYTScrapper
 from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
 
-from DBFace import DBFace
-from analyse import Analyser
-from scrappers.BBCScrapper import BBCScrapper
-from scrappers.DiplomatScrapper import DiplomatScrapper
-
 import utils.Wordcount_methods as wcm
-
 import view.Graph as graph
+from scrappers.v1.DiplomatScrapper import DiplomatScrapper
 
 """
 1) lancer les scrappers sur un mot cle
