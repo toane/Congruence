@@ -26,7 +26,7 @@ class TheInterceptScrapper(StaticScrapper):
     @classmethod
     def make_search_params(cls, keywords):
         args = dict(cls.search_args)
-        args['q'] = keywords
+        args['searchTerm'] = keywords
         return (cls.search_url, args)
 
     @staticmethod
