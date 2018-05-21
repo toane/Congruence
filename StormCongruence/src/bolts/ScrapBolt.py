@@ -16,7 +16,11 @@ scrap_functions = {
 
 
 class ScrapBolt(Bolt):
-    outputs = ['info', 'parag']
+    """
+    takes in a url, and returns a list of paragraphs
+    """
+    
+    outputs = ['info', 'parags']
     
 
     def initialize(self, conf, ctx):
@@ -35,14 +39,17 @@ class ScrapBolt(Bolt):
         if url in self.scraped:
             return
         self.scraped.add(url)
-        res = self.scrap_function(url)
+        parags = self.scrap_function(url)
 
-        if len(res) == 0:
+        if len(parags) == 0:
             self.logger.info( \
                 "{} Scrap Bolt found text of length {}  at url {}\nskipping" \
-                         .format(self.name, len(res), url))
+                         .format(self.name, len(parags), url))
         else:
             self.logger.info("{} Scrap Bolt found with {} paragraphs at url {}"\
-                         .format(self.name, len(res), url))
-            for parag in res :
-                self.emit([info, parag])
+                         .format(self.name, len(parags), url))
+
+            # if we emit each paragraph individually
+            # we won't be able to build the links between
+            # the article tokens, so we emit a list of paragraphs
+            self.emit([info, parags])
