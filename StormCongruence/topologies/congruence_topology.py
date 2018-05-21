@@ -13,7 +13,7 @@ from bolts.ScrapBolt import ScrapBolt
 from bolts.NLP.SentenceSplitBolt import SentenceSplitBolt as SSplitBolt
 from bolts.NLP.TokenizeBolt import TokenizeBolt
 
-
+from bolts.WordCountBolt import WordCountBolt
 
 class WordCount(Topology):
 
@@ -25,30 +25,33 @@ class WordCount(Topology):
     #                     config = {"OmniSearchBoltName" : "Diplo"} )
     
 
-    bbc_search_bolt = \
-            SearchBolt.spec( inputs=[socket_listener_spout], par=1 , \
-                             config = {"OmniSearchBoltName" : "BBC"} )
+    bbc_search_bolt = SearchBolt.spec(
+        inputs=[socket_listener_spout], par=1, 
+        config = {"OmniSearchBoltName" : "BBC"} )
     
-    nyt_search_bolt = \
-        SearchBolt.spec( inputs=[socket_listener_spout], par=1 , \
-                         config = {"OmniSearchBoltName" : "NYT"} )
+    nyt_search_bolt = SearchBolt.spec(
+        inputs=[socket_listener_spout], par=1,
+        config = {"OmniSearchBoltName" : "NYT"} )
                         
 
 
-    bbc_scrap_bolt = \
-        ScrapBolt.spec( inputs=[bbc_search_bolt], par = 1, \
-                        config = {"OmniScrapBoltName": "BBC"})
+    bbc_scrap_bolt = ScrapBolt.spec(
+        inputs=[bbc_search_bolt], par = 1,
+        config = {"OmniScrapBoltName": "BBC"})
     
-    nyt_scrap_bolt = \
-        ScrapBolt.spec( inputs=[nyt_search_bolt], par = 1, \
-                        config = {"OmniScrapBoltName": "NYT"})
+    nyt_scrap_bolt = ScrapBolt.spec(
+        inputs=[nyt_search_bolt], par = 1,
+        config = {"OmniScrapBoltName": "NYT"})
     
     ssplit_bolt = SSplitBolt.spec( 
-            inputs=[bbc_scrap_bolt, nyt_scrap_bolt], par=1,
-            config={"CoreNLPHost":"http://localhost",
-                    "CoreNLPPort":9000})
+        inputs=[bbc_scrap_bolt, nyt_scrap_bolt], par=1,
+        config={"CoreNLPHost":"http://localhost",
+                "CoreNLPPort":9000})
 
     tokenize_bolt = TokenizeBolt.spec(
         inputs = [ssplit_bolt], par=1,
-            config={"CoreNLPHost":"http://localhost",
-                    "CoreNLPPort":9000})
+        config={"CoreNLPHost":"http://localhost",
+                "CoreNLPPort":9000})
+
+    person_wc_bolt = WordCountBolt.spec(
+        inputs = [tokenize_bolt["person"]], par=1)
