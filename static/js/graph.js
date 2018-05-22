@@ -17,12 +17,24 @@ window.addEvent('domready', function() {
 
 });
 
+function toggle_spinner(active){
+    if (active){
+
+        console.log("spinner active");
+        }
+    else {
+        console.log("spinner inactive");
+        
+    }
+}
+
 
 function launch(optional_keyword) {
     /*
     optional_keyword: pour relancer recherches en cliquant sur une node
     */
 
+    toggle_spinner(1);
     //ne lancer la boucle de dessin qu'une seule fois
     if (!loop_db_graph_running){
             loop_db_graph_check();
@@ -48,14 +60,7 @@ function launch(optional_keyword) {
 
         },
         onSuccess: function(responseJSON, responseText){
-            //DEVRAIT ETRE DANS loop_db_graph_check()
-//            if (responseJSON['nodes'].length > 0) {
-//               draw(responseJSON['nodes'], responseJSON['edges']) //ne pas redessiner si cles identiques ?
-//                console.log(responseJSON)
-//              }
-//              else{
-//
-//              }
+            search_field.removeProperty('readonly');
         },
         onError(text, error){
             search_field.removeProperty('readonly');
@@ -63,7 +68,6 @@ function launch(optional_keyword) {
         }
     });
     request.send();
-
 }
 
 var loop_db_graph_check = function() {
@@ -78,11 +82,12 @@ var loop_db_graph_check = function() {
             console.log("loop_db_graph_check(): onSuccess", curlgt, prevlgt);
             //arrête de redessiner apres 2 graphes de longueur identique
             if (curlgt > MIN_VALID_GRAPH_LGT && curlgt != prevlgt && prevlgt > 0){
+               toggle_spinner(0);
                console.log("loop_db_graph_check(): onSuccess:draw", curlgt, prevlgt);
                draw(responseJSON['nodes'], responseJSON['edges'])
                search_field.removeProperty('readonly');
               } else {
-
+                   //MESSAGE SI PAS DE DONNEES
               }
             setTimeout(loop_db_graph_check, LOOP_TIMEOUT);
             prevlgt = responseText.length;
@@ -93,25 +98,6 @@ var loop_db_graph_check = function() {
     });
     myRequest.send();
 }
-
-//var flush_graph_db = function() {
-//    var myRequest = new Request({
-//        url: '/storm/flush_graph_db/',
-//        method: 'get',
-//        onProgress: function(event, xhr) {
-//        },
-//        onSuccess: function(responseJSON, responseText){
-//            console.log("flush_graph_db(): onSuccess");
-//        },
-//        onError(text, error){
-//            console.log(text, error);
-//        }
-//    });
-//    myRequest.send();
-//}
-
-
-
 
 function draw(nodes_data, edges_data) {
 // create people.
@@ -163,7 +149,6 @@ var options = {
     }
 };
 network = new vis.Network(container, data, options);
-
 
 network.on("click", function (params) {
         var nodeId = this.getNodeAt(params.pointer.DOM);
