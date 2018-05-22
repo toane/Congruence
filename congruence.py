@@ -40,10 +40,6 @@ class Congruence:
         self.keywords = keywords
         self.recursive_search(self.keywords, self.keywords, 1, langs = ['en'])
         wordcounts = self.dbf.get_wordcounts(self.keywords)
-        global_wordcount = wcm.global_wordcount(wordcounts)
-        global_wordcount_aggregated = analyse.aggregate_proper_names_in_wordcount(global_wordcount)
-        filtered_wordcounts = wcm.select_subjects(global_wordcount_aggregated)
-        c = list(map(lambda wc: wcm.take_firsts(wc, n=3), filtered_wordcounts.values()))
         self.g = graph.GlobalGraph(wordcounts, n=6)
         lgg = self.g.to_json()
         self.dbf.insert_graph(lgg)
@@ -116,16 +112,16 @@ class Congruence:
         self.dbf.batch_tokenify(notk, analyser)
 
         wordcounts = self.dbf.get_wordcounts(current_keywords)
-        global_wordcount = wcm.global_wordcount(wordcounts)
-        global_wordcount_dict = wcm.select_subjects(global_wordcount, \
-                                                    subjects = ["PERSON", "ORGANIZATION"])
+        # global_wordcount = wcm.global_wordcount(wordcounts)
+        # global_wordcount_dict = wcm.select_subjects(global_wordcount, \
+        #                                             subjects = ["PERSON", "ORGANIZATION"])
 
-        print(global_wordcount_dict)
+        # print(global_wordcount_dict)
 
-        global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3) for k,v in global_wordcount_dict.items()}
-        global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
-        for token in global_wordcount_best:
-            self.recursive_search(initial_keywords, token[0][0], depth-1, langs)
+        # global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3) for k,v in global_wordcount_dict.items()}
+        # global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
+        # for token in global_wordcount_best:
+        #     self.recursive_search(initial_keywords, token[0][0], depth-1, langs)
 
     if __name__ == '__main__':
         print("running on Python version {}".format(sys.version))
