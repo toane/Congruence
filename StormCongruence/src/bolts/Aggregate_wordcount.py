@@ -3,11 +3,12 @@ from streamparse import Bolt
 import os
 import utils.Wordcount_methods as wc
 
-class ArticleWCBolt(Bolt):
+class AggregateWCBolt(Bolt):
     outputs = ['info', 'wordcounts_dict']
     
     def initialize(self, conf, ctx):
         self.pid = os.getpid()
+        self.wc = {}
             
     def process(self, tup):
         info = tup.values[0]
