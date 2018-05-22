@@ -2,7 +2,7 @@
 import json
 import sys
 
-scrappers_version = 1
+scrappers_version = 2
 
 if scrappers_version == 1:
     from scrappers.v1.CNNScrapper import CNNScrapper

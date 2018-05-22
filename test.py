@@ -116,6 +116,8 @@ def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
                                   for k,v in global_wordcount.items()
                                   if k in ["PERSON", "ORGANIZATION"]}
     global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
+
+    print("global_wordcount_best :", global_wordcount_best)
     for token in global_wordcount_best:
         recursive_search(initial_keywords, token[0][0], depth-1, langs)
 

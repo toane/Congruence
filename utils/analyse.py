@@ -72,8 +72,8 @@ def aggregate_proper_names_in_wordcount(person_names_tokens):
     #print("\nall persons : ", set([person for person in person_names_tokens if person[0][1] == 'PERSON']))
     
     for i,person in enumerate(person_names_tokens):
-        possible_long_names = [(j,p) for j,p in enumerate(person_names_tokens) \
-                               if (is_short_name(person[0][0], p[0][0]) \
+        possible_long_names = [(j,p) for j,p in enumerate(person_names_tokens)
+                               if (is_short_name(person[0][0], p[0][0])
                                    and p[0][1] == 'PERSON')]
 
         if len(possible_long_names) > 0: 
@@ -119,7 +119,11 @@ class Analyser(metaclass=Singleton):
         
         props={'annotators': 'ssplit', 'outputFormat':'json'}
         sentences_json = self.nlp.annotate(text, properties=props)
-        sentences_raw = json.loads(sentences_json)
+        try:
+            sentences_raw = json.loads(sentences_json)
+        except json.decoder.JSONDecodeError:
+            print("error decoding json from :".format(sentences_json))
+            return ""
         
         def make_sentence(raw_sentence):
             raw_tokens = raw_sentence['tokens']
@@ -130,7 +134,7 @@ class Analyser(metaclass=Singleton):
         return res
 
         
-    def get_tokens(self, text: str) -> List[Tuple]:
+    def get_tokens(self, parags: List[str]) -> List[Tuple]:
         """ 
         sépare le text en phrase, puis analyse chaque phrase et  
         renvoie une liste de tuples contenant les noms propres et 
@@ -138,13 +142,15 @@ class Analyser(metaclass=Singleton):
         pour les noms propres, et TOPIC pour les noms communs 
         (avec répétition) 
         """
-        sentences1,sentences2 = tee(self.advanced_sentences_split(text))
+        
+        sentences = list(chain.from_iterable(map(self.advanced_sentences_split, parags)))
+        # sentences1,sentences2 = tee(self.advanced_sentences_split(text))
         #print("sentences: \n", list(sentences3))
         
-        pns = map(lambda s : self.get_proper_names(s), sentences1)
+        pns = map(lambda s : self.get_proper_names(s), sentences)
         #print("pns :\n", list(pns))
         
-        nns = map(lambda s : (map(lambda n : (n, 'TOPIC'), self.get_names(s))), sentences2)
+        nns = map(lambda s : (map(lambda n : (n, 'TOPIC'), self.get_names(s))), sentences)
         #print("nns :\n", list(nns))
         
         res = chain.from_iterable( chain(pns, nns))

@@ -159,7 +159,7 @@ class DBFace(metaclass=Singleton):
         n = records.count()
         print("computing tokenization for {} document{}".format(n, '' if n ==1 else 's'))
         for r in tqdm(records, total=n):
-            # print('running tokenizer on {} (keyword {})'.format(r['article_url'], r['search_term']))
+            print('running tokenizer on {} (keyword {})'.format(r['article_url'], r['search_term']))
             tknis = analyser.get_tokens(r['article_content'])
             tknis_wc = wcm.wordcount(tknis)
             tknis_wc_grouped = wcm.group_by_subject(tknis_wc)
