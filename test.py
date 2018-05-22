@@ -68,12 +68,13 @@ def run_scrappers(keywords, langs):
             bbs = BBCScrapper(keywords, requested_by=thread_accumulator)
             # cnn = CNNScrapper(keywords, self.thread_accumulator)
             dps = DiplomatScrapper(keywords, requested_by=thread_accumulator)
+            tis = TheInterceptScrapper(keywords, requested_by=thread_accumulator)
             
         nys.start()
         bbs.start()
         #cnn.start()
         dps.start()
-        
+        tis.start()
     # # twentymin = VingtMinutesScrapper("https://www.20minutes.fr/search?", keywords)
     #
     # cnn.start()

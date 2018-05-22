@@ -80,11 +80,13 @@ class Congruence:
                 bbs = BBCScrapper(keywords, requested_by=self.thread_accumulator)
                 # cnn = CNNScrapper(keywords, self.thread_accumulator)
                 dps = DiplomatScrapper(keywords, requested_by=self.thread_accumulator)
+                tis = TheInterceptScrapper(keywords, requested_by=thread_accumulator)
             
             nys.start()
             bbs.start()
             # cnn.start()
             dps.start()
+            tis.start()
 
         for t in self.threads:
             t.join()
