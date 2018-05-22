@@ -4,6 +4,12 @@ var network = null;
 var container = null;
 var title_card = null;
 
+var curlgt = 0;
+var prevlgv = 0
+var MIN_VALID_GRAPH_LGT = 100;
+var LOOP_TIMEOUT = 2000;
+var glocount = 0;
+
 window.addEvent('domready', function() {
     container = document.getElementById('mynetwork');
     title_card = document.id('title_card');
@@ -64,15 +70,21 @@ var loop_db_graph_check = function() {
 
         },
         onSuccess: function(responseJSON, responseText){
-            console.log("loop_db_graph_check(): onSuccess", responseText.length);
+            console.log("loop_db_graph_check(): onSuccess", responseText.length, glocount);
+            curlgt = responseText.length
+
             if (responseJSON['nodes'].length > 0) {
                draw(responseJSON['nodes'], responseJSON['edges']) //ne pas redessiner si cles identiques ?
 //                console.log(responseJSON)
+                glocount++;
+
               }
               else{
 
               }
-            setTimeout(loop_db_graph_check, 2000);
+            if (glocount < 10 ){setTimeout(loop_db_graph_check, LOOP_TIMEOUT);} else {
+                glocount = 0;
+            }
         },
         onError(text, error){
             console.log(text, error);

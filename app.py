@@ -81,8 +81,9 @@ def get_graph():
 
 @app.route("/storm/flush_graph_db/")
 def flush_graph_db():
-    r= dbf.flush_graph_db()
-    return "app.py: "+str(r)
+    print("app:py::flush_graph_db()")
+    dbf.flush_graph_db()
+    return ""
 
 @app.errorhandler(404)
 def url_error(e):
