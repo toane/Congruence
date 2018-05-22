@@ -2,7 +2,6 @@ get_db_status();
 get_nlp_status();
 
 var recepdiv = document.id('receptor');
-var search_field = document.getElement('#search_form > input');
 
 function backend_call() {
     var search_text = search_field.get('value')
@@ -35,7 +34,7 @@ function get_db_status() {
             var loaded = event.loaded,
                 total = event.total;
             console.log("get_db_status: ", xhr.responseText);
-//            console.log("get_db_status; ", xhr.responseText.localeCompare("error"));
+
 
             if (xhr.responseText.localeCompare("error") == 0) {
                 db_status_box.removeClass("alert alert-success");

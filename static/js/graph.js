@@ -10,21 +10,22 @@ var MIN_VALID_GRAPH_LGT = 100;
 var LOOP_TIMEOUT = 2000;
 var glocount = 0;
 var loop_db_graph_running = 0;
+var search_field = null;
 
 window.addEvent('domready', function() {
     container = document.getElementById('mynetwork');
     title_card = document.id('title_card');
+    search_field = document.getElement('#search_form > #search_field');
+    console.log(search_field)
 
 });
 
 function toggle_spinner(active){
     if (active){
-
         console.log("spinner active");
         }
     else {
         console.log("spinner inactive");
-        
     }
 }
 
@@ -46,10 +47,11 @@ function launch(optional_keyword) {
     }
     var search_text = search_field.get('value');
     if (optional_keyword){
-        search_field.setProperty('value',optional_keyword);
+        search_field.setProperty('value', optional_keyword);
         search_text = optional_keyword;
     }
-    search_field.set('readonly','true');
+    search_field.set('readOnly','true');
+
     var request = new Request.JSON({
         url: '/launch/',
         method: 'get',
@@ -60,10 +62,10 @@ function launch(optional_keyword) {
 
         },
         onSuccess: function(responseJSON, responseText){
-            search_field.removeProperty('readonly');
+            search_field.removeProperty('readOnly');
         },
         onError(text, error){
-            search_field.removeProperty('readonly');
+            search_field.removeProperty('readOnly');
             console.log(text, error)
         }
     });
@@ -71,6 +73,7 @@ function launch(optional_keyword) {
 }
 
 var loop_db_graph_check = function() {
+    console.log("loop_db_graph_check(): init");
     var myRequest = new Request.JSON({
         url: '/storm/graph_json_nodes/',
         method: 'get',
