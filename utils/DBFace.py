@@ -17,9 +17,10 @@ from bson.code import Code
 from pymongo import MongoClient, TEXT, ReturnDocument
 from pymongo.errors import ServerSelectionTimeoutError
 from typing import Dict
+
 from utils.analyse import Analyser
 from model.Singleton import Singleton
-
+import utils.Wordcount_methods as wcm
 
 class DBFace(metaclass=Singleton):
 
@@ -145,7 +146,7 @@ class DBFace(metaclass=Singleton):
         print("computing wordcount for {} document{}".format(n, '' if n == 1 else 's'))
         for r in tqdm(records, total=n):
             tknis = analyser.get_tokens(r['article_content'])
-            tknis_wc = analyser.tokencount(tknis)
+            tknis_wc = wcm.wordcount(tknis)
             self.update_field(r['_id'], tknis_wc, 'wordcount')
 
     def batch_tokenify(self, records: Dict, analyser: Analyser):
@@ -160,9 +161,13 @@ class DBFace(metaclass=Singleton):
         for r in tqdm(records, total=n):
             # print('running tokenizer on {} (keyword {})'.format(r['article_url'], r['search_term']))
             tknis = analyser.get_tokens(r['article_content'])
-            tknis_wc = analyser.tokencount(tknis)
+            tknis_wc = wcm.wordcount(tknis)
+            tknis_wc_grouped = wcm.group_by_subject(tknis_wc)
+
+            print("grouped {}".format(tknis_wc_grouped))
+            
             self.update_field(r['_id'], tknis, 'tokenified')
-            self.update_field(r['_id'], tknis_wc, 'wordcount')
+            self.update_field(r['_id'], tknis_wc_grouped, 'wordcount')
 
     def update_field(self, _id, value: '', field: str='tokenified'):
         """

@@ -13,13 +13,17 @@ class GraphBolt(Bolt):
         self.db = DBFace()
         
     def process(self, tup):
+        
+        self.logger.info("graphbolt received message")
+        self.logger.info("graphbolt message : {}".format(tup.values))
         info = tup.values[0]
         wordcounts = tup.values[1]
 
         graph = GlobalGraph(wordcounts, from_dicts = True)
         graph_json = graph.to_json()
-        
+        self.logger.info("graph generated :{}".format(graph_json))
+                          
         self.db.insert_graph(graph_json)
-        self.logger.info("produced graph : {}".format(json.dumps(graph_json)))
+        self.logger.info("produced graph : {}".format(graph_json))
         
-        self.emit([info, graph_json])
+        #self.emit([info, graph_json])

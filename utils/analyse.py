@@ -129,11 +129,6 @@ class Analyser(metaclass=Singleton):
         res = map(make_sentence, sentences_raw['sentences'])
         return res
 
-    def tokencount(self, tokens):
-        sorted_tokens = sorted(tokens)
-        grouped_tokens = groupby(sorted_tokens)
-        res = map(lambda item: ((item[0][0], item[0][1]), sum(1 for x in item[1])), grouped_tokens)
-        return list(res)
         
     def get_tokens(self, text: str) -> List[Tuple]:
         """ 
