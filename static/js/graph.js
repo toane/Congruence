@@ -16,7 +16,6 @@ window.addEvent('domready', function() {
     container = document.getElementById('mynetwork');
     title_card = document.id('title_card');
     search_field = document.getElement('#search_form > #search_field');
-    console.log(search_field)
 
 });
 
@@ -78,7 +77,7 @@ var loop_db_graph_check = function() {
         url: '/storm/graph_json_nodes/',
         method: 'get',
         onProgress: function(event, xhr) {
-
+        console.log("loop_db_graph_check(): onProgress", curlgt, prevlgt);
         },
         onSuccess: function(responseJSON, responseText){
             curlgt = responseText.length
@@ -92,6 +91,7 @@ var loop_db_graph_check = function() {
               } else {
                    //MESSAGE SI PAS DE DONNEES
               }
+            console.log("loop_db_graph_check(): loop call");
             setTimeout(loop_db_graph_check, LOOP_TIMEOUT);
             prevlgt = responseText.length;
         },
@@ -99,6 +99,7 @@ var loop_db_graph_check = function() {
             console.log(text, error);
         }
     });
+    console.log("loop_db_graph_check(): send");
     myRequest.send();
 }
 

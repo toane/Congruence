@@ -1,5 +1,6 @@
 import codecs
 import hashlib
+import json
 import os
 from itertools import groupby
 from typing import List, Dict, Tuple
@@ -50,12 +51,11 @@ class DBFace(metaclass=Singleton):
         renvoie le graphe present dans la collection graphcol (assume un seul présent et le plus à jour)
         :return:
         """
-        r = ""
+        r = json.dumps({"nokey":"DBFACE EMPTY GRAPH DATA"})
         try:
             r = self.graphcol.find_one({})['json_graph']
         except TypeError:
             pass
-        # print("DBFace::self.dbf.get_graph() found")
         return r
 
     def flush_graph_db(self):
