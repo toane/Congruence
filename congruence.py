@@ -112,16 +112,17 @@ class Congruence:
         self.dbf.batch_tokenify(notk, analyser)
 
         wordcounts = self.dbf.get_wordcounts(current_keywords)
-        # global_wordcount = wcm.global_wordcount(wordcounts)
-        # global_wordcount_dict = wcm.select_subjects(global_wordcount, \
-        #                                             subjects = ["PERSON", "ORGANIZATION"])
+ 
+        global_wordcount = wcm.aggregate_wordcount_dicts(wordcounts)
+        print(global_wordcount)
+    
 
-        # print(global_wordcount_dict)
-
-        # global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3) for k,v in global_wordcount_dict.items()}
-        # global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
-        # for token in global_wordcount_best:
-        #     self.recursive_search(initial_keywords, token[0][0], depth-1, langs)
+        global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3)
+                                      for k,v in global_wordcount.items()
+                                      if k in ["PERSON", "ORGANIZATION"]}
+        global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
+        for token in global_wordcount_best:
+            self.recursive_search(initial_keywords, token[0][0], depth-1, langs)
 
     if __name__ == '__main__':
         print("running on Python version {}".format(sys.version))

@@ -1,16 +1,11 @@
 #!/usr/bin/python3
 import sys
 
-from scrappers.v1.DiplomatScrapper import DiplomatScrapper
 from utils.DBFace import DBFace
 from utils.analyse import Analyser
-import utils.analyse as analyse
 import utils.Wordcount_methods as wcm
 import utils.Graph as graph
 
-import utils.Wordcount_methods as wcm
-
-import utils.Graph as graph
 
 
 scrappers_version = 2
@@ -57,7 +52,7 @@ def run_scrappers(keywords, langs):
         else:
             ns = NouvelobsStaticScrapper(keywords, requested_by= thread_accumulator)
             ls = LiberationStaticScrapper(keywords, requested_by= thread_accumulator)
-            fs = FigaroStaticScrapp
+            fs = FigaroStaticScrapper(keywords, requested_by= thread_accumulator)
         ls.start()
         ns.start()
         fs.start()
@@ -115,16 +110,13 @@ def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
     global_wordcount = wcm.aggregate_wordcount_dicts(wordcounts)
     print(global_wordcount)
     
-    # global_wordcount = wcm.global_wordcount(wordcounts)
-    # global_wordcount_dict = wcm.select_subjects(global_wordcount, \
-    #                                             subjects = ["PERSON", "ORGANIZATION"])
 
-    # print(global_wordcount_dict)
-    
-    # global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3) for k,v in global_wordcount_dict.items()}
-    # global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
-    # for token in global_wordcount_best:
-    #     recursive_search(initial_keywords, token[0][0], depth-1, langs)
+    global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3)
+                                  for k,v in global_wordcount.items()
+                                  if k in ["PERSON", "ORGANIZATION"]}
+    global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
+    for token in global_wordcount_best:
+        recursive_search(initial_keywords, token[0][0], depth-1, langs)
 
 
 
@@ -138,7 +130,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
 
-    # recursive_search(keywords, keywords, 1, langs = ['en'])
+    recursive_search(keywords, keywords, 2, langs = ['en'])
     
     dbf = DBFace()
     

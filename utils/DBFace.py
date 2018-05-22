@@ -229,18 +229,18 @@ class DBFace(metaclass=Singleton):
     def mongo_wordcount(self, search_term : str, result_collection : str):
         mapper = Code(
             """
-            function() { 
-            for (var i = 0; i < this.wordcount.length; i++)  
-            { emit(this.wordcount[i][0], this.wordcount[i][1][1]);} 
+            function() {
+            for (var i = 0; i < this.wordcount.length; i++)
+            { emit(this.wordcount[i][0], this.wordcount[i][1][1]);}
             }
             """)
         
         reducer = Code(
             """
-            function(key, values) { 
-            var count = 0; 
-            values.forEach( function(v) {count += v}); 
-            return count; 
+            function(key, values) {
+            var count = 0;
+            values.forEach( function(v) {count += v});
+            return count;
             }
             """)
 
