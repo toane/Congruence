@@ -11,6 +11,8 @@ class RecursiveBolt(Bolt):
     def process(self, tup):
         info = tup.values[0]
 
+        self.logger.info("Recursive call with args : {}"
+                         .format(tup.values))
         if info["rec_n"] > 0:
             new_keyword = tup.values[1]
             info["keyword"] = new_keyword

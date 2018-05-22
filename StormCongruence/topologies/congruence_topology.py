@@ -13,9 +13,8 @@ from bolts.ScrapBolt import ScrapBolt
 from bolts.NLP.SentenceSplitBolt import SentenceSplitBolt as SSplitBolt
 from bolts.NLP.TokenizeBolt import TokenizeBolt
 
-from bolts.WordCountBolt import WordCountBolt
 from bolts.ArticleWCBolt import ArticleWCBolt
-from bolts.AggWCToListBolt import AggWCToListBolt
+from bolts.WCAggregatorBolt import WCAggregatorBolt
 from bolts.GraphBolt import GraphBolt
 
 
@@ -63,7 +62,7 @@ class WordCount(Topology):
     article_wc_bolt = ArticleWCBolt.spec(
         inputs = [tokenize_bolt], par = 1)
     
-    agg_wc_to_list_bolt = AggWCToListBolt.spec(
+    agg_wc_to_list_bolt = WCAggregatorBolt.spec(
         inputs = [article_wc_bolt], par = 1)
 
     graph_bolt = GraphBolt.spec(

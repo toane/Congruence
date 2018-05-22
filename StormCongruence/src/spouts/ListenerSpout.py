@@ -30,8 +30,10 @@ class ListenerSpout(Spout):
                 keyword = conn.recv(1024)
                 self.logger.info('received {}'.format(keyword))
 
-                info = {"keyword" : keyword, "initial_keyword" : keyword}
-                data = keyword
+                info = {"keyword" : keyword,
+                        "initial_keyword" : keyword,
+                        "rec_n" : 2}
+                
                 self.emit([info, keyword])
                         
         except OSError:
