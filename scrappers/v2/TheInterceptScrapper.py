@@ -31,9 +31,9 @@ class TheInterceptScrapper(StaticScrapper):
 
     @staticmethod
     def parse_search_page(page_content):
-        dat = json.dumps(page_content)
-        print("The intercept: {} results".format(len(page_content[0]))) # on ne regarde que dans le premier tableau de résultats
-        links = [o['link'] for o in page_content[0]]
+        print("The intercept: {} results".format(len(page_content)))
+        page_content = json.loads(page_content)
+        links = [o['link'] for o in page_content]
         return links
         
     
