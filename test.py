@@ -111,16 +111,20 @@ def recursive_search(initial_keywords, current_keywords, depth, langs = ['en']):
     dbf.batch_tokenify(notk, analyser)
 
     wordcounts = dbf.get_wordcounts(current_keywords)
-    global_wordcount = wcm.global_wordcount(wordcounts)
-    global_wordcount_dict = wcm.select_subjects(global_wordcount, \
-                                                subjects = ["PERSON", "ORGANIZATION"])
 
-    print(global_wordcount_dict)
+    global_wordcount = wcm.aggregate_wordcount_dicts(wordcounts)
+    print(global_wordcount)
     
-    global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3) for k,v in global_wordcount_dict.items()}
-    global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
-    for token in global_wordcount_best:
-        recursive_search(initial_keywords, token[0][0], depth-1, langs)
+    # global_wordcount = wcm.global_wordcount(wordcounts)
+    # global_wordcount_dict = wcm.select_subjects(global_wordcount, \
+    #                                             subjects = ["PERSON", "ORGANIZATION"])
+
+    # print(global_wordcount_dict)
+    
+    # global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3) for k,v in global_wordcount_dict.items()}
+    # global_wordcount_best = wcm.aggregate_subjects(global_wordcount_dict_best)
+    # for token in global_wordcount_best:
+    #     recursive_search(initial_keywords, token[0][0], depth-1, langs)
 
 
 
@@ -134,20 +138,21 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
 
-    recursive_search(keywords, keywords, 1, langs = ['en'])
+    # recursive_search(keywords, keywords, 1, langs = ['en'])
     
     dbf = DBFace()
     
     wordcounts = dbf.get_wordcounts(keywords)
-    global_wordcount = wcm.global_wordcount(wordcounts)
-    global_wordcount_aggregated = analyse.aggregate_proper_names_in_wordcount(global_wordcount)
-    filtered_wordcounts = wcm.select_subjects(global_wordcount_aggregated)
+    global_wordcount = wcm.aggregate_wordcount_dicts(wordcounts)
+    # global_wordcount = wcm.global_wordcount(wordcounts)
+    # global_wordcount_aggregated = analyse.aggregate_proper_names_in_wordcount(global_wordcount)
+    # filtered_wordcounts = wcm.select_subjects(global_wordcount_aggregated)
     
-    c = list(map(lambda wc: wcm.take_firsts(wc, n=3), filtered_wordcounts.values()))
+    
     #print(c)
 
 
     g = graph.GlobalGraph(wordcounts, n=6)
-    print(g.to_json())
+    #print(g.to_json())
     g.to_dot()
     
