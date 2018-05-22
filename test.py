@@ -1,31 +1,28 @@
 #!/usr/bin/python3
 import sys
 
-<<<<<<< HEAD
-from scrappers.BBCScrapper import BBCScrapper
-from scrappers.CNNScrapper import CNNScrapper
-from scrappers.FigaroScrapper import FigaroStaticScrapper
-from scrappers.LiberationScrapper import LiberationStaticScrapper
-from scrappers.NYTScrapper import NYTScrapper
-from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
-
-import utils.Wordcount_methods as wcm
-import utils.analyse as analyse
-import view.Graph as graph
 from scrappers.v1.DiplomatScrapper import DiplomatScrapper
 from utils.DBFace import DBFace
 from utils.analyse import Analyser
-=======
-scrappers_version = 1
+import utils.analyse as analyse
+import utils.Wordcount_methods as wcm
+import utils.Graph as graph
+
+import utils.Wordcount_methods as wcm
+
+import utils.Graph as graph
+
+
+scrappers_version = 2
 
 if scrappers_version == 1:
-    from scrappers.CNNScrapper import CNNScrapper
-    from scrappers.FigaroScrapper import FigaroStaticScrapper
-    from scrappers.LiberationScrapper import LiberationStaticScrapper
-    from scrappers.NYTScrapper import NYTScrapper
-    from scrappers.NouvelobsScrapper import NouvelobsStaticScrapper
-    from scrappers.BBCScrapper import BBCScrapper
-    from scrappers.DiplomatScrapper import DiplomatScrapper
+    from scrappers.v1.CNNScrapper import CNNScrapper
+    from scrappers.v1.FigaroScrapper import FigaroStaticScrapper
+    from scrappers.v1.LiberationScrapper import LiberationStaticScrapper
+    from scrappers.v1.NYTScrapper import NYTScrapper
+    from scrappers.v1.NouvelobsScrapper import NouvelobsStaticScrapper
+    from scrappers.v1.BBCScrapper import BBCScrapper
+    from scrappers.v1.DiplomatScrapper import DiplomatScrapper
 else:
     from scrappers.v2.CNNScrapper import CNNScrapper
     from scrappers.v2.FigaroScrapper import FigaroStaticScrapper
@@ -34,16 +31,10 @@ else:
     from scrappers.v2.NouvelobsScrapper import NouvelobsStaticScrapper
     from scrappers.v2.BBCScrapper import BBCScrapper
     from scrappers.v2.DiplomatScrapper import DiplomatScrapper
+    from scrappers.v2.TheInterceptScrapper import TheInterceptScrapper
+    
     
 
-from utils.DBFace import DBFace
-from utils.analyse import Analyser
-import utils.analyse as analyse
-
-import utils.Wordcount_methods as wcm
-
-import utils.Graph as graph
->>>>>>> 6b025c5dc170cf7fc49a1eeb458b3209a034f119
 
 """
 1) lancer les scrappers sur un mot cle
@@ -143,7 +134,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         keywords = ' '.join(sys.argv[1:])
 
-    recursive_search(keywords, keywords, 1, langs = ['en', 'fr'])
+    recursive_search(keywords, keywords, 1, langs = ['en'])
     
     dbf = DBFace()
     
@@ -158,3 +149,5 @@ if __name__ == '__main__':
 
     g = graph.GlobalGraph(wordcounts, n=6)
     print(g.to_json())
+    g.to_dot()
+    
