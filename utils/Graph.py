@@ -70,19 +70,34 @@ class ArticlesGraph:
 
 
 class GlobalGraph:
+
     def __init__(self, wordcounts, \
                  n = 5, \
-                 subjects = ["PERSON", "ORGANIZATION", "TOPIC"]):
-
+                 subjects = ["PERSON", "ORGANIZATION", "TOPIC"], from_dicts = False, logger = None):
+        if logger:
+            logger.info("wordcounts : {}".format(wordcounts))
+            
         # wordcounts_dicts : list of dictionnaries
+        if from_dicts:
+            wordcounts = list(map(lambda wc_dict : list(chain.from_iterable(wc_dict.values())), wordcounts))
+            if logger:
+                logger.info("new wordcounts : {}".format(wordcounts))
+            
         wordcount_dicts = list(map(lambda wc: \
                                    wcm.select_subjects(wc,subjects = subjects),
                                    wordcounts))
+        if logger:
+            logger.info("wordcount_dicts : {}".format(wordcount_dicts))
         
         global_wordcount = wcm.global_wordcount(wordcounts)
+
+        if logger:
+            logger.info("global wordcount : {}".format(global_wordcount))
         global_wordcount_aggregated = analyse.aggregate_proper_names_in_wordcount(global_wordcount)
         global_wordcount_dict = wcm.select_subjects(global_wordcount_aggregated, \
-                                                    subjects = subjects)
+                                                subjects = subjects)
+
+        
         global_wordcount_dict_best = \
             { k : wcm.take_firsts(v, n=n) for k,v in global_wordcount_dict.items() }
 

@@ -57,8 +57,11 @@ def select_subjects(wordcount: List[Tuple],
     return res
 
 
+
 def aggregate_subjects(wordcount_dict):
     """
     met les différents tokens du dictionnaire dans une seule liste
     """
     return list(chain.from_iterable(wordcount_dict.values()))
+
+

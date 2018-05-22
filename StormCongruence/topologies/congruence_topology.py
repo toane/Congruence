@@ -14,6 +14,10 @@ from bolts.NLP.SentenceSplitBolt import SentenceSplitBolt as SSplitBolt
 from bolts.NLP.TokenizeBolt import TokenizeBolt
 
 from bolts.WordCountBolt import WordCountBolt
+from bolts.ArticleWCBolt import ArticleWCBolt
+from bolts.AggWCToListBolt import AggWCToListBolt
+from bolts.GraphBolt import GraphBolt
+
 
 class WordCount(Topology):
 
@@ -53,5 +57,15 @@ class WordCount(Topology):
         config={"CoreNLPHost":"http://localhost",
                 "CoreNLPPort":9000})
 
-    person_wc_bolt = WordCountBolt.spec(
-        inputs = [tokenize_bolt["person"]], par=1)
+    # person_wc_bolt = WordCountBolt.spec(
+    #     inputs = [tokenize_bolt["person"]], par=1)
+
+    article_wc_bolt = ArticleWCBolt.spec(
+        inputs = [tokenize_bolt], par = 1)
+    
+    agg_wc_to_list_bolt = AggWCToListBolt.spec(
+        inputs = [article_wc_bolt], par = 1)
+
+    graph_bolt = GraphBolt.spec(
+        inputs = [agg_wc_to_list_bolt], par = 1)
+    
