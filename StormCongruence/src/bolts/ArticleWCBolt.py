@@ -1,7 +1,7 @@
 
 from streamparse import Bolt
 import os
-import utils.Wordcount_methods as wc
+import utils.Wordcount_methods as wcm
 
 class ArticleWCBolt(Bolt):
     outputs = ['info', 'wordcounts_dict']
@@ -11,11 +11,8 @@ class ArticleWCBolt(Bolt):
             
     def process(self, tup):
         info = tup.values[0]
-        tokens_dict = tup.values[1]
+        tokens = tup.values[1]
 
-        wordcount_dict = {
-            subject : wc.wordcount(tokens) for subject, tokens in tokens_dict.items()
-        }
-        #self.logger.info("ArticleWordcount : {}".format(wordcount_dict))
-
+        wordcount = wcm.wordcount(tokens)
+        wordcount_dict = wcm.group_by_subject(wordcount)
         self.emit([info, wordcount_dict])

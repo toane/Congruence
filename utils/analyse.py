@@ -132,9 +132,11 @@ class Analyser(metaclass=Singleton):
         
     def get_tokens(self, text: str) -> List[Tuple]:
         """ 
-        sépare le text en phrase, puis analyse chaque phrase et  renvoie une liste de tuples, 
-        contenant les noms propres et les noms communs, annotés de leur type : PERSON, COUNTRY, ... 
-        pour les noms propres, et TOPIC pour les noms communs (avec répétition) 
+        sépare le text en phrase, puis analyse chaque phrase et  
+        renvoie une liste de tuples contenant les noms propres et 
+        les noms communs, annotés de leur type : PERSON, COUNTRY, ... 
+        pour les noms propres, et TOPIC pour les noms communs 
+        (avec répétition) 
         """
         sentences1,sentences2 = tee(self.advanced_sentences_split(text))
         #print("sentences: \n", list(sentences3))

@@ -1,7 +1,6 @@
 
 from streamparse import Bolt
 import os
-import utils.Wordcount_methods as wc
 
 class AggWCToListBolt(Bolt):
     outputs = ['info', 'wordcounts_list']

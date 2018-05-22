@@ -144,12 +144,8 @@ if __name__ == '__main__':
     
     wordcounts = dbf.get_wordcounts(keywords)
     global_wordcount = wcm.aggregate_wordcount_dicts(wordcounts)
-    # global_wordcount = wcm.global_wordcount(wordcounts)
-    # global_wordcount_aggregated = analyse.aggregate_proper_names_in_wordcount(global_wordcount)
-    # filtered_wordcounts = wcm.select_subjects(global_wordcount_aggregated)
-    
-    
-    #print(c)
+
+    print(global_wordcount)
 
 
     g = graph.GlobalGraph(wordcounts, n=6)

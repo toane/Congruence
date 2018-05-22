@@ -3,7 +3,7 @@ from itertools import chain, combinations, groupby
 import utils.analyse as analyse
 import utils.Wordcount_methods as wcm
 import graphviz as gv
-import numpy as np
+#import numpy as np
 from typing import Dict
 import math
 import json
@@ -25,38 +25,50 @@ class GlobalGraph:
 
     def __init__(self, wordcounts, \
                  n = 5, \
-                 subjects = ["PERSON", "ORGANIZATION", "TOPIC"]):
-
+                 subjects = ["PERSON", "ORGANIZATION", "TOPIC"],
+                 logger = None):
+        
+        def log(s):
+            if logger:
+                global logi
+                logger.info(str(s))
+                
         # wordcounts is a list of wordcount dictionaries
-
+        # print("wordcounts for graph :", wordcounts)
+        
         wordcounts_selected = list(map(
             lambda d: {k : d[k] for k in d.keys() if k in subjects},
             wordcounts))
-
+        
         # print("selected : ", list(wordcounts_selected))
         # dictionnary with wordcount for each subject
         wordcount_dict = wcm.aggregate_wordcount_dicts(wordcounts_selected)
         # take the n firsts of each subject : these will be the nodes of the graph
+        
         wordcount_dict_best = \
             { k : wcm.take_firsts(v, n=n) for k,v in wordcount_dict.items() }
-
+        
 
         
         def item_in_wordcount(item, wc):
             wordcount_keys = map(lambda item: item[0], wc)
             return item[0] in wordcount_keys
+        
             
         def select_if_in_global_best(wordcount_dic):
             return { k : [ item for item in v if item_in_wordcount(item, wordcount_dict_best[k])] \
                      for k, v in wordcount_dic.items()}
+        
 
         # now we need to build the edges :
         # we select in the initial wordcounts the items that appear in wordcount_dict_best
         wordcounts_best = [select_if_in_global_best(article_wordcount) \
                                 for article_wordcount in wordcounts_selected]
+        
         #print("wordcounts_best : ", wordcounts_best)
         # we flatten the dictionnaries
         wordcounts_best_flattened = list(map(wcm.aggregate_subjects, wordcounts_best))
+        
         nodes_lists = list(map( lambda l : list(map(lambda x:x[0],l)), wordcounts_best_flattened))
 
         #print("nodes lists : ", list(nodes_lists))
@@ -75,17 +87,18 @@ class GlobalGraph:
         # print("edges_grouped : ", list(edges_grouped))
         edges_weighted = list(map(lambda it : (it[0], len(list(it[1]))), edges_grouped))
         #print(edges_weighted)
+        
         # we select the 50% best edges
-        weights = np.array(list(map(lambda x:x[1], edges_weighted)))
-        q2 = np.percentile(weights, 50)
-        edges_selected = filter(lambda x:x[1] >= q2, edges_weighted)
+        # weights = np.array(list(map(lambda x:x[1], edges_weighted)))
+        # q2 = np.percentile(weights, 50)
+        # edges_selected = filter(lambda x:x[1] >= q2, edges_weighted)
         
         
         self.nodes = wordcount_dict_best
-        self.edges = list(edges_selected)
+        self.edges = list(edges_weighted)
 
-        print("nodes : ", self.nodes)
-        print("edges : ", self.edges)
+        # print("nodes : {}".format(self.nodes))
+        # print("edges : {}".format(self.edges))
         
     def to_dot(self):
         dot = gv.Graph()
@@ -152,7 +165,7 @@ class GlobalGraph:
         idx = 0
         for node_type, nodes_list in self.nodes.items():
             for node in nodes_list:
-                print(idx, node_type, node)
+                # print(idx, node_type, node)
                 node_name = node[0]
                 node_value = node[1]
                 color = json_node_colors[node_type]
@@ -161,7 +174,7 @@ class GlobalGraph:
                 names_index[node_name] = idx
                 idx += 1
 
-        print("index : ", names_index)
+        # print("index : ", names_index)
         
         for edge in self.edges:
             edge = Edge(edge[0][0], edge[0][1],edge[1],'rgb(100,100,100)', names_index)
