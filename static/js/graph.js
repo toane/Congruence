@@ -5,14 +5,16 @@ var container = null;
 var title_card = null;
 
 var curlgt = 0;
-var prevlgv = 0
+var prevlgt = 0
 var MIN_VALID_GRAPH_LGT = 100;
 var LOOP_TIMEOUT = 2000;
 var glocount = 0;
+var loop_db_graph_running = 0;
 
 window.addEvent('domready', function() {
     container = document.getElementById('mynetwork');
     title_card = document.id('title_card');
+
 });
 
 
@@ -21,8 +23,11 @@ function launch(optional_keyword) {
     optional_keyword: pour relancer recherches en cliquant sur une node
     */
 
-//    flush_graph_db(); //on vide la base de donnée de graphe avant de recommencer
-    loop_db_graph_check();
+    //ne lancer la boucle de dessin qu'une seule fois
+    if (!loop_db_graph_running){
+            loop_db_graph_check();
+            loop_db_graph_running = 1;
+    }
     title_card.fade('out');
     if(network){
         network.setData({}) //si un graphe est déja la, on le vide
@@ -62,7 +67,6 @@ function launch(optional_keyword) {
 }
 
 var loop_db_graph_check = function() {
-    console.log("loop_db_graph_check(): init");
     var myRequest = new Request.JSON({
         url: '/storm/graph_json_nodes/',
         method: 'get',
@@ -70,21 +74,18 @@ var loop_db_graph_check = function() {
 
         },
         onSuccess: function(responseJSON, responseText){
-            console.log("loop_db_graph_check(): onSuccess", responseText.length, glocount);
             curlgt = responseText.length
-
-            if (responseJSON['nodes'].length > 0) {
-               draw(responseJSON['nodes'], responseJSON['edges']) //ne pas redessiner si cles identiques ?
-//                console.log(responseJSON)
-                glocount++;
+            console.log("loop_db_graph_check(): onSuccess", curlgt, prevlgt);
+            //arrête de redessiner apres 2 graphes de longueur identique
+            if (curlgt > MIN_VALID_GRAPH_LGT && curlgt != prevlgt && prevlgt > 0){
+               console.log("loop_db_graph_check(): onSuccess:draw", curlgt, prevlgt);
+               draw(responseJSON['nodes'], responseJSON['edges'])
+               search_field.removeProperty('readonly');
+              } else {
 
               }
-              else{
-
-              }
-            if (glocount < 10 ){setTimeout(loop_db_graph_check, LOOP_TIMEOUT);} else {
-                glocount = 0;
-            }
+            setTimeout(loop_db_graph_check, LOOP_TIMEOUT);
+            prevlgt = responseText.length;
         },
         onError(text, error){
             console.log(text, error);
