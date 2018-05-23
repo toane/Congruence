@@ -37,8 +37,8 @@ function launch(optional_keyword) {
     toggle_spinner(1);
     //ne lancer la boucle de dessin qu'une seule fois
     if (!loop_db_graph_running){
-            loop_db_graph_check();
-            loop_db_graph_running = 1;
+        loop_db_graph_check();
+        loop_db_graph_running = 1;
     }
     title_card.fade('out');
     if(network){
@@ -50,7 +50,7 @@ function launch(optional_keyword) {
         search_text = optional_keyword;
     }
     search_field.set('readOnly','true');
-
+    
     var request = new Request.JSON({
         url: '/launch/',
         method: 'get',
@@ -58,10 +58,11 @@ function launch(optional_keyword) {
             'data': search_text
         },
         onProgress: function(event, xhr) {
-
+	    
         },
         onSuccess: function(responseJSON, responseText){
             search_field.removeProperty('readOnly');
+	    draw(responseJSON['nodes'], responseJSON['edges'])
         },
         onError(text, error){
             search_field.removeProperty('readOnly');
@@ -77,20 +78,20 @@ var loop_db_graph_check = function() {
         url: '/storm/graph_json_nodes/',
         method: 'get',
         onProgress: function(event, xhr) {
-        console.log("loop_db_graph_check(): onProgress", curlgt, prevlgt);
+            console.log("loop_db_graph_check(): onProgress", curlgt, prevlgt);
         },
         onSuccess: function(responseJSON, responseText){
             curlgt = responseText.length
             console.log("loop_db_graph_check(): onSuccess", curlgt, prevlgt);
             //arrête de redessiner apres 2 graphes de longueur identique
             if (curlgt > MIN_VALID_GRAPH_LGT && curlgt != prevlgt && prevlgt > 0){
-               toggle_spinner(0);
-               console.log("loop_db_graph_check(): onSuccess:draw", curlgt, prevlgt);
-               draw(responseJSON['nodes'], responseJSON['edges'])
-               search_field.removeProperty('readonly');
-              } else {
-                   //MESSAGE SI PAS DE DONNEES
-              }
+		toggle_spinner(0);
+		console.log("loop_db_graph_check(): onSuccess:draw", curlgt, prevlgt);
+		draw(responseJSON['nodes'], responseJSON['edges'])
+		search_field.removeProperty('readonly');
+            } else {
+                //MESSAGE SI PAS DE DONNEES
+            }
             console.log("loop_db_graph_check(): loop call");
             setTimeout(loop_db_graph_check, LOOP_TIMEOUT);
             prevlgt = responseText.length;
@@ -104,69 +105,69 @@ var loop_db_graph_check = function() {
 }
 
 function draw(nodes_data, edges_data) {
-// create people.
-// value corresponds with the age of the person
-nodes = nodes_data;
-edges = edges_data
-
-// Instantiate our network object.
-
-var data = {
-    nodes: nodes,
-    edges: edges
-};
-var options = {
-    configure: {
-        enabled: false,
-	filter: "physics",
-        showButton: true,
-        // container: document.getElementById('config')
-    },
-    physics: {
-	enabled: true,
-	hierarchicalRepulsion: {
-	    centralGravity: 0.35,
-	    springLength: 145,
-	    springConstant: 0.025,
-	    nodeDistance: 125,
-	    damping: 0.12
+    // create people.
+    // value corresponds with the age of the person
+    nodes = nodes_data;
+    edges = edges_data
+    
+    // Instantiate our network object.
+    
+    var data = {
+	nodes: nodes,
+	edges: edges
+    };
+    var options = {
+	configure: {
+            enabled: false,
+	    filter: "physics",
+            showButton: true,
+            // container: document.getElementById('config')
 	},
-	minVelocity: 0.75,
-	solver: "hierarchicalRepulsion"
-    },
-    interaction:{
-        hoverConnectedEdges: true
-    },
-    height: "700px",
-    edges: {
-        smooth:{
-            enabled:false
-        },
-	color: {inherit:'both' }
-    },
-    nodes: {
-        font:{
-            size:30,
-            face: "arial",
-            color: "#101010"
-        },
-
-        shape: 'box',
-        scaling: {
-            label : {enabled: true},
-	    min : 5,
-	    max : 100
-        }
-    },
-};
-network = new vis.Network(container, data, options);
-
-network.on("click", function (params) {
+	physics: {
+	    enabled: true,
+	    hierarchicalRepulsion: {
+		centralGravity: 0.35,
+		springLength: 145,
+		springConstant: 0.025,
+		nodeDistance: 125,
+		damping: 0.12
+	    },
+	    minVelocity: 0.75,
+	    solver: "hierarchicalRepulsion"
+	},
+	interaction:{
+            hoverConnectedEdges: true
+	},
+	height: "700px",
+	edges: {
+            smooth:{
+		enabled:false
+            },
+	    color: {inherit:'both' }
+	},
+	nodes: {
+            font:{
+		size:30,
+		face: "arial",
+		color: "#101010"
+            },
+	    
+            shape: 'box',
+            scaling: {
+		label : {enabled: true},
+		min : 5,
+		max : 100
+            }
+	},
+    };
+    network = new vis.Network(container, data, options);
+    
+    network.on("click", function (params) {
         var nodeId = this.getNodeAt(params.pointer.DOM);
         nodeLabel = nodes_data[nodeId].label;
         console.log('click event, getNodeAt returns: ' + nodeLabel);
         console.log('click event, node id: ' + nodeId);
         launch(nodeLabel); //relance recherche avec le label de la node en mot cle
     });
-
+    
 }
