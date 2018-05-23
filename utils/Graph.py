@@ -136,7 +136,7 @@ class GlobalGraph:
         node=dict{id: 1, value: 5, label: 'Balkany' , color: 'rgb(237,28,36)'}
         :return:
         """
-        json_output = ''
+        
         class Node:
             def __init__(self, id, value, label, color, group=''):
                 self.id = id
@@ -149,12 +149,12 @@ class GlobalGraph:
                 return self.__dict__
 
         class Edge:
-            def __init__(self, from_node, to_node, title, color, names_index):
+            def __init__(self, from_node, to_node, value, names_index):
                 # recupere un id (ici position dans la liste node_names)
                 self.from_node = names_index[from_node]
                 self.to_node = names_index[to_node]
-                self.title = title
-                self.color = color
+                self.value = value
+                self.title = None
 
             def get_dict(self):
                 vals = self.__dict__
@@ -181,7 +181,7 @@ class GlobalGraph:
         # print("index : ", names_index)
         
         for edge in self.edges:
-            edge = Edge(edge[0][0], edge[0][1],edge[1],'rgb(100,100,100)', names_index)
+            edge = Edge(edge[0][0], edge[0][1],edge[1], names_index)
             json_edges.append(edge)
             
         nodes_dec = [node.get_dict() for node in json_nodes] # liste de dicts

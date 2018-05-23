@@ -1,10 +1,5 @@
-#!/usr/bin/python3
-import json
 import sys
-
 import config.config as conf
-if not conf.initialized:
-    conf.init()
 
 from utils.muteprint import mute_print
 print = mute_print(print)
@@ -40,6 +35,8 @@ class Congruence:
         self.dbf = DBFace()
 
     def run(self, keywords):
+
+        print("running Congruence with keyword {}".format(keywords))
         self.keywords = keywords
         self.recursive_search(self.keywords, self.keywords, 1, langs = ['en'])
         wordcounts = self.dbf.get_wordcounts(self.keywords)
@@ -86,13 +83,13 @@ class Congruence:
                 bbs = BBCScrapper(keywords, requested_by=self.thread_accumulator)
                 # cnn = CNNScrapper(keywords, self.thread_accumulator)
                 dps = DiplomatScrapper(keywords, requested_by=self.thread_accumulator)
-                tis = TheInterceptScrapper(keywords, requested_by=self.thread_accumulator)
+                # tis = TheInterceptScrapper(keywords, requested_by=self.thread_accumulator)
             
             nys.start()
             bbs.start()
             # cnn.start()
             dps.start()
-            tis.start()
+            #tis.start()
 
         for t in self.threads:
             t.join()

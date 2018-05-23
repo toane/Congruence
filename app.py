@@ -1,13 +1,19 @@
-import socket
 
+
+
+import socket
 import config.config as conf
-conf.init()
+conf.init(USE_STORM_ = False,
+          NLP_HOST_ = "http://localhost",
+          RECURSIVE_DEPTH_= 1)
 
 from flask import Flask, render_template, request, Response
 
 from stanfordcorenlp import StanfordCoreNLP
 
-from congruence import Congruence
+#from congruence import Congruence
+import congruence
+Congruence = congruence.Congruence
 import random
 import string
 import sys
@@ -20,7 +26,7 @@ dbcli = dbf.get_client()
 
 STORM_PORT = conf.STORM_PORT
 STORM_HOST = conf.STORM_HOST
-STORM = True
+STORM = conf.USE_STORM
 
 
 try:
@@ -93,13 +99,15 @@ def get_db_status():
 def get_nlp_status():
     sts = False
     try:
+        print("checking NLP status at {}:{}".format(conf.NLP_HOST,
+                                                    conf.NLP_PORT))
         nlp = StanfordCoreNLP(conf.NLP_HOST, port=conf.NLP_PORT)
         sts = ",".join(dir(nlp))
         nlp.close()
         return sts
-    except:
-        return "error"
-
+    except :
+        return "error connecting NLP"
+    
 @app.route("/random/")
 def get_random_word():
     if 'choices' in dir(random):

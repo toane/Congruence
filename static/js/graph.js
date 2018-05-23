@@ -116,25 +116,33 @@ var data = {
     edges: edges
 };
 var options = {
-//    configure: {
-//            enabled: true,
-//            showButton: true
-//    },
-    interaction:{
-        hoverConnectedEdges: true
+    configure: {
+        enabled: false,
+	filter: "physics",
+        showButton: true,
+        // container: document.getElementById('config')
     },
     physics: {
-        enabled: false,
-        "barnesHut": {
-            "avoidOverlap": 0.1
-           },
-
+	enabled: true,
+	hierarchicalRepulsion: {
+	    centralGravity: 0.35,
+	    springLength: 145,
+	    springConstant: 0.025,
+	    nodeDistance: 125,
+	    damping: 0.12
+	},
+	minVelocity: 0.75,
+	solver: "hierarchicalRepulsion"
+    },
+    interaction:{
+        hoverConnectedEdges: true
     },
     height: "700px",
     edges: {
         smooth:{
             enabled:false
-        }
+        },
+	color: {inherit:'both' }
     },
     nodes: {
         font:{
@@ -145,12 +153,11 @@ var options = {
 
         shape: 'box',
         scaling: {
-            label: {
-                min: 8,
-                max: 20
-            }
+            label : {enabled: true},
+	    min : 5,
+	    max : 100
         }
-    }
+    },
 };
 network = new vis.Network(container, data, options);
 
