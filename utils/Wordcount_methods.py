@@ -1,4 +1,8 @@
 
+from utils.muteprint import mute_print
+print = mute_print(print)
+
+
 from itertools import groupby, chain
 from typing import List, Dict, Tuple
 

@@ -1,4 +1,8 @@
 
+from utils.muteprint import mute_print
+print = mute_print(print)
+
+
 from itertools import chain, combinations, groupby
 import utils.analyse as analyse
 import utils.Wordcount_methods as wcm

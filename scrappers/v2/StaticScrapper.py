@@ -1,3 +1,7 @@
+
+from utils.muteprint import mute_print
+print = mute_print(print)
+
 from socket import gaierror
 from threading import Thread
 
