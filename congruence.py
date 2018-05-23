@@ -51,6 +51,9 @@ class Congruence:
         # return str(g)
         return g
 
+    def get_db(self):
+        return self.dbf
+
     def thread_accumulator(self,thread):
         # print("started thread {}".format(thread))
         self.threads.append(thread)
