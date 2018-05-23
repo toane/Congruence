@@ -57,14 +57,14 @@ def launch_storm(kwds: str):
     :param kwds: an url encoded string (eg:dont%20touch)
     :return:
     """
-    stormarg = unquote(kwds)
-    ret = "launching storm with "+stormarg
+    stormarg =str.encode(unquote(kwds))
+    ret = "launching storm with "+str(stormarg)
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((STORM_HOST, STORM_PORT))
             s.sendall(stormarg)
     except Exception as e:  # retourne un InterruptedError ?
-        return(ret+"<br/>could not connect to Storm on {}:{}, error : {}".format(STORM_HOST,STORM_PORT, e))
+        return ret+"<br/>error with Storm connection {}:{}, error was {}".format(STORM_HOST,STORM_PORT,str(e))
     return ret
 
 @app.route("/get_db_status/")
