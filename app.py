@@ -64,7 +64,7 @@ def launch_storm(kwds: str):
             s.connect((STORM_HOST, STORM_PORT))
             s.sendall(stormarg)
     except Exception as e:  # retourne un InterruptedError ?
-        return(ret+"<br/>could not connect to Storm on {}:{}".format(STORM_HOST,STORM_PORT))
+        return(ret+"<br/>could not connect to Storm on {}:{}, error : {}".format(STORM_HOST,STORM_PORT, e))
     return ret
 
 @app.route("/get_db_status/")
