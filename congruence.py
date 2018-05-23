@@ -3,7 +3,8 @@ import json
 import sys
 
 import config.config as conf
-
+if not conf.initialized:
+    conf.init()
 
 from utils.muteprint import mute_print
 print = mute_print(print)

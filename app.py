@@ -1,5 +1,8 @@
 import socket
 
+import config.config as conf
+conf.init()
+
 from flask import Flask, render_template, request, Response
 
 from stanfordcorenlp import StanfordCoreNLP
@@ -14,9 +17,11 @@ cong = Congruence()
 dbf = cong.get_db()
 dbcli = dbf.get_client()
 
-STORM_PORT = 15556
-STORM_HOST = 'localhost'
+
+STORM_PORT = conf.STORM_PORT
+STORM_HOST = conf.STORM_HOST
 STORM = True
+
 
 try:
     from urllib import unquote
@@ -67,10 +72,10 @@ def launch_storm(kwds: str):
     ret = "launching storm with "+str(stormarg)
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((STORM_HOST, STORM_PORT))
+            s.connect((conf.STORM_HOST, conf.STORM_PORT))
             s.sendall(stormarg)
     except Exception as e:  # retourne un InterruptedError ?
-        return ret+"<br/>error with Storm connection {}:{}<br/> error was {}".format(STORM_HOST,STORM_PORT,str(e))
+        return ret+"<br/>error with Storm connection {}:{}<br/> error was {}".format(conf.STORM_HOST,conf.STORM_PORT,str(e))
     return ret
 
 @app.route("/get_db_status/")
@@ -88,7 +93,7 @@ def get_db_status():
 def get_nlp_status():
     sts = False
     try:
-        nlp = StanfordCoreNLP("http://localhost", port=9000) # TODO ne pas marquer l'uri en dur
+        nlp = StanfordCoreNLP(conf.NLP_HOST, port=conf.NLP_PORT)
         sts = ",".join(dir(nlp))
         nlp.close()
         return sts

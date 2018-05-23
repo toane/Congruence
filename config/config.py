@@ -1,4 +1,6 @@
 
+initialized = False
+
 def init(USE_STORM_ = True, NLP_HOST_ = 'http://192.168.1.53', RECURSIVE_DEPTH_ = 2):
 
     # coreNLP config
@@ -41,3 +43,5 @@ def init(USE_STORM_ = True, NLP_HOST_ = 'http://192.168.1.53', RECURSIVE_DEPTH_ 
     global SCRAPPERS_VERSION
     SCRAPPERS_VERSION = 2
 
+    global initialized
+    initialized = True
