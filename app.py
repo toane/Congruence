@@ -1,3 +1,5 @@
+import socket
+
 from flask import Flask, render_template, request, Response
 from stanfordcorenlp import StanfordCoreNLP
 
@@ -10,6 +12,14 @@ app = Flask(__name__)
 dbf = DBFace()
 dbcli = dbf.get_client()
 cong = Congruence()
+
+STORM_PORT = 15556
+STORM_HOST = 'localhost'
+
+try:
+    from urllib import unquote
+except ImportError as ie:
+    from urllib.parse import unquote
 
 
 @app.route("/run/")
@@ -37,10 +47,25 @@ def search():
 
 @app.route('/launch/')
 def launch():
-    # flush_graph_db()
     keyword = request.args.get('data', '')
-    gdt = cong.run(keyword)
-    return gdt
+    ret = launch_storm(keyword)
+    return ret
+
+def launch_storm(kwds: str):
+    """
+    starts a storm processing chain
+    :param kwds: an url encoded string (eg:dont%20touch)
+    :return:
+    """
+    stormarg = unquote(kwds)
+    ret = "launching storm with "+stormarg
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((STORM_HOST, STORM_PORT))
+            s.sendall(stormarg)
+    except Exception as e:  # retourne un InterruptedError ?
+        return(ret+"<br/>could not connect to Storm on port "+str(STORM_PORT))
+    return ret
 
 @app.route("/get_db_status/")
 def get_db_status():
