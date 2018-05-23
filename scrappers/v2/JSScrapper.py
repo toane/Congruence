@@ -1,3 +1,8 @@
+
+from utils.printdebug import mute_print
+print = mute_print(print)
+
+
 from threading import Thread
 from utils.DBFace import DBFace
 from threading import Thread

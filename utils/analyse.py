@@ -1,3 +1,8 @@
+
+from utils.muteprint import mute_print
+print = mute_print(print)
+
+
 import json
 from itertools import chain, tee, groupby
 from typing import List, Tuple

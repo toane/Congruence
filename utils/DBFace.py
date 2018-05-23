@@ -1,9 +1,13 @@
+
+from utils.muteprint import mute_print
+print = mute_print(print)
+
+
 import codecs
 import hashlib
 import json
 import os
-from itertools import groupby
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
 try:
     from tqdm import tqdm
@@ -16,18 +20,20 @@ from model.Article import Article
 from bson.code import Code
 from pymongo import MongoClient, TEXT, ReturnDocument
 from pymongo.errors import ServerSelectionTimeoutError
-from typing import Dict
 
 from utils.analyse import Analyser
 from model.Singleton import Singleton
 import utils.Wordcount_methods as wcm
+
+import config.config as conf
+
 
 class DBFace(metaclass=Singleton):
 
     def __init__(self):
         print("new DBFace instance {}".format(id(self)))
         try:
-            self.client = MongoClient("mongodb://localhost", 27017, serverSelectionTimeoutMS=5000)
+            self.client = MongoClient(conf.MONGO_HOST,conf.MONGO_PORT, serverSelectionTimeoutMS=5000)
             db = self.client.mdb
             self.coll = db.articol
             self.graphcol = db.graphcol # collection contenant l'article avec le graphe

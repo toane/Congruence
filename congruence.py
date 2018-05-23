@@ -2,10 +2,13 @@
 import json
 import sys
 
-scrappers_version = 2
+import config.config as conf
 
-if scrappers_version == 1:
-    from scrappers.v1.CNNScrapper import CNNScrapper
+
+from utils.muteprint import mute_print
+print = mute_print(print)
+
+if conf.SCRAPPERS_VERSION == 1:
     from scrappers.v1.FigaroScrapper import FigaroStaticScrapper
     from scrappers.v1.LiberationScrapper import LiberationStaticScrapper
     from scrappers.v1.NYTScrapper import NYTScrapper
@@ -13,7 +16,6 @@ if scrappers_version == 1:
     from scrappers.v1.BBCScrapper import BBCScrapper
     from scrappers.v1.DiplomatScrapper import DiplomatScrapper
 else:
-    from scrappers.v2.CNNScrapper import CNNScrapper
     from scrappers.v2.FigaroScrapper import FigaroStaticScrapper
     from scrappers.v2.LiberationScrapper import LiberationStaticScrapper
     from scrappers.v2.NYTScrapper import NYTScrapper
@@ -52,10 +54,10 @@ class Congruence:
         # print("started thread {}".format(thread))
         self.threads.append(thread)
 
-    def run_scrappers(self,keywords, langs=['en']):
+    def run_scrappers(self,keywords, langs):
 
         if 'fr' in langs:
-            if scrappers_version == 1:
+            if conf.SCRAPPERS_VERSION == 1:
                 ns = NouvelobsStaticScrapper("https://recherche.nouvelobs.com/?", keywords, self.thread_accumulator)
                 ls = LiberationStaticScrapper("http://www.liberation.fr/recherche/?", keywords, self.thread_accumulator)
                 fs = FigaroStaticScrapper("http://recherche.lefigaro.fr/recherche/", keywords, self.thread_accumulator)
@@ -70,7 +72,7 @@ class Congruence:
 
 
         if 'en' in langs:
-            if scrappers_version == 1:
+            if conf.SCRAPPERS_VERSION == 1:
                 nys = NYTScrapper("https://www.nytimes.com/search/", keywords, self.thread_accumulator)
                 bbs = BBCScrapper("https://www.bbc.co.uk/search?", keywords, self.thread_accumulator)
                 # cnn = CNNScrapper("https://edition.cnn.com/search/?", keywords, self.thread_accumulator)
@@ -95,8 +97,7 @@ class Congruence:
         if depth == 0:
             return None
 
-        # analyser = Analyser('http://192.168.1.53', 9000)
-        analyser = Analyser('http://localhost', 9000)
+        analyser = Analyser(conf.NLP_HOST, conf.NLP_PORT)
 
         print("running recursive search at depth {} for keyword {} from initial keyword {}".format(depth, current_keywords, initial_keywords))
         self.run_scrappers(current_keywords, langs=['en'])
