@@ -1,6 +1,9 @@
 import os
 import sys
 
+import config.config as config
+config.init()
+
 from streamparse import Bolt
 
 from scrappers.v2.BBCScrapper import BBCScrapper
