@@ -4,17 +4,23 @@ import config.config as conf
 conf.init()
 
 from flask import Flask, render_template, request, Response
+
 from stanfordcorenlp import StanfordCoreNLP
 
-from utils.DBFace import DBFace
 from congruence import Congruence
 import random
 import string
 import sys
 app = Flask(__name__)
-dbf = DBFace()
-dbcli = dbf.get_client()
+
 cong = Congruence()
+dbf = cong.get_db()
+dbcli = dbf.get_client()
+
+
+STORM_PORT = conf.STORM_PORT
+STORM_HOST = conf.STORM_HOST
+STORM = True
 
 
 try:
@@ -48,8 +54,12 @@ def search():
 
 @app.route('/launch/')
 def launch():
+    ret = "Placeholder app.py:launch()"
     keyword = request.args.get('data', '')
-    ret = launch_storm(keyword)
+    if STORM is True:
+        ret = launch_storm(keyword)
+    elif STORM is False:
+        ret = cong.run(keyword)
     return ret
 
 def launch_storm(kwds: str):
@@ -58,14 +68,14 @@ def launch_storm(kwds: str):
     :param kwds: an url encoded string (eg:dont%20touch)
     :return:
     """
-    stormarg =str.encode(unquote(kwds))
+    stormarg = str.encode(unquote(kwds))
     ret = "launching storm with "+str(stormarg)
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((conf.STORM_HOST, conf.STORM_PORT))
             s.sendall(stormarg)
     except Exception as e:  # retourne un InterruptedError ?
-        return ret+"<br/>error with Storm connection {}:{}, error was {}".format(STORM_HOST,STORM_PORT,str(e))
+        return ret+"<br/>error with Storm connection {}:{}<br/> error was {}".format(conf.STORM_HOST,conf.STORM_PORT,str(e))
     return ret
 
 @app.route("/get_db_status/")
@@ -90,12 +100,15 @@ def get_nlp_status():
     except:
         return "error"
 
-
-@app.route("/streamed_data/")
-def get_stream():
+@app.route("/random/")
+def get_random_word():
     if 'choices' in dir(random):
         return Response(''.join(random.choices(string.ascii_uppercase + string.digits, k=8)), mimetype='text/html')
+        # m = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        # socketio.emit('msg', {'word': m}, namespace='/dd')
     else:
+        # m = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        # socketio.emit('msg', {'word': m}, namespace='/dd')
         return Response(''.join([random.choice(string.ascii_uppercase + string.digits) for f in range(8)]), mimetype='text/html')
 
 @app.route("/storm/graph_json_nodes/")
@@ -116,3 +129,5 @@ def url_error(e):
     return """
     Cette page existe pas, my dude
     <pre>{}</pre>""".format(e), 404
+
+
