@@ -1,2 +1,2 @@
 #! /bin/bash
-mongod --dbpath=./db
+mongod --dbpath=./db --bind_ip_all

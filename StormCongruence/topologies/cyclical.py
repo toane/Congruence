@@ -1,4 +1,7 @@
 
+import config.config as config
+config.init()
+
 from streamparse.thrift import GlobalStreamId
 
 from streamparse import Grouping, Topology
