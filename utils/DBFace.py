@@ -170,7 +170,7 @@ class DBFace(metaclass=Singleton):
             tknis_wc = wcm.wordcount(tknis)
             tknis_wc_grouped = wcm.group_by_subject(tknis_wc)
 
-            print("grouped {}".format(tknis_wc_grouped))
+            # print("grouped {}".format(tknis_wc_grouped))
             
             self.update_field(r['_id'], tknis, 'tokenified')
             self.update_field(r['_id'], tknis_wc_grouped, 'wordcount')

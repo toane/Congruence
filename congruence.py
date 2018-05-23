@@ -118,7 +118,7 @@ class Congruence:
         wordcounts = self.dbf.get_wordcounts(current_keywords)
  
         global_wordcount = wcm.aggregate_wordcount_dicts(wordcounts)
-        print(global_wordcount)
+        # print(global_wordcount)
     
 
         global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3)

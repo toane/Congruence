@@ -46,13 +46,13 @@ class WordCount(Topology):
         inputs=[nyt_search_bolt], par = 1,
         config = {"OmniScrapBoltName": "NYT"})
     
-    ssplit_bolt = SSplitBolt.spec( 
-        inputs=[bbc_scrap_bolt, nyt_scrap_bolt], par=1,
-        config={"CoreNLPHost":"http://localhost",
-                "CoreNLPPort":9000})
+    # ssplit_bolt = SSplitBolt.spec( 
+    #     inputs=[bbc_scrap_bolt, nyt_scrap_bolt], par=1,
+    #     config={"CoreNLPHost":"http://localhost",
+    #             "CoreNLPPort":9000})
 
     tokenize_bolt = TokenizeBolt.spec(
-        inputs = [ssplit_bolt], par=1,
+        inputs = [bbc_scrap_bolt, nyt_scrap_bolt], par=1,
         config={"CoreNLPHost":"http://localhost",
                 "CoreNLPPort":9000})
 

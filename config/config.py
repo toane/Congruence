@@ -1,7 +1,9 @@
 
 initialized = False
 
-def init(USE_STORM_ = True, NLP_HOST_ = 'http://192.168.1.53', RECURSIVE_DEPTH_ = 2):
+def init(USE_STORM_ = True,
+         NLP_HOST_ = 'http://192.168.1.53',
+         RECURSIVE_DEPTH_ = 2):
 
     # coreNLP config
     global NLP_HOST
