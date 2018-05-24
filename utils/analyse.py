@@ -213,7 +213,9 @@ class Analyser(metaclass=Singleton):
                                         key = lambda x:x[1],
                                         reverse=True)[0][0]
                 self.to_replace[person] = best_long_name
-                print("added {} -> {}".format(person, best_long_name))
+                # ptet ne pas merger des tokens de type different
+                #  merged ('hurricane', 'CAUSE_OF_DEATH') into ('Hurricane Harvey', 'PERSON')
+                print("merged {} into {}".format(person, best_long_name))
 
         res = list(person_names_tokens)
         #print("before replace : ", res)
