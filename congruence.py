@@ -42,7 +42,7 @@ class Congruence:
         wordcounts = self.dbf.get_wordcounts(self.keywords)
         self.g = graph.GlobalGraph(wordcounts, n=6)
         lgg = self.g.to_json()
-        self.dbf.insert_graph(lgg)
+        self.dbf.insert_graph(lgg, keywords)
         g = self.dbf.get_graph()
         # jstr = json.dumps(g)
         # return str(g)
