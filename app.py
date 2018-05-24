@@ -125,6 +125,7 @@ def get_graph():
     """reagit aux requetes vers http://127.0.0.1:5000/storm/graph_json_nodes/?data=...
     attend les données de Graph.py::to_json()
     """
+    print("requesting graph for kw : ", keyword)
     return dbf.get_graph(keyword)
 
 @app.route("/storm/flush_graph_db/")
