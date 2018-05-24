@@ -1,6 +1,6 @@
-var nodes = null;
-var edges = null;
-var network = null;
+var nodes;
+var edges;
+var network;
 var container = null;
 var title_card = null;
 
@@ -12,12 +12,12 @@ var glocount = 0;
 var loop_db_graph_running = 0;
 var search_field = null;
 
-window.addEvent('domready', function() {
-    container = document.getElementById('mynetwork');
-    title_card = document.id('title_card');
-    search_field = document.getElement('#search_form > #search_field');
-
-});
+// window.addEvent('domready', function() {
+//     container = document.getElementById('mynetwork');
+//     title_card = document.id('title_card');
+//     search_field = document.getElement('#search_form > #search_field');
+//     draw();
+// });
 
 function toggle_spinner(active){
     if (active){
@@ -29,6 +29,34 @@ function toggle_spinner(active){
 }
 
 
+
+function update_graph(new_nodes, new_edges) {
+    existing_nids = nodes.getIds();
+    new_nids = new_nodes.map(n=>n.id);
+    console.log("updating_graph")
+    // remove old nodes
+
+    console.log(existing_nids)
+    console.log(new_nids)
+    for (var i = 0; i < existing_nids.length; i++) {
+	id = existing_nids[i];
+	if (! new_nids.includes(id)) {
+	    nodes.remove(id);
+	}
+    }
+    nodes.update(new_nodes);
+
+    existing_eids = edges.getIds();
+    new_eids = new_edges.map(n => n.id);
+
+    for (var id in existing_eids) {
+	if (! new_eids.includes(id)) {
+	    edges.remove(id);
+	}
+    }
+    edges.update(new_edges);
+}
+
 function launch(optional_keyword) {
     /*
     optional_keyword: pour relancer recherches en cliquant sur une node
@@ -36,13 +64,14 @@ function launch(optional_keyword) {
 
     toggle_spinner(1);
     //ne lancer la boucle de dessin qu'une seule fois
-    if (!loop_db_graph_running){
-        loop_db_graph_check();
-        loop_db_graph_running = 1;
-    }
+    // if (!loop_db_graph_running){
+    //     loop_db_graph_check();
+    //     loop_db_graph_running = 1;
+    // }
+    
     title_card.fade('out');
     if(network){
-        network.setData({}) //si un graphe est déja la, on le vide
+        // network.setData({}) //si un graphe est déja la, on le vide
     }
     var search_text = search_field.get('value');
     if (optional_keyword){
@@ -62,7 +91,8 @@ function launch(optional_keyword) {
         },
         onSuccess: function(responseJSON, responseText){
             search_field.removeProperty('readOnly');
-	    draw(responseJSON['nodes'], responseJSON['edges'])
+	    update_graph(responseJSON['nodes'], responseJSON['edges']);
+	    //draw(responseJSON['nodes'], responseJSON['edges'])
         },
         onError(text, error){
             search_field.removeProperty('readOnly');
@@ -87,7 +117,8 @@ var loop_db_graph_check = function() {
             if (curlgt > MIN_VALID_GRAPH_LGT && curlgt != prevlgt && prevlgt > 0){
 		toggle_spinner(0);
 		console.log("loop_db_graph_check(): onSuccess:draw", curlgt, prevlgt);
-		draw(responseJSON['nodes'], responseJSON['edges'])
+		update_graph(responseJSON['nodes'], responseJSON['edges']);
+		// draw(responseJSON['nodes'], responseJSON['edges'])
 		search_field.removeProperty('readonly');
             } else {
                 //MESSAGE SI PAS DE DONNEES
@@ -104,12 +135,12 @@ var loop_db_graph_check = function() {
     myRequest.send();
 }
 
-function draw(nodes_data, edges_data) {
-    // create people.
-    // value corresponds with the age of the person
-    nodes = nodes_data;
-    edges = edges_data
-    
+function draw() {
+    nodes = new vis.DataSet();
+    edges = new vis.DataSet();
+
+    nodes.sid = "nnn";
+    edges.sid = "eee";
     // Instantiate our network object.
     
     var data = {
@@ -161,7 +192,6 @@ function draw(nodes_data, edges_data) {
 	},
     };
     network = new vis.Network(container, data, options);
-    
     network.on("click", function (params) {
         var nodeId = this.getNodeAt(params.pointer.DOM);
         nodeLabel = nodes_data[nodeId].label;
@@ -171,3 +201,7 @@ function draw(nodes_data, edges_data) {
     });
     
 }
+container = document.getElementById('mynetwork');
+title_card = document.id('title_card');
+search_field = document.getElement('#search_form > #search_field');
+draw();

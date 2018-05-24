@@ -4,11 +4,9 @@ print = mute_print(print)
 
 
 from itertools import chain, combinations, groupby
-import utils.analyse as analyse
 import utils.Wordcount_methods as wcm
 import graphviz as gv
-#import numpy as np
-from typing import Dict
+import numpy as np
 import math
 import json
 
@@ -27,8 +25,8 @@ json_node_colors = {
 
 class GlobalGraph:
 
-    def __init__(self, wordcounts, \
-                 n = 5, \
+    def __init__(self, wordcounts, 
+                 n = 5, 
                  subjects = ["PERSON", "ORGANIZATION", "TOPIC"],
                  logger = None):
         
@@ -60,17 +58,20 @@ class GlobalGraph:
         
             
         def select_if_in_global_best(wordcount_dic):
-            return { k : [ item for item in v if item_in_wordcount(item, wordcount_dict_best[k])] \
+            return { k : [ item for item in v if
+                           item_in_wordcount(item,
+                                             wordcount_dict_best[k])] 
                      for k, v in wordcount_dic.items()}
         
 
         # now we need to build the edges :
         # we select in the initial wordcounts the items that appear in wordcount_dict_best
-        wordcounts_best = [select_if_in_global_best(article_wordcount) \
-                                for article_wordcount in wordcounts_selected]
+        wordcounts_best = [select_if_in_global_best(article_wordcount) 
+                           for article_wordcount
+                           in wordcounts_selected]
         
         #print("wordcounts_best : ", wordcounts_best)
-        # we flatten the dictionnaries
+        # we flatten the dictionnaries 
         wordcounts_best_flattened = list(map(wcm.aggregate_subjects, wordcounts_best))
         
         nodes_lists = list(map( lambda l : list(map(lambda x:x[0],l)), wordcounts_best_flattened))
@@ -114,15 +115,6 @@ class GlobalGraph:
                                   "fontsize" :  str(10*math.sqrt(node[1])), 
                                   "shape" : "circle"} )
         
-        # for node in self.nodes:
-        #     dot.node(node[0][0], **{"color" :dot_node_colors[node[0][1]], \
-        #                             "width" : str(math.sqrt(node[1])), \
-        #                             "fontsize" :  str(10*math.sqrt(node[1])), \
-        #                             "shape" : "circle"} )
-
-        # print("\nedges : ", self.edges, "\n")
-        # print("\nedges_small ",  [(edge[0][0][0], edge[1][0][0]) for edge in self.edges], "\n")
-        # print("\nedges_set ",  set([(edge[0][0][0], edge[1][0][0]) for edge in self.edges]), "\n")
             
 
         for edge in self.edges:
@@ -149,12 +141,12 @@ class GlobalGraph:
                 return self.__dict__
 
         class Edge:
-            def __init__(self, from_node, to_node, value, names_index):
-                # recupere un id (ici position dans la liste node_names)
-                self.from_node = names_index[from_node]
-                self.to_node = names_index[to_node]
+            def __init__(self, from_node, to_node, value):
+                self.from_node = from_node
+                self.to_node = to_node
                 self.value = value
                 self.title = None
+                self.id = "{}:{}".format(from_node, to_node)
 
             def get_dict(self):
                 vals = self.__dict__
@@ -164,24 +156,23 @@ class GlobalGraph:
 
         json_nodes = []
         json_edges = []
-        names_index = {}
 
-        idx = 0
+
         for node_type, nodes_list in self.nodes.items():
             for node in nodes_list:
                 # print(idx, node_type, node)
                 node_name = node[0]
                 node_value = node[1]
+                node_id = node_name
                 color = json_node_colors[node_type]
-                node = Node(idx, node_value, node_name,color, node_type)
+                node = Node(node_id, node_value, node_name,
+                            color, node_type)
                 json_nodes.append(node)
-                names_index[node_name] = idx
-                idx += 1
 
         # print("index : ", names_index)
         
         for edge in self.edges:
-            edge = Edge(edge[0][0], edge[0][1],edge[1], names_index)
+            edge = Edge(edge[0][0], edge[0][1],edge[1])
             json_edges.append(edge)
             
         nodes_dec = [node.get_dict() for node in json_nodes] # liste de dicts
