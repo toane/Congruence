@@ -121,10 +121,11 @@ def get_random_word():
 
 @app.route("/storm/graph_json_nodes/")
 def get_graph():
+    keyword = request.args.get('keyword', '')
     """reagit aux requetes vers http://127.0.0.1:5000/storm/graph_json_nodes/?data=...
     attend les données de Graph.py::to_json()
     """
-    return dbf.get_graph()
+    return dbf.get_graph(keyword)
 
 @app.route("/storm/flush_graph_db/")
 def flush_graph_db():

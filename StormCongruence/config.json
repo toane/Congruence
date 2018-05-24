@@ -4,17 +4,18 @@
     "virtualenv_specs": "virtualenvs/",
     "envs": {
         "prod": {
-            "user": "",
-            "ssh_password": "",
-            "nimbus": "",
-            "workers": [],
+            "user": "mathias",
+            "ssh_password": "bigdata",
+            "nimbus": "localhost",
+            "workers": ["localhost"],
             "log": {
                 "path": "",
                 "max_bytes": 1000000,
                 "backup_count": 10,
                 "level": "info"
             },
-            "virtualenv_root": ""
+            "virtualenv_root": "/home/mathias/bigdata/projet/Congruence/StormCongruence/virtualenvs/",
+	    "use_ssh_for_nimbus" : false
         }
     }
 }
