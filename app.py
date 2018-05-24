@@ -3,7 +3,7 @@
 
 import socket
 import config.config as conf
-conf.init(USE_STORM_ = False,
+conf.init(USE_STORM_ = True,
           NLP_HOST_ = "http://localhost",
           RECURSIVE_DEPTH_= 1)
 

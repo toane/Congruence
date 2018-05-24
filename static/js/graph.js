@@ -64,10 +64,10 @@ function launch(optional_keyword) {
 
     toggle_spinner(1);
     //ne lancer la boucle de dessin qu'une seule fois
-    // if (!loop_db_graph_running){
-    //     loop_db_graph_check();
-    //     loop_db_graph_running = 1;
-    // }
+    if (!loop_db_graph_running){
+        loop_db_graph_check();
+        loop_db_graph_running = 1;
+    }
     
     title_card.fade('out');
     if(network){
