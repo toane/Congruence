@@ -31,7 +31,7 @@ class WCAggregatorBolt(Bolt):
         # if the number of received wordcounts for the
         # keyword is a multiple of 10, send best token selection
         # as new keywords
-        if len(self.wsc[kw]) % 10 == 0:
+        if len(self.wcs[kw]) % 10 == 0:
             global_wordcount = wcm.aggregate_wordcount_dicts(self.wcs[kw])
             global_wordcount_dict_best = {k : wcm.take_firsts(v, n=3)
                                           for k,v in global_wordcount.items()

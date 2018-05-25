@@ -110,13 +110,23 @@ def get_nlp_status():
 
 @app.route("/get_storm_status/")
 def get_storm_status():
+    
     try:
-        print("checking Storm status at {}:{}".format(conf.NLP_HOST,
-                                                    conf.NLP_PORT))
-        r = requests.get('http://'+str(conf.STORM_HOST)+':'+str(conf.STORM_PING_PORT))
-        return "oui"
-    except requests.exceptions.ConnectionError:
-        return 'error' # messages de retour devraient etre définis qq part
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((conf.STORM_HOST, conf.STORM_PING_PORT))
+            s.sendall(b"ping")
+
+        return "ok"
+    except:
+        return "error"
+    
+    # try:
+    #     print("checking Storm status at {}:{}".format(conf.STORM_HOST,
+    #                                                 conf.STORM_PORT))
+    #     r = requests.get('http://'+str(conf.STORM_HOST)+':'+str(conf.STORM_PING_PORT))
+    #     return "oui"
+    # except requests.exceptions.ConnectionError:
+    #     return 'error' # messages de retour devraient etre définis qq part
 
     
 @app.route("/random/")

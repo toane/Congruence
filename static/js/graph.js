@@ -198,7 +198,7 @@ function draw() {
     network = new vis.Network(container, data, options);
     network.on("click", function (params) {
         var nodeId = this.getNodeAt(params.pointer.DOM);
-        nodeLabel = nodes_data[nodeId].label;
+        nodeLabel = nodes[nodeId].label;
         console.log('click event, getNodeAt returns: ' + nodeLabel);
         console.log('click event, node id: ' + nodeId);
         launch(nodeLabel); //relance recherche avec le label de la node en mot cle
