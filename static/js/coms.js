@@ -1,5 +1,6 @@
 get_db_status();
 get_nlp_status();
+get_storm_status();
 
 var recepdiv = document.id('receptor');
 
@@ -50,7 +51,6 @@ function get_db_status() {
 }
 
 function get_nlp_status() {
-
     var db_status_box = document.getElement('#opennlp_status_box');
     console.log("get_nlp_status()");
     var myRequest = new Request({
@@ -68,6 +68,32 @@ function get_nlp_status() {
                 db_status_box.removeClass("alert alert-info");
                 db_status_box.addClass("alert alert-success");
                 db_status_box.set('text', "OpenNLP status ok");
+            }
+
+        },
+
+    });
+    myRequest.send();
+}
+
+function get_storm_status() {
+    var db_status_box = document.getElement('#storm_status_box');
+    console.log("get_storm_status()");
+    var myRequest = new Request({
+        url: '/get_storm_status/',
+        method: 'get',
+        onProgress: function(event, xhr) {
+            var loaded = event.loaded,
+                total = event.total;
+            console.log("get_storm_status: ", xhr.responseText);
+            if (xhr.responseText.localeCompare("error") == 0) {
+                db_status_box.removeClass("alert alert-success");
+                db_status_box.addClass("alert alert-info");
+                db_status_box.set('text', "Storm unresponsive");
+            } else {
+                db_status_box.removeClass("alert alert-info");
+                db_status_box.addClass("alert alert-success");
+                db_status_box.set('text', "Storm online");
             }
 
         },

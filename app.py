@@ -1,7 +1,7 @@
-
-
-
 import socket
+
+import requests
+
 import config.config as conf
 conf.init(USE_STORM_ = True,
           NLP_HOST_ = "http://localhost",
@@ -106,7 +106,19 @@ def get_nlp_status():
         nlp.close()
         return sts
     except :
-        return "error connecting NLP"
+        # return string needs to match js check in com.js:get_storm_status()
+        return "error"
+
+@app.route("/get_storm_status/")
+def get_storm_status():
+    try:
+        print("checking Storm status at {}:{}".format(conf.NLP_HOST,
+                                                    conf.NLP_PORT))
+        r = requests.get('http://'+str(conf.STORM_HOST)+':'+str(conf.STORM_PING_PORT))
+        return "oui"
+    except requests.exceptions.ConnectionError:
+        return 'error' # messages de retour devraient etre définis qq part
+
     
 @app.route("/random/")
 def get_random_word():
