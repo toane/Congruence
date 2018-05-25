@@ -3,13 +3,14 @@ initialized = False
 
 def init(USE_STORM_ = True,
          NLP_HOST_ = 'http://192.168.1.53',
+         NLP_PORT_ = 9000,
          RECURSIVE_DEPTH_ = 2):
 
     # coreNLP config
     global NLP_HOST
     global NLP_PORT
     NLP_HOST = NLP_HOST_
-    NLP_PORT = 9000
+    NLP_PORT = NLP_PORT_
 
     # mongo config
     global MONGO_HOST

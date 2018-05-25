@@ -4,7 +4,6 @@
 import socket
 import config.config as conf
 conf.init(USE_STORM_ = True,
-          NLP_HOST_ = "http://localhost",
           RECURSIVE_DEPTH_= 1)
 
 from flask import Flask, render_template, request, Response
