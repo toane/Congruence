@@ -49,3 +49,5 @@ class CNNScrapper(JSScrapper):
 
 
 
+
+

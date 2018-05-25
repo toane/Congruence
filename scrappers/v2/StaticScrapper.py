@@ -45,7 +45,6 @@ class StaticScrapper(Thread):
     def content_to_db(self):
         page_content = self.fetch_url(self.url)
         paragraphs = self.parse_page_content(page_content)
-        
         # print("read {} chars on {}".format(len(''.join(out_text)), url))
         self.dbf.add_record(self.keywords, self.url, paragraphs, lang=self.lang)
 

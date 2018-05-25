@@ -21,9 +21,12 @@ def init(USE_STORM_ = True,
     global USE_STORM
     global STORM_PORT
     global STORM_HOST
+    global STORM_PING_PORT
+    STORM_PING_PORT = 15557
     USE_STORM = USE_STORM_
     STORM_HOST ='localhost'
     STORM_PORT = 15556
+
 
     # recursive search
     global RECURSIVE_DEPTH
