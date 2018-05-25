@@ -21,7 +21,11 @@ from bolts.RecursiveBolt import RecursiveBolt
 
 keyword_rec = GlobalStreamId(componentId='wc_agg_bolt', streamId='rec')
 class WordCount(Topology):
+    config = {
+        "ui.host" : "http://localhost"
+        }
 
+    
     socket_listener_spout = ListenerSpout.spec()
     
     # diplo_search_bolt = \

@@ -45,22 +45,23 @@ class DBFace(metaclass=Singleton):
         except ServerSelectionTimeoutError as sste:
             print("pymongo couldn't connect to mongodb server")
 
-    def insert_graph(self, json_graph: str) -> Dict:
+    def insert_graph(self, json_graph: str, keyword : str) -> Dict:
         """
         remplace le graphe existant dans la bdd, remplace n'importe lequel
         :param json_graph: Dict {'nodes':[], 'edges':{}]
         :return:
         """
-        return self.graphcol.find_one_and_update({}, {'$set': {'json_graph': json_graph}}, upsert=True, return_document=ReturnDocument.AFTER)
+        return self.graphcol.find_one_and_update({"keyword" : keyword}, {'$set': {'json_graph': json_graph, "keyword" : keyword}},
+                                                 upsert=True, return_document=ReturnDocument.AFTER)
 
-    def get_graph(self)->Dict:
+    def get_graph(self, keyword : str)->Dict:
         """
         renvoie le graphe present dans la collection graphcol (assume un seul présent et le plus à jour)
         :return:
         """
         r = json.dumps({"nokey":"DBFACE EMPTY GRAPH DATA"})
         try:
-            r = self.graphcol.find_one({})['json_graph']
+            r = self.graphcol.find_one({"keyword" : keyword})['json_graph']
         except TypeError:
             pass
         return r

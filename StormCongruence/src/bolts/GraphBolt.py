@@ -21,7 +21,7 @@ class GraphBolt(Bolt):
         graph = GlobalGraph(wordcounts, logger = self.logger)
         graph_json = graph.to_json()
                                   
-        self.db.insert_graph(graph_json)
+        self.db.insert_graph(graph_json, info["initial_keyword"])
         self.logger.info("graph inserted in db")
         
         self.emit([info, graph_json])

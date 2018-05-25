@@ -2,7 +2,6 @@
 
 import config.config as conf 
 conf.init(USE_STORM_ = False,
-          NLP_HOST_="http://localhost",
           RECURSIVE_DEPTH_ = 1)
 
 from congruence import Congruence

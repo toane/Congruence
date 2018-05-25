@@ -1,6 +1,7 @@
 var nodes;
 var edges;
 var network;
+var keyword;
 var container = null;
 var title_card = null;
 
@@ -36,8 +37,6 @@ function update_graph(new_nodes, new_edges) {
     console.log("updating_graph")
     // remove old nodes
 
-    console.log(existing_nids)
-    console.log(new_nids)
     for (var i = 0; i < existing_nids.length; i++) {
 	id = existing_nids[i];
 	if (! new_nids.includes(id)) {
@@ -46,9 +45,9 @@ function update_graph(new_nodes, new_edges) {
     }
     nodes.update(new_nodes);
 
-    existing_eids = edges.getIds();
-    new_eids = new_edges.map(n => n.id);
 
+    existing_eids = edges.getIds();
+    new_eids = new_edges.map(n=>n.id);
     for (var id in existing_eids) {
 	if (! new_eids.includes(id)) {
 	    edges.remove(id);
@@ -61,7 +60,6 @@ function launch(optional_keyword) {
     /*
     optional_keyword: pour relancer recherches en cliquant sur une node
     */
-
     toggle_spinner(1);
     //ne lancer la boucle de dessin qu'une seule fois
     if (!loop_db_graph_running){
@@ -79,6 +77,7 @@ function launch(optional_keyword) {
         search_text = optional_keyword;
     }
     search_field.set('readOnly','true');
+    keyword = search_text
     
     var request = new Request.JSON({
         url: '/launch/',
@@ -104,9 +103,14 @@ function launch(optional_keyword) {
 
 var loop_db_graph_check = function() {
     console.log("loop_db_graph_check(): init");
+    console.log("current_kw : ")
+    console.log(keyword)
     var myRequest = new Request.JSON({
         url: '/storm/graph_json_nodes/',
         method: 'get',
+	data : {
+	    "keyword" : keyword
+	},
         onProgress: function(event, xhr) {
             console.log("loop_db_graph_check(): onProgress", curlgt, prevlgt);
         },

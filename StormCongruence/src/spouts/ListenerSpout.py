@@ -10,7 +10,7 @@ class SocketListener:
         self.socket.bind(('', port))
         self.socket.listen()
         self.socket.settimeout(5)
-
+        
     def __del__(self):
         self.socket.close()
 
@@ -21,10 +21,12 @@ class ListenerSpout(Spout):
         #with SocketListener(15555) as s:
         #self.listener = s
 
-        self.listener = SocketListener(15556)
+        self.kw_listener = SocketListener(15556)
+        self.live_acker = SocketListener(15557)
+        
     def next_tuple(self):
         try:
-            conn, addr = self.listener.socket.accept()
+            conn, addr = self.kw_listener.socket.accept()
             with conn:
                 self.logger.info('Connected by {}'.format(addr))
                 keyword = conn.recv(1024)
@@ -36,6 +38,18 @@ class ListenerSpout(Spout):
                 
                 self.emit([info, keyword])
                         
+        except OSError:
+            #self.logger.info("timed out")
+            pass
+
+
+        try:
+            conn, addr = self.live_acker.socket.accept()
+            with conn:
+                self.logger.info('Asked live status by {}'.format(addr))
+                ack = conn.recv(1024)
+                conn.send(ack)
+
         except OSError:
             #self.logger.info("timed out")
             pass
